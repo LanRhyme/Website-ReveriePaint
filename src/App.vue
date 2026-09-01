@@ -10,7 +10,6 @@ import TopologyStage from './components/installations/TopologyStage.vue'
 import LatticeStage from './components/installations/LatticeStage.vue'
 import PrismStage from './components/installations/PrismStage.vue'
 import AttractorStage from './components/installations/AttractorStage.vue'
-import Showcase from './components/Showcase.vue'
 import AppFooter from './components/AppFooter.vue'
 import PageLoader from './components/PageLoader.vue'
 import ScrollProgress from './components/ScrollProgress.vue'
@@ -81,8 +80,6 @@ function onLoaded() { loaded.value = true }
     >
       <AttractorStage />
     </InstallationFrame>
-
-    <Showcase />
   </main>
 
   <AppFooter />
