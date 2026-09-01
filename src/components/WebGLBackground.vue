@@ -107,6 +107,10 @@ onMounted(() => {
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.setSize(window.innerWidth, window.innerHeight)
+  if (!container.value) {
+    renderer.dispose()
+    return
+  }
   container.value.appendChild(renderer.domElement)
 
   uniforms = {

@@ -8,6 +8,7 @@ const { target, isVisible } = useIntersection({ threshold: 0.18 })
 let played = false
 
 onMounted(() => {
+  // 同步 IntersectionObserver 目标；普通模板 ref（非函数 ref），避免 Vue 编译成 t.value.value 在 null 时抛错
   if (rootRef.value) target.value = rootRef.value
 })
 
@@ -69,7 +70,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <footer :ref="(el)=>{ rootRef.value = el; target.value = el }">
+  <footer ref="rootRef">
     <div class="footer-huge-mark" aria-hidden="true">REVERIEPAINT</div>
     <div class="footer-meta-grid">
       <div>
