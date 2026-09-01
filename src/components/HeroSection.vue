@@ -7,9 +7,11 @@ const props = defineProps({ ready: Boolean })
 
 const sectionRef = ref(null)
 const titleRef = ref(null)
-const ctaRef = ref(null)
+const btn1Ref = ref(null)
+const btn2Ref = ref(null)
 
-useMagnetic(ctaRef, 0.22)
+useMagnetic(btn1Ref, 0.22)
+useMagnetic(btn2Ref, 0.22)
 
 const GITHUB_URL = 'https://github.com/LanRhyme/ReveriePaint'
 const RELEASE_URL = 'https://github.com/LanRhyme/ReveriePaint/releases'
@@ -160,13 +162,13 @@ watch(() => props.ready, (v) => { if (v) playHero() })
         <strong>美学准则</strong>
         摒除冗余工具堆叠，以莫兰迪低饱和光谱与瑞士理性网格重新编排手势与手写笔的灵感流转。
       </div>
-      <div ref="ctaRef" class="cta-wrap">
-        <a :href="RELEASE_URL" class="pill-btn pill-btn--primary" target="_blank" rel="noopener">
+      <div class="cta-wrap">
+        <a ref="btn1Ref" :href="RELEASE_URL" class="pill-btn pill-btn--primary" target="_blank" rel="noopener">
           <span class="pill-fill" aria-hidden="true"></span>
           <span class="pill-label">下载 APK · Releases</span>
           <span class="pill-arrow" aria-hidden="true">↗</span>
         </a>
-        <a :href="GITHUB_URL" class="pill-btn pill-btn--ghost" target="_blank" rel="noopener">
+        <a ref="btn2Ref" :href="GITHUB_URL" class="pill-btn pill-btn--ghost" target="_blank" rel="noopener">
           <span class="pill-fill" aria-hidden="true"></span>
           <span class="pill-label">GitHub 仓库</span>
           <span class="pill-arrow" aria-hidden="true">↗</span>
