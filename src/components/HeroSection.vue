@@ -92,7 +92,7 @@ function playHero() {
       easing: 'easeOutExpo'
     }, '-=500')
     .add({
-      targets: '.kinetic-cta-anchor',
+      targets: '.pill-btn',
       scale: [0.96, 1],
       duration: 700,
       delay: anime.stagger(90),
@@ -161,15 +161,17 @@ watch(() => props.ready, (v) => { if (v) playHero() })
         摒除冗余工具堆叠，以莫兰迪低饱和光谱与瑞士理性网格重新编排手势与手写笔的灵感流转。
       </div>
       <div ref="ctaRef" class="cta-wrap">
-        <a :href="RELEASE_URL" class="kinetic-cta-anchor cta-primary" target="_blank" rel="noopener">
-          <span>下载 APK · Releases</span>
-          <span class="cta-arrow" aria-hidden="true">↘</span>
+        <a :href="RELEASE_URL" class="pill-btn pill-btn--primary" target="_blank" rel="noopener">
+          <span class="pill-fill" aria-hidden="true"></span>
+          <span class="pill-label">下载 APK · Releases</span>
+          <span class="pill-arrow" aria-hidden="true">↗</span>
         </a>
-        <a :href="GITHUB_URL" class="kinetic-cta-anchor cta-ghost" target="_blank" rel="noopener">
-          <span>GitHub 仓库</span>
-          <span class="cta-arrow" aria-hidden="true">↗</span>
+        <a :href="GITHUB_URL" class="pill-btn pill-btn--ghost" target="_blank" rel="noopener">
+          <span class="pill-fill" aria-hidden="true"></span>
+          <span class="pill-label">GitHub 仓库</span>
+          <span class="pill-arrow" aria-hidden="true">↗</span>
         </a>
-        <div class="cta-sub">GPL-3.0 · ARM64-V8A · 120 FPS · 开源开放</div>
+        <div class="cta-sub"><span>GPL-3.0</span><i></i><span>ARM64-V8A</span><i></i><span>120 FPS</span><i></i><span>开源开放</span></div>
       </div>
     </div>
 
@@ -266,60 +268,79 @@ watch(() => props.ready, (v) => { if (v) playHero() })
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  align-items: flex-start;
   will-change: transform;
 }
-.kinetic-cta-anchor {
+.pill-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.2rem;
-  border: 1px solid var(--border-light);
-  padding: 1.2rem 1.4rem;
+  gap: 0.9rem;
+  padding: 0.95rem 1.9rem;
+  border-radius: 999px;
   text-decoration: none;
-  color: var(--c-text);
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  position: relative;
   overflow: hidden;
-  transition: border-color 0.35s, color 0.35s, background 0.35s;
-  width: 100%;
   cursor: pointer;
+  isolation: isolate;
+  transition: border-color 0.4s var(--ease-silk), color 0.4s var(--ease-silk);
 }
-.kinetic-cta-anchor::before {
-  content: '';
+.pill-fill {
   position: absolute;
   inset: 0;
-  background: #fff;
-  transform: translateY(100%);
-  transition: transform 0.55s var(--ease-out-expo);
-  z-index: 0;
+  z-index: -1;
+  border-radius: inherit;
+  transform: translateY(101%);
+  transition: transform 0.55s var(--ease-silk);
 }
-.kinetic-cta-anchor span { position: relative; z-index: 1; }
-.kinetic-cta-anchor:hover { border-color: #fff; }
-.kinetic-cta-anchor:hover::before { transform: translateY(0); }
+.pill-btn:hover .pill-fill { transform: translateY(0); }
+.pill-label { position: relative; z-index: 1; }
+.pill-arrow {
+  position: relative;
+  z-index: 1;
+  font-size: 0.85rem;
+  transition: transform 0.4s var(--ease-silk);
+}
+.pill-btn:hover .pill-arrow { transform: translate(3px, -3px); }
 
-.cta-primary {
-  background: #fff;
-  color: #0b0c0e;
-  border-color: #fff;
+.pill-btn--primary {
+  border: 1px solid var(--ip-sand);
+  color: var(--ip-cream);
+  background: rgba(236, 230, 216, 0.04);
 }
-.cta-primary::before { background: var(--c-sand); }
-.cta-primary:hover { border-color: var(--c-sand); color: #0b0c0e; }
-.cta-ghost { background: transparent; }
-.cta-arrow {
-  transition: transform 0.35s var(--ease-out-expo);
-  font-size: 1rem;
-  margin-left: auto;
+.pill-btn--primary .pill-fill { background: var(--ip-cream); }
+.pill-btn--primary:hover { border-color: var(--ip-sand); color: var(--ip-ink); }
+
+.pill-btn--ghost {
+  border: 1px solid var(--ip-hairline);
+  color: var(--ip-cream-dim);
+  background: transparent;
 }
-.kinetic-cta-anchor:hover .cta-arrow { transform: translate(4px, -4px); }
+.pill-btn--ghost .pill-fill { background: var(--ip-ink3); }
+.pill-btn--ghost:hover { border-color: var(--ip-cream-40); color: var(--ip-cream); }
+
 .cta-sub {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.56rem;
   letter-spacing: 0.16em;
   color: var(--c-ash);
-  margin-top: 0.15rem;
+  text-transform: uppercase;
+  margin-top: 0.35rem;
+  padding-left: 0.4rem;
+}
+.cta-sub i {
+  width: 2px;
+  height: 2px;
+  background: var(--c-ash);
+  border-radius: 50%;
+  opacity: 0.6;
+  display: inline-block;
 }
 
 .scroll-hint {
@@ -356,6 +377,6 @@ watch(() => props.ready, (v) => { if (v) playHero() })
   .hero-bottom-manifesto { padding-top: 1.4rem; gap: 1.2rem; }
   .manifesto-col { font-size: 0.68rem; line-height: 1.7; }
   .cta-wrap { gap: 0.65rem; }
-  .kinetic-cta-anchor { padding: 1rem 1.1rem; font-size: 0.7rem; letter-spacing: 0.14em; }
+  .pill-btn { padding: 0.85rem 1.4rem; font-size: 0.68rem; letter-spacing: 0.14em; }
 }
 </style>

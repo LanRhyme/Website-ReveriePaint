@@ -107,3 +107,41 @@ button:focus-visible {
     cursor: auto !important;
   }
 }
+
+/* === 参考设计通用工具类 === */
+/* 细分隔线 */
+.hairline {
+  border-color: var(--ip-hairline);
+}
+/* 小号大写标签：索引/编号/坐标感 */
+.label-caps {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--ip-cream-40);
+}
+/* 标题浅渐变：米白→暗褐，背景裁切透明字 */
+.text-veil {
+  background: linear-gradient(180deg, #f4efe2 0%, #efe9da 42%, #b5ad99 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+/* 竖排文字 */
+.v-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+/* 胶片噪点层（feTurbulence） */
+.noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}

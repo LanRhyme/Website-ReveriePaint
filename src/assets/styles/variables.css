@@ -17,4 +17,20 @@
   --font-mono: "Space Mono", monospace;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  /* 参考设计莫兰迪新体系：柔和纸感、低饱和五色 */
+  --ip-ink: #16130f;
+  --ip-ink2: #1d1913;
+  --ip-ink3: #26211a;
+  --ip-cream: #ece6d8;
+  --ip-cream-dim: #a9a391;
+  --ip-cream-40: rgba(236, 230, 216, 0.42);
+  --ip-hairline: rgba(236, 230, 216, 0.09);
+  --ip-moss: #9da98e;
+  --ip-bean: #c3a39e;
+  --ip-haze: #8fa3b4;
+  --ip-sand: #c8b48d;
+  --ip-mauve: #a79bb6;
+  --ip-clay: #b08a75;
+  --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
 }
