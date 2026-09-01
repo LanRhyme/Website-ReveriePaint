@@ -9,28 +9,32 @@ const SCENES = [
     cn: '雾起山岚',
     en: 'Mist & Mountain',
     sub: '苍翠隐现，晨雾叠嶂',
-    accent: '#9da98e'
+    accent: '#9da98e',
+    img: '/images/fog.jpg'
   },
   {
     id: '02',
     cn: '月白清辉',
     en: 'Moonlit Serenity',
     sub: '银辉倾泻，静夜如洗',
-    accent: '#c8b48d'
+    accent: '#c8b48d',
+    img: '/images/moon.jpg'
   },
   {
     id: '03',
     cn: '花眠幽香',
     en: 'Slumber Blossom',
     sub: '暗香浮动，花事未了',
-    accent: '#c3a39e'
+    accent: '#c3a39e',
+    img: '/images/bloom.jpg'
   },
   {
     id: '04',
     cn: '沙语大漠',
     en: 'Desert Whisper',
     sub: '沙丘低语，瀚海无垠',
-    accent: '#b08a75'
+    accent: '#b08a75',
+    img: '/images/dune.jpg'
   }
 ]
 
@@ -179,6 +183,8 @@ onUnmounted(() => {
           :style="{ '--accent': s.accent }"
         >
           <div class="scene-art">
+            <img class="scene-photo" :src="s.img" :alt="s.cn" loading="lazy" />
+            <div class="scene-photo-veil"></div>
             <svg class="scene-svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
               <template v-if="s.id === '01'">
                 <defs>
@@ -373,11 +379,29 @@ onUnmounted(() => {
   inset: 0;
   overflow: hidden;
   will-change: transform;
+  background: var(--ip-ink2);
+}
+.scene-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.scene-photo-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(22, 19, 15, 0.12) 0%, rgba(22, 19, 15, 0) 40%, rgba(22, 19, 15, 0.55) 100%);
 }
 .scene-svg {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   display: block;
+  mix-blend-mode: soft-light;
+  opacity: 0.5;
 }
 .scene-art-glow {
   position: absolute;
