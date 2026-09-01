@@ -1,0 +1,20 @@
+:root {
+  --c-bg: #0b0c0e;
+  --c-ink: #14161a;
+  --c-ash: #4a525a;
+  --c-mist: #8a949e;
+  --c-text: #eceeed;
+  --c-sand: #d5c3b2;
+  --c-clay: #c49a8f;
+  --c-pine: #7f9485;
+  --c-slate: #6b8294;
+  --c-gold: #bfa37c;
+  --border-wire: rgba(255, 255, 255, 0.07);
+  --border-light: rgba(255, 255, 255, 0.15);
+  --font-display: "Cinzel", "Cormorant Garamond", serif;
+  --font-serif: "Cormorant Garamond", "Noto Serif SC", serif;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "Space Mono", monospace;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+}

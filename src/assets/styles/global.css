@@ -1,0 +1,109 @@
+@import './variables.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-ash) transparent;
+}
+
+body {
+  background-color: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--c-clay);
+  color: #fff;
+}
+
+/* Lenis 官方推荐 reset：避免与原生 smooth 冲突，防止滚动高度重复计算导致“页面重复两遍” */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* lenis 生效时禁用原生 smooth，由 Lenis 接管 */
+html.lenis {
+  scroll-behavior: auto;
+}
+
+/* hide native cursor only on fine-pointer devices where custom cursor is active */
+@media (pointer: fine) {
+  body.has-custom-cursor,
+  body.has-custom-cursor * {
+    cursor: none !important;
+  }
+}
+
+/* focus visible for a11y */
+a:focus-visible,
+button:focus-visible {
+  outline: 1px solid var(--c-gold);
+  outline-offset: 3px;
+}
+
+/* reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--c-ash);
+  border-radius: 999px;
+}
+
+/* 防止移动端 100vh 抖动与超长空白：统一使用 dvh 回退 */
+@supports (height: 100dvh) {
+  .hero-exhibition {
+    min-height: 100dvh;
+  }
+}
+
+/* 移动端触摸优化 */
+@media (pointer: coarse) {
+  body.has-custom-cursor,
+  body.has-custom-cursor * {
+    cursor: auto !important;
+  }
+}

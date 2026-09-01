@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReveriePaint · 意境与算法的终极重构</title>
+  
+  <!-- 艺术级字体排印 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@200;300;400;500&family=Noto+Serif+SC:wght@200;300;400&family=Space+Mono:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  
+  <!-- 核心动效与着色库 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+  <style>
+    :root {
+      --c-bg: #0b0c0e;
+      --c-ink: #14161a;
+      --c-ash: #4a525a;
+      --c-mist: #8a949e;
+      --c-text: #eceeed;
+      --c-sand: #d5c3b2;
+      --c-clay: #c49a8f;
+      --c-pine: #7f9485;
+      --c-slate: #6b8294;
+      --c-gold: #bfa37c;
+      --border-wire: rgba(255, 255, 255, 0.07);
+      --border-light: rgba(255, 255, 255, 0.15);
+      --font-display: "Cinzel", "Cormorant Garamond", serif;
+      --font-serif: "Cormorant Garamond", "Noto Serif SC", serif;
+      --font-sans: "Inter", sans-serif;
+      --font-mono: "Space Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      cursor: none;
+    }
+
+    html, body {
+      background-color: var(--c-bg);
+      color: var(--c-text);
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      selection-background-color: var(--c-clay);
+    }
+
+    /* 自定义高级磁吸惯性光标 */
+    #cursor-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s, background 0.3s;
+    }
+
+    #cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+    }
+
+    /* WebGL 背景 */
+    #webgl-stage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    /* 瑞士网格线与精密刻度 */
+    .grid-lines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 8vw 1fr 1fr 8vw;
+      border-left: 1px solid var(--border-wire);
+      border-right: 1px solid var(--border-wire);
+    }
+
+    .grid-col-line {
+      border-right: 1px solid var(--border-wire);
+      height: 100%;
+    }
+
+    .film-grain {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      opacity: 0.045;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* 顶部殿堂级导航 */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 2.8rem 8vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      mix-blend-mode: difference;
+    }
+
+    .brand-mark {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .brand-mark::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border: 1px solid #fff;
+      transform: rotate(45deg);
+    }
+
+    .header-coords {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      color: var(--c-mist);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 3rem;
+    }
+
+    .nav-link-item {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c-mist);
+      text-decoration: none;
+      transition: color 0.4s;
+      position: relative;
+    }
+
+    .nav-link-item:hover {
+      color: #fff;
+    }
+
+    /* 主画卷 */
+    main {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ==========================================================
+       Hero 艺术装置区：巨幅留白与矢量曲率场
+       ========================================================== */
+    .hero-exhibition {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 8vw;
+      position: relative;
+    }
+
+    .hero-precision-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--c-clay);
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .hero-precision-tag .line-seq {
+      width: 40px;
+      height: 1px;
+      background: var(--c-clay);
+    }
+
+    .hero-title-giant {
+      font-family: var(--font-serif);
+      font-size: clamp(3.8rem, 8.5vw, 8.2rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      max-width: 1400px;
+      margin-bottom: 3.5rem;
+    }
+
+    .hero-title-giant .serif-italic {
+      font-family: "Cormorant Garamond", serif;
+      font-style: italic;
+      color: var(--c-sand);
+      font-weight: 300;
+      margin-left: 0.5rem;
+    }
+
+    .hero-bottom-manifesto {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      border-top: 1px solid var(--border-wire);
+      padding-top: 2rem;
+      gap: 3rem;
+      align-items: flex-start;
+    }
+
+    .manifesto-col {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.8;
+      color: var(--c-mist);
+      letter-spacing: 0.08em;
+    }
+
+    .manifesto-col strong {
+      color: var(--c-text);
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .kinetic-cta-anchor {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border-light);
+      padding: 1.4rem 2rem;
+      text-decoration: none;
+      color: var(--c-text);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s;
+    }
+
+    .kinetic-cta-anchor::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      transform: translateY(100%);
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 0;
+    }
+
+    .kinetic-cta-anchor:hover {
+      border-color: #fff;
+      color: #000;
+    }
+
+    .kinetic-cta-anchor:hover::before {
+      transform: translateY(0);
+    }
+
+    .kinetic-cta-anchor span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ==========================================================
+       艺术装置展厅 (Kinetic Installations)
+       ========================================================== */
+    .installation-frame {
+      min-height: 100vh;
+      padding: 8rem 8vw;
+      display: grid;
+      grid-template-columns: 0.9fr 1.3fr;
+      gap: 6rem;
+      align-items: center;
+      border-top: 1px solid var(--border-wire);
+      position: relative;
+    }
+
+    .installation-curation {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .curation-index {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--c-clay);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .curation-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.4rem, 4.2vw, 4.2rem);
+      font-weight: 300;
+      line-height: 1.15;
+      margin-bottom: 2rem;
+      letter-spacing: 0.02em;
+    }
+
+    .curation-title em {
+      font-style: italic;
+      color: var(--c-sand);
+    }
+
+    .curation-essay {
+      font-size: 0.9rem;
+      line-height: 2;
+      color: var(--c-mist);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      margin-bottom: 3rem;
+      max-width: 460px;
+    }
+
+    .spec-telemetry {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      border-top: 1px solid var(--border-wire);
+      padding-top: 2rem;
+    }
+
+    .telemetry-node .t-num {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--c-text);
+      display: block;
+      font-weight: 400;
+    }
+
+    .telemetry-node .t-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--c-mist);
+      margin-top: 0.3rem;
+    }
+
+    /* 装置舞台容器 */
+    .stage-monolith {
+      aspect-ratio: 16 / 11;
+      width: 100%;
+      background: rgba(18, 20, 24, 0.45);
+      border: 1px solid var(--border-wire);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(40px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stage-monolith::after {
+      content: "";
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 6px;
+      height: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .stage-monolith::before {
+      content: "";
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      width: 6px;
+      height: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* 装置 01: 墨迹拓扑谐振流 (Topology Field) */
+    .svg-topology {
+      width: 90%;
+      height: 90%;
+    }
+
+    /* 装置 02: 晶格超维瓦片折叠 (Lattice 3D Fold) */
+    .isometric-lattice {
+      width: 320px;
+      height: 320px;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateX(60deg) rotateZ(-45deg);
+    }
+
+    .lattice-node {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(107, 130, 148, 0.08);
+      backdrop-filter: blur(6px);
+      transform-style: preserve-3d;
+    }
+
+    /* 装置 03: 莫兰迪光子干涉光谱 (Spectral Dispersion) */
+    .chroma-prism-wrap {
+      width: 85%;
+      height: 75%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .prism-ray {
+      position: absolute;
+      height: 1px;
+      width: 100%;
+      transform-origin: left center;
+    }
+
+    .prism-core {
+      width: 70px;
+      height: 70px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transform: rotate(45deg);
+      position: relative;
+      z-index: 5;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+    }
+
+    /* 装置 04: 时空相图引力环 (Phase Space Attractor) */
+    .phase-attractor-svg {
+      width: 90%;
+      height: 90%;
+    }
+
+    /* 殿堂级规格页脚 */
+    footer {
+      padding: 10rem 8vw 5rem;
+      border-top: 1px solid var(--border-wire);
+      position: relative;
+      z-index: 10;
+      background: var(--c-bg);
+    }
+
+    .footer-huge-mark {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 11vw, 12rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      line-height: 0.8;
+      color: rgba(255, 255, 255, 0.06);
+      text-transform: uppercase;
+      margin-bottom: 5rem;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .footer-meta-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 4rem;
+      border-top: 1px solid var(--border-wire);
+      padding-top: 3rem;
+    }
+
+    .footer-desc {
+      font-size: 0.85rem;
+      color: var(--c-mist);
+      line-height: 2;
+      max-width: 480px;
+      font-weight: 300;
+    }
+
+    .footer-col-title {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c-text);
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-link-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .footer-link-list a {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--c-mist);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      transition: color 0.3s;
+    }
+
+    .footer-link-list a:hover {
+      color: #fff;
+    }
+
+    .footer-colophon {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--c-ash);
+      letter-spacing: 0.15em;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-lines { display: none; }
+      .installation-frame { grid-template-columns: 1fr; gap: 4rem; padding: 6rem 6vw; }
+      .hero-bottom-manifesto { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-meta-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 自定义动力学光标 -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- 瑞士网格系统背景 -->
+  <div class="grid-lines">
+    <div></div>
+    <div class="grid-col-line"></div>
+    <div class="grid-col-line"></div>
+    <div></div>
+  </div>
+  <div class="film-grain"></div>
+
+  <!-- Three.js 柔光水墨流体 WebGL 舞台 -->
+  <div id="webgl-stage"></div>
+
+  <!-- 殿堂级导航 -->
+  <header>
+    <div class="brand-mark">ReveriePaint</div>
+    <div class="header-coords">[ LAT. 31.2304° N · KRITA CORE ENGINE ]</div>
+    <nav class="nav-links">
+      <a class="nav-link-item" href="#inst-1">拓扑</a>
+      <a class="nav-link-item" href="#inst-2">晶格</a>
+      <a class="nav-link-item" href="#inst-3">干涉</a>
+      <a class="nav-link-item" href="#inst-4">相图</a>
+      <a class="nav-link-item" href="https://github.com/LanRhyme/ReveriePaint/releases" target="_blank">Releases</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 第一幕：巨幅留白 Hero Exhibition -->
+    <section class="hero-exhibition">
+      <div class="hero-precision-tag">
+        <span class="line-seq"></span>
+        <span>Aesthetic Pure Digital Canvas · Android / ARMv8-A</span>
+      </div>
+      <h1 class="hero-title-giant">
+        心之所向<br>
+        落笔<span class="serif-italic">成境</span>
+      </h1>
+      <div class="hero-bottom-manifesto">
+        <div class="manifesto-col">
+          <strong>内核构型</strong>
+          基于 Krita C++ 经典图像处理管道构建，将工业级多核栅格化算力无损封装于移动手持终端。
+        </div>
+        <div class="manifesto-col">
+          <strong>美学准则</strong>
+          摒除冗余工具堆叠，以莫兰迪低饱和光谱与瑞士理性网格重新编排手势与手写笔的灵感流转。
+        </div>
+        <div>
+          <a href="https://github.com/LanRhyme/ReveriePaint/releases" class="kinetic-cta-anchor" target="_blank">
+            <span>进入画境 · Download APK</span>
+            <span>↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 装置 01: 墨迹拓扑谐振 (Kinetic Topology Field) -->
+    <section class="installation-frame" id="inst-1">
+      <div class="installation-curation">
+        <span class="curation-index">INSTALLATION / 01</span>
+        <h2 class="curation-title">墨迹拓扑，<br><em>微分谐振流。</em></h2>
+        <p class="curation-essay">
+          下笔不是坐标的简单连线，而是高阶贝塞尔张力场随硬件压感、倾角与角速度的瞬时微分演化。每一丝游移，皆呈现纯粹的物理美感。
+        </p>
+        <div class="spec-telemetry">
+          <div class="telemetry-node">
+            <span class="t-num num-pressure">8192</span>
+            <span class="t-label">Pressure Resolution</span>
+          </div>
+          <div class="telemetry-node">
+            <span class="t-num num-curvature">0.0034</span>
+            <span class="t-label">Spline Curvature Error</span>
+          </div>
+        </div>
+      </div>
+      <div class="stage-monolith">
+        <svg class="svg-topology" viewBox="0 0 600 400">
+          <defs>
+            <linearGradient id="morandi-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="var(--c-clay)" stop-opacity="0.8"/>
+              <stop offset="50%" stop-color="var(--c-slate)" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="var(--c-sand)" stop-opacity="0.2"/>
+            </linearGradient>
+          </defs>
+          <g id="topology-paths">
+            <!-- 24 根精密拓扑等高曲线由 Anime.js 计算生成 -->
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 装置 02: 晶格超维瓦片折叠 (Sparse Tile Lattice) -->
+    <section class="installation-frame" id="inst-2">
+      <div class="installation-curation">
+        <span class="curation-index">INSTALLATION / 02</span>
+        <h2 class="curation-title">稀疏瓦片，<br><em>超维空间折叠。</em></h2>
+        <p class="curation-essay">
+          彻底解构传统固定画幅的内存壁垒。按需分配的 64px 稀疏瓦片在三维空间中动态调入调出，赋予创作无垠的图层纵深。
+        </p>
+        <div class="spec-telemetry">
+          <div class="telemetry-node">
+            <span class="t-num">64<small style="font-size:1rem;color:var(--c-mist)">PX</small></span>
+            <span class="t-label">Sparse Tile Unit</span>
+          </div>
+          <div class="telemetry-node">
+            <span class="t-num">∞</span>
+            <span class="t-label">Canvas Boundary</span>
+          </div>
+        </div>
+      </div>
+      <div class="stage-monolith">
+        <div class="isometric-lattice" id="lattice-stage">
+          <!-- 16 块 3D 浮动瓦片由 JS 生成 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 装置 03: 莫兰迪光子干涉光谱 (Thin Film Chroma Interference) -->
+    <section class="installation-frame" id="inst-3">
+      <div class="installation-curation">
+        <span class="curation-index">INSTALLATION / 03</span>
+        <h2 class="curation-title">光子干涉，<br><em>莫兰迪色阶。</em></h2>
+        <p class="curation-essay">
+          色彩不再是刺眼的纯色堆砌，而是经由薄膜干涉折射算法过滤后的沉静灰调。在低反差的柔和灰阶中，捕捉光影最微妙的呼吸。
+        </p>
+        <div class="spec-telemetry">
+          <div class="telemetry-node">
+            <span class="t-num">32<small style="font-size:1rem;color:var(--c-mist)">BIT</small></span>
+            <span class="t-label">Linear Float Precision</span>
+          </div>
+          <div class="telemetry-node">
+            <span class="t-num">ΔE&lt;0.8</span>
+            <span class="t-label">Color Harmony Index</span>
+          </div>
+        </div>
+      </div>
+      <div class="stage-monolith">
+        <div class="chroma-prism-wrap" id="prism-stage">
+          <div class="prism-core"></div>
+          <!-- 动态干涉光束 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 装置 04: 时空相图引力环 (Temporal Phase Attractor) -->
+    <section class="installation-frame" id="inst-4">
+      <div class="installation-curation">
+        <span class="curation-index">INSTALLATION / 04</span>
+        <h2 class="curation-title">时空相图，<br><em>拓扑事件回溯。</em></h2>
+        <p class="curation-essay">
+          画作的本质是时间的凝固。非破坏性底层历史堆栈以相空间吸引子轨迹精确锚定每一次落笔与擦除，实现真正无损的时序重构。
+        </p>
+        <div class="spec-telemetry">
+          <div class="telemetry-node">
+            <span class="t-num">0<small style="font-size:1rem;color:var(--c-mist)"> LOSS</small></span>
+            <span class="t-label">Vector Phase Storage</span>
+          </div>
+          <div class="telemetry-node">
+            <span class="t-num">.REVP</span>
+            <span class="t-label">Container Architecture</span>
+          </div>
+        </div>
+      </div>
+      <div class="stage-monolith">
+        <svg class="phase-attractor-svg" viewBox="0 0 500 500">
+          <g id="attractor-rings">
+            <!-- 多重引力同心相位环 -->
+          </g>
+          <circle id="attractor-singularity" cx="250" cy="250" r="3" fill="#fff" />
+        </svg>
+      </div>
+    </section>
+  </main>
+
+  <!-- 殿堂级页脚 -->
+  <footer>
+    <div class="footer-huge-mark">REVERIEPAINT</div>
+    <div class="footer-meta-grid">
+      <div>
+        <h4 class="footer-col-title">About The Philosophy</h4>
+        <p class="footer-desc">
+          ReveriePaint 是一场针对移动端数字绘画工具的纯粹主义重构。我们相信工具的终极状态是隐形，让创作者的意念跨越屏幕，直抵艺术本身。
+        </p>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Open Engine</h4>
+        <ul class="footer-link-list">
+          <li><a href="https://github.com/LanRhyme/ReveriePaint" target="_blank">GitHub Repository ↗</a></li>
+          <li><a href="https://github.com/LanRhyme/ReveriePaint/releases" target="_blank">Binary Releases ↗</a></li>
+          <li><a href="https://krita.org" target="_blank">Krita Core Architecture ↗</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Architecture</h4>
+        <ul class="footer-link-list">
+          <li><a href="#">ARM64-V8A Native</a></li>
+          <li><a href="#">GPL-3.0 License</a></li>
+          <li><a href="#">Material You Monet</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-colophon">
+      <span>CRAFTED FOR IMMERSIVE DIGITAL EXPRESSION</span>
+      <span>[ MORANDI PRECISION CANVAS ]</span>
+      <span>© 2026 REVERIEPAINT PROJECT</span>
+    </div>
+  </footer>
+
+  <!-- 交互与动效主干引擎 -->
+  <script>
+    /* ==========================================================
+       1. 惯性磁吸光标物理引擎
+       ========================================================== */
+    const cursorDot = document.getElementById('cursor-dot');
+    const cursorRing = document.getElementById('cursor-ring');
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let ringX = mouseX, ringY = mouseY;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+    });
+
+    function renderCursor() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+      requestAnimationFrame(renderCursor);
+    }
+    renderCursor();
+
+    document.querySelectorAll('a, .stage-monolith').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursorRing.style.width = '68px';
+        cursorRing.style.height = '68px';
+        cursorRing.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+        cursorRing.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursorRing.style.width = '44px';
+        cursorRing.style.height = '44px';
+        cursorRing.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+        cursorRing.style.backgroundColor = 'transparent';
+      });
+    });
+
+
+    /* ==========================================================
+       2. Three.js: 极简莫兰迪流体微光场 (Shader)
+       ========================================================== */
+    const stageContainer = document.getElementById('webgl-stage');
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    stageContainer.appendChild(renderer.domElement);
+
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform float u_time;
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      varying vec2 vUv;
+
+      vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+      float snoise(vec2 v){
+        const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+        vec2 i  = floor(v + dot(v, C.yy) );
+        vec2 x0 = v -   i + dot(i, C.xx);
+        vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+        vec4 x12 = x0.xyxy + C.xxzz;
+        x12.xy -= i1;
+        i = mod(i, 289.0);
+        vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+        vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+        m = m*m; m = m*m;
+        vec3 x = 2.0 * fract(p * C.www) - 1.0;
+        vec3 h = abs(x) - 0.5;
+        vec3 ox = floor(x + 0.5);
+        vec3 a0 = x - ox;
+        m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+        vec3 g;
+        g.x  = a0.x  * x0.x  + h.x  * x0.y;
+        g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+        return 130.0 * dot(m, g);
+      }
+
+      void main() {
+        vec2 st = gl_FragCoord.xy / u_resolution.xy;
+        st.x *= u_resolution.x / u_resolution.y;
+
+        float t = u_time * 0.05;
+        float n = snoise(st * 1.6 + vec2(t * 0.2, t * 0.15) + (u_mouse * 0.1));
+        float n2 = snoise(st * 3.0 - vec2(t * 0.1, t * 0.25) + n * 0.4);
+
+        // 莫兰迪暗色系与哑光灰
+        vec3 c0 = vec3(0.043, 0.047, 0.055);
+        vec3 cSlate = vec3(0.42, 0.51, 0.58);
+        vec3 cClay  = vec3(0.77, 0.60, 0.56);
+        vec3 cSand  = vec3(0.83, 0.76, 0.70);
+
+        vec3 color = c0;
+        color = mix(color, cSlate, smoothstep(-0.4, 0.8, n) * 0.25);
+        color = mix(color, cClay, smoothstep(-0.2, 0.9, n2) * 0.18);
+        color = mix(color, cSand, smoothstep(0.4, 1.0, n + n2) * 0.10);
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+
+    const uniforms = {
+      u_time: { value: 0.0 },
+      u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      u_mouse: { value: new THREE.Vector2(0.5, 0.5) }
+    };
+
+    const shaderMat = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms });
+    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), shaderMat));
+
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      uniforms.u_mouse.value.x = e.clientX / window.innerWidth;
+      uniforms.u_mouse.value.y = 1.0 - (e.clientY / window.innerHeight);
+    });
+
+    function loopThree(timestamp) {
+      uniforms.u_time.value = timestamp * 0.001;
+      renderer.render(scene, camera);
+      requestAnimationFrame(loopThree);
+    }
+    requestAnimationFrame(loopThree);
+
+
+    /* ==========================================================
+       3. Anime.js: 装置 01 - 墨迹拓扑谐振流 (24 高精度微分等高线)
+       ========================================================== */
+    const topoGroup = document.getElementById('topology-paths');
+    const pathCount = 20;
+    const paths = [];
+
+    for (let i = 0; i < pathCount; i++) {
+      const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("fill", "none");
+      p.setAttribute("stroke", i % 2 === 0 ? "rgba(196, 154, 143, 0.35)" : "rgba(107, 130, 148, 0.25)");
+      p.setAttribute("stroke-width", (1.2 - (i / pathCount) * 0.8).toFixed(2));
+      topoGroup.appendChild(p);
+      paths.push(p);
+    }
+
+    const topoEngine = { phase: 0 };
+    anime({
+      targets: topoEngine,
+      phase: Math.PI * 2,
+      duration: 5000,
+      easing: 'linear',
+      loop: true,
+      update: () => {
+        const ph = topoEngine.phase;
+        paths.forEach((p, idx) => {
+          const offset = (idx / pathCount) * 140;
+          const yBase = 100 + idx * 10;
+          const cp1x = 180 + Math.sin(ph + idx * 0.15) * 50;
+          const cp1y = yBase - 60 + Math.cos(ph + idx * 0.2) * 40;
+          const cp2x = 420 + Math.cos(ph + idx * 0.12) * 50;
+          const cp2y = yBase + 60 + Math.sin(ph + idx * 0.18) * 40;
+          const d = `M 40,${yBase} C ${cp1x},${cp1y} ${cp2x},${cp2y} 560,${yBase + Math.sin(ph + idx) * 20}`;
+          p.setAttribute("d", d);
+        });
+
+        // 遥测参数动态演变
+        const curv = (0.0034 + Math.sin(ph) * 0.0008).toFixed(4);
+        document.querySelector('.num-curvature').innerText = curv;
+      }
+    });
+
+
+    /* ==========================================================
+       4. Anime.js: 装置 02 - 晶格超维瓦片三维折叠 (16 块 3D 浮动瓦片)
+       ========================================================== */
+    const latticeContainer = document.getElementById('lattice-stage');
+    const gridSize = 4;
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        const node = document.createElement('div');
+        node.classList.add('lattice-node');
+        node.style.left = `${c * 80}px`;
+        node.style.top = `${r * 80}px`;
+        latticeContainer.appendChild(node);
+      }
+    }
+
+    anime({
+      targets: '.lattice-node',
+      translateZ: () => anime.random(20, 160),
+      rotateX: () => anime.random(-30, 30),
+      rotateY: () => anime.random(-30, 30),
+      borderColor: [
+        { value: 'rgba(255, 255, 255, 0.1)' },
+        { value: 'rgba(196, 154, 143, 0.6)' },
+        { value: 'rgba(107, 130, 148, 0.4)' },
+        { value: 'rgba(255, 255, 255, 0.1)' }
+      ],
+      backgroundColor: [
+        { value: 'rgba(107, 130, 148, 0.04)' },
+        { value: 'rgba(196, 154, 143, 0.18)' },
+        { value: 'rgba(107, 130, 148, 0.04)' }
+      ],
+      delay: anime.stagger(90, { grid: [4, 4], from: 'center' }),
+      duration: 2800,
+      direction: 'alternate',
+      loop: true,
+      easing: 'easeInOutQuint'
+    });
+
+
+    /* ==========================================================
+       5. Anime.js: 装置 03 - 莫兰迪薄膜干涉光束 (Chroma Dispersion)
+       ========================================================== */
+    const prismStage = document.getElementById('prism-stage');
+    const rayCount = 18;
+    const morandiGradients = [
+      'linear-gradient(90deg, transparent, rgba(127, 148, 133, 0.7), transparent)',
+      'linear-gradient(90deg, transparent, rgba(196, 154, 143, 0.8), transparent)',
+      'linear-gradient(90deg, transparent, rgba(107, 130, 148, 0.7), transparent)',
+      'linear-gradient(90deg, transparent, rgba(213, 195, 178, 0.8), transparent)'
+    ];
+
+    for (let i = 0; i < rayCount; i++) {
+      const ray = document.createElement('div');
+      ray.classList.add('prism-ray');
+      ray.style.background = morandiGradients[i % morandiGradients.length];
+      prismStage.appendChild(ray);
+    }
+
+    anime({
+      targets: '.prism-ray',
+      rotate: (el, i) => [-40 + i * 4.5, 40 - i * 4.5],
+      scaleX: [0.6, 1.4],
+      opacity: [0.2, 0.85, 0.2],
+      delay: anime.stagger(70, { from: 'center' }),
+      duration: 3200,
+      direction: 'alternate',
+      loop: true,
+      easing: 'easeInOutSine'
+    });
+
+    anime({
+      targets: '.prism-core',
+      rotate: [45, 225],
+      scale: [1, 1.15, 1],
+      duration: 6400,
+      direction: 'alternate',
+      loop: true,
+      easing: 'easeInOutCubic'
+    });
+
+
+    /* ==========================================================
+       6. Anime.js: 装置 04 - 时空相图引力环 (Phase Space Rings)
+       ========================================================== */
+    const ringsGroup = document.getElementById('attractor-rings');
+    const ringTotal = 8;
+
+    for (let i = 0; i < ringTotal; i++) {
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+      circle.setAttribute("cx", "250");
+      circle.setAttribute("cy", "250");
+      circle.setAttribute("rx", (40 + i * 22).toString());
+      circle.setAttribute("ry", (20 + i * 14).toString());
+      circle.setAttribute("fill", "none");
+      circle.setAttribute("stroke", i % 2 === 0 ? "rgba(191, 163, 124, 0.35)" : "rgba(255, 255, 255, 0.12)");
+      circle.setAttribute("stroke-width", "1");
+      circle.setAttribute("stroke-dasharray", `${i * 4 + 4} ${i * 2 + 2}`);
+      ringsGroup.appendChild(circle);
+    }
+
+    anime({
+      targets: '#attractor-rings ellipse',
+      rotate: (el, i) => (i % 2 === 0 ? 360 : -360),
+      rx: (el, i) => [40 + i * 22, 50 + i * 26, 40 + i * 22],
+      ry: (el, i) => [20 + i * 14, 35 + i * 18, 20 + i * 14],
+      transformOrigin: '250px 250px',
+      delay: anime.stagger(100),
+      duration: 9000,
+      easing: 'linear',
+      loop: true
+    });
+  </script>
+</body>
+</html>
