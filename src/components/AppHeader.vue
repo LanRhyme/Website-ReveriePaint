@@ -113,10 +113,10 @@ function onBrandLeave(e) {
     <div class="header-coords">[ LAT. 31.2304° N · KRITA CORE ENGINE ]</div>
 
     <nav class="nav-links" aria-label="主导航">
-      <a class="nav-link-item" href="#inst-1" @click="onNavClick($event, '#inst-1')">拓扑</a>
-      <a class="nav-link-item" href="#inst-2" @click="onNavClick($event, '#inst-2')">晶格</a>
-      <a class="nav-link-item" href="#inst-3" @click="onNavClick($event, '#inst-3')">干涉</a>
-      <a class="nav-link-item" href="#inst-4" @click="onNavClick($event, '#inst-4')">相图</a>
+      <a class="nav-link-item" href="#inst-1" @click="onNavClick($event, '#inst-1')">笔刷</a>
+      <a class="nav-link-item" href="#inst-2" @click="onNavClick($event, '#inst-2')">图层</a>
+      <a class="nav-link-item" href="#inst-3" @click="onNavClick($event, '#inst-3')">色彩</a>
+      <a class="nav-link-item" href="#inst-4" @click="onNavClick($event, '#inst-4')">回放</a>
       <a class="nav-link-item" :href="GITHUB_URL" target="_blank" rel="noopener">GitHub ↗</a>
       <a class="nav-link-item nav-link--accent" :href="RELEASE_URL" target="_blank" rel="noopener">下载 APK ↗</a>
     </nav>
@@ -129,10 +129,10 @@ function onBrandLeave(e) {
 
   <transition name="nav-fade">
     <div v-if="isMenuOpen" id="mobile-nav" class="mobile-nav" role="dialog" aria-modal="true">
-      <a @click="onNavClick($event, '#inst-1')" href="#inst-1">拓扑 <small>Topology</small></a>
-      <a @click="onNavClick($event, '#inst-2')" href="#inst-2">晶格 <small>Lattice</small></a>
-      <a @click="onNavClick($event, '#inst-3')" href="#inst-3">干涉 <small>Interference</small></a>
-      <a @click="onNavClick($event, '#inst-4')" href="#inst-4">相图 <small>Phase</small></a>
+      <a @click="onNavClick($event, '#inst-1')" href="#inst-1">笔刷 <small>Brushes</small></a>
+      <a @click="onNavClick($event, '#inst-2')" href="#inst-2">图层 <small>Layers</small></a>
+      <a @click="onNavClick($event, '#inst-3')" href="#inst-3">色彩 <small>Palette</small></a>
+      <a @click="onNavClick($event, '#inst-4')" href="#inst-4">回放 <small>Timelapse</small></a>
       <div class="mobile-actions">
         <a class="mobile-github" :href="GITHUB_URL" target="_blank" rel="noopener">GitHub 仓库 ↗</a>
         <a class="mobile-download" :href="RELEASE_URL" target="_blank" rel="noopener">下载 APK · Releases ↗</a>

@@ -53,6 +53,8 @@ onMounted(() => {
   grid-template-columns: 8vw 1fr 1fr 8vw;
   border-left: 1px solid var(--border-wire);
   border-right: 1px solid var(--border-wire);
+  mask-image: linear-gradient(180deg, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 12%, black 88%, transparent 100%);
 }
 .grid-col-line {
   border-right: 1px solid var(--border-wire);

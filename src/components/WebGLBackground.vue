@@ -48,19 +48,20 @@ const fragmentShader = `
     vec2 st = gl_FragCoord.xy / u_resolution.xy;
     st.x *= u_resolution.x / u_resolution.y;
 
-    float t = u_time * 0.05;
-    float n = snoise(st * 1.6 + vec2(t * 0.2, t * 0.15) + (u_mouse * 0.1));
-    float n2 = snoise(st * 3.0 - vec2(t * 0.1, t * 0.25) + n * 0.4);
+    float t = u_time * 0.04;
+    float n = snoise(st * 1.5 + vec2(t * 0.18, t * 0.12) + (u_mouse * 0.08));
+    float n2 = snoise(st * 2.8 - vec2(t * 0.09, t * 0.2) + n * 0.35);
 
-    vec3 c0 = vec3(0.043, 0.047, 0.055);
-    vec3 cSlate = vec3(0.42, 0.51, 0.58);
-    vec3 cClay  = vec3(0.77, 0.60, 0.56);
-    vec3 cSand  = vec3(0.83, 0.76, 0.70);
+    // Morandi studio dark palette
+    vec3 c0     = vec3(0.043, 0.047, 0.055);
+    vec3 cSlate = vec3(0.38, 0.46, 0.54);
+    vec3 cClay  = vec3(0.72, 0.56, 0.52);
+    vec3 cSand  = vec3(0.78, 0.72, 0.65);
 
     vec3 color = c0;
-    color = mix(color, cSlate, smoothstep(-0.4, 0.8, n) * 0.25);
-    color = mix(color, cClay, smoothstep(-0.2, 0.9, n2) * 0.18);
-    color = mix(color, cSand, smoothstep(0.4, 1.0, n + n2) * 0.10);
+    color = mix(color, cSlate, smoothstep(-0.4, 0.8, n) * 0.22);
+    color = mix(color, cClay, smoothstep(-0.2, 0.9, n2) * 0.16);
+    color = mix(color, cSand, smoothstep(0.4, 1.0, n + n2) * 0.09);
 
     gl_FragColor = vec4(color, 1.0);
   }
@@ -97,20 +98,12 @@ function loop(ts) {
 }
 
 onMounted(() => {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    // still render static frame but no loop
-  }
-
   scene = new THREE.Scene()
   camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.setSize(window.innerWidth, window.innerHeight)
-  if (!container.value) {
-    renderer.dispose()
-    return
-  }
   container.value.appendChild(renderer.domElement)
 
   uniforms = {
@@ -132,7 +125,6 @@ onMounted(() => {
   window.addEventListener('mousemove', onMouseMove, { passive: true })
   document.addEventListener('visibilitychange', onVisibility)
 
-  // respect reduced motion: if user prefers reduced, render once and don't loop
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     renderer.render(scene, camera)
   } else {
@@ -155,19 +147,31 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="container" id="webgl-stage" aria-hidden="true"></div>
+  <div id="canvas-universe" aria-hidden="true">
+    <div ref="container" id="webgl-stage"></div>
+  </div>
 </template>
 
 <style scoped>
-#webgl-stage {
+#canvas-universe {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.7;
+  overflow: hidden;
+  background-color: var(--c-bg, #0b0c0e);
 }
+
+#webgl-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.72;
+}
+
 #webgl-stage :deep(canvas) {
   display: block;
   width: 100%;

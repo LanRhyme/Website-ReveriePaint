@@ -181,12 +181,6 @@ watch(() => props.ready, (v) => { if (v) playHero() })
       <span class="scroll-label">SCROLL</span>
       <span class="scroll-track"><span class="scroll-dot"></span></span>
     </div>
-
-    <div class="hero-orbs" aria-hidden="true">
-      <span class="orb orb--1"></span>
-      <span class="orb orb--2"></span>
-      <span class="orb orb--3"></span>
-    </div>
   </section>
 </template>
 
@@ -224,20 +218,23 @@ watch(() => props.ready, (v) => { if (v) playHero() })
 
 .hero-title-giant {
   font-family: var(--font-serif);
-  font-size: clamp(3rem, 8.2vw, 8rem);
+  font-size: clamp(3.2rem, 8.4vw, 8.2rem);
   font-weight: 300;
-  line-height: 0.92;
-  letter-spacing: -0.01em;
+  line-height: 1.14;
+  letter-spacing: 0.03em;
   max-width: 1400px;
   margin-bottom: 3rem;
-  overflow: hidden;
+  overflow: visible;
 }
-.hero-title-giant :deep(.char) { overflow: hidden; }
+.hero-title-giant :deep(.char) {
+  display: inline-block;
+  will-change: transform, opacity;
+}
 .hero-title-giant .serif-italic {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
+  font-family: var(--font-serif);
   color: var(--c-sand);
-  font-weight: 300;
+  font-weight: 400;
+  letter-spacing: 0.05em;
   margin-left: 0.35rem;
 }
 
@@ -250,18 +247,20 @@ watch(() => props.ready, (v) => { if (v) playHero() })
   align-items: flex-start;
 }
 .manifesto-col {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  line-height: 1.85;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  line-height: 2.0;
   color: var(--c-mist);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
+  font-weight: 300;
 }
 .manifesto-col strong {
+  font-family: var(--font-mono);
   color: var(--c-text);
   display: block;
-  margin-bottom: 0.45rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   font-size: 0.7rem;
 }
@@ -359,12 +358,6 @@ watch(() => props.ready, (v) => { if (v) playHero() })
 }
 .scroll-track { width: 1px; height: 32px; background: rgba(255,255,255,0.12); position: relative; overflow: hidden; }
 .scroll-dot { position: absolute; top: 0; left: 0; width: 100%; height: 12px; background: var(--c-sand); }
-
-.hero-orbs { position: absolute; inset: 0; pointer-events: none; z-index: -1; }
-.orb { position: absolute; border-radius: 50%; filter: blur(32px); opacity: 0.16; }
-.orb--1 { width: 380px; height: 380px; right: -60px; top: 10%; background: radial-gradient(circle, rgba(196,154,143,0.9), transparent 70%); }
-.orb--2 { width: 320px; height: 320px; left: 18%; bottom: 10%; background: radial-gradient(circle, rgba(107,130,148,0.7), transparent 70%); }
-.orb--3 { width: 460px; height: 460px; right: 26%; bottom: -100px; background: radial-gradient(circle, rgba(213,195,178,0.5), transparent 70%); }
 
 @media (max-width: 1024px) {
   .hero-exhibition { padding: 6rem 6vw 3rem; }

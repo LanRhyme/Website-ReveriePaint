@@ -11,10 +11,12 @@
   --c-gold: #bfa37c;
   --border-wire: rgba(255, 255, 255, 0.07);
   --border-light: rgba(255, 255, 255, 0.15);
-  --font-display: "Cinzel", "Cormorant Garamond", serif;
-  --font-serif: "Cormorant Garamond", "Noto Serif SC", serif;
-  --font-sans: "Inter", sans-serif;
-  --font-mono: "Space Mono", monospace;
+  --font-display: "Cormorant Garamond", "Noto Serif SC", "Source Han Serif SC", "Source Han Serif CN", "STSong", "Songti SC", "SimSun", serif;
+  --font-serif: "Cormorant Garamond", "Noto Serif SC", "Source Han Serif SC", "Source Han Serif CN", "STSong", "Songti SC", "SimSun", serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans CN", sans-serif;
+  --font-mono: "Space Mono", "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-features: "cv02", "cv03", "cv04", "cv11", "kern";
+  --font-feature-tabular: "tnum", "cv02", "cv03", "cv04", "cv11";
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
 

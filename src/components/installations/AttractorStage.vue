@@ -180,10 +180,6 @@ onUnmounted(() => {
       <circle cx="250" cy="250" r="4.5" fill="#fff" />
       <circle cx="250" cy="250" r="9" stroke="rgba(255,255,255,0.4)" stroke-width="0.75" stroke-dasharray="2 3" />
     </svg>
-
-    <!-- HUD Telemetry Labels -->
-    <div class="hud-badge hud-top-left">PHASE ATTRACTOR · [dx/dt = σ(y-x)]</div>
-    <div class="hud-badge hud-bottom-right">TEMPORAL PHASE REWIND · 0-LOSS</div>
   </div>
 </template>
 
@@ -195,14 +191,18 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
   perspective: 1000px;
   user-select: none;
+  background: transparent;
+  mask-image: radial-gradient(ellipse 95% 85% at 50% 50%, black 55%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 95% 85% at 50% 50%, black 55%, transparent 100%);
 }
 
 .phase-attractor-svg {
-  width: 90%;
-  height: 90%;
+  width: 95%;
+  height: 95%;
+  overflow: visible;
   transform-style: preserve-3d;
   transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
 }
@@ -210,17 +210,5 @@ onUnmounted(() => {
 .origin-center {
   transform-origin: 250px 250px;
 }
-
-.hud-badge {
-  position: absolute;
-  font-family: var(--font-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
-  color: var(--c-ash);
-  pointer-events: none;
-  text-transform: uppercase;
-}
-.hud-top-left { top: 1.2rem; left: 1.5rem; }
-.hud-bottom-right { bottom: 1.2rem; right: 1.5rem; opacity: 0.7; }
 </style>
 

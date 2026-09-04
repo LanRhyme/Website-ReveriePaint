@@ -68,13 +68,6 @@ onMounted(() => {
         const d = `M 30,${yBase} C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} 570,${endY.toFixed(1)}`
         p.setAttribute('d', d)
       })
-
-      // Update telemetry display dynamically if present
-      const curvatureEl = document.querySelector('.num-curvature-js')
-      if (curvatureEl) {
-        const curv = (0.0034 + Math.sin(ph * 2) * 0.0009 + Math.abs(mouseX - 0.5) * 0.0012).toFixed(4)
-        curvatureEl.textContent = curv
-      }
     }
   })
 
@@ -124,30 +117,31 @@ onUnmounted(() => {
 
 <template>
   <div ref="stageRef" class="topology-stage" @mousemove="onMouseMove" @mouseleave="onMouseLeave">
-    <!-- SVG Vector Field -->
-    <svg class="svg-topology" viewBox="0 0 600 380" fill="none">
+    <!-- SVG Harmonic Topology Field -->
+    <svg class="svg-topology" viewBox="0 0 600 380" fill="none" aria-hidden="true">
       <defs>
         <radialGradient id="topo-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="var(--c-clay)" stop-opacity="0.25" />
-          <stop offset="100%" stop-color="var(--c-clay)" stop-opacity="0" />
+          <stop offset="0%" stop-color="var(--c-clay)" stop-opacity="0.22" />
+          <stop offset="70%" stop-color="var(--c-clay)" stop-opacity="0.05" />
+          <stop offset="100%" stop-color="transparent" stop-opacity="0" />
         </radialGradient>
-        <filter id="glow-blur" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3" result="blur" />
+        <filter id="glow-blur" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3.5" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
       </defs>
 
       <!-- Background Ambient Resonance Glow -->
-      <circle cx="300" cy="190" r="160" fill="url(#topo-glow)" />
+      <circle cx="300" cy="190" r="170" fill="url(#topo-glow)" />
 
       <!-- Dynamic Harmonic Bezier Curves -->
       <g ref="pathsGroupRef" class="topo-paths-layer"></g>
 
       <!-- Precision Tangent Grid Markers -->
-      <g class="telemetry-markers" opacity="0.6">
-        <line x1="30" y1="20" x2="30" y2="360" stroke="rgba(255,255,255,0.08)" stroke-dasharray="2 4" />
-        <line x1="300" y1="20" x2="300" y2="360" stroke="rgba(255,255,255,0.06)" stroke-dasharray="1 5" />
-        <line x1="570" y1="20" x2="570" y2="360" stroke="rgba(255,255,255,0.08)" stroke-dasharray="2 4" />
+      <g class="telemetry-markers" opacity="0.45">
+        <line x1="60" y1="20" x2="60" y2="360" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2 4" />
+        <line x1="300" y1="20" x2="300" y2="360" stroke="rgba(255,255,255,0.05)" stroke-dasharray="1 5" />
+        <line x1="540" y1="20" x2="540" y2="360" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2 4" />
       </g>
 
       <!-- Pressure Vector Keyframe Nodes -->
@@ -155,14 +149,9 @@ onUnmounted(() => {
         <circle class="topo-pulse-node" cx="120" cy="140" r="4" fill="var(--c-clay)" filter="url(#glow-blur)" />
         <circle class="topo-pulse-node" cx="300" cy="200" r="5" fill="var(--c-sand)" filter="url(#glow-blur)" />
         <circle class="topo-pulse-node" cx="480" cy="160" r="3.5" fill="var(--c-slate)" filter="url(#glow-blur)" />
-        
-        <circle cx="300" cy="200" r="14" stroke="var(--c-sand)" stroke-width="0.75" stroke-dasharray="2 3" opacity="0.4" />
+        <circle cx="300" cy="200" r="14" stroke="var(--c-sand)" stroke-width="0.75" stroke-dasharray="2 3" opacity="0.35" />
       </g>
     </svg>
-
-    <!-- Overlay Telemetry Floating Badges -->
-    <div class="field-badge top-left">TANGENT VECTOR [∇f(x,y)]</div>
-    <div class="field-badge bottom-right">HERMITE HARMONIC FIELD · 120 FPS</div>
   </div>
 </template>
 
@@ -174,12 +163,15 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   user-select: none;
+  background: transparent;
+  mask-image: radial-gradient(ellipse 95% 85% at 50% 50%, black 55%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 95% 85% at 50% 50%, black 55%, transparent 100%);
 }
 .svg-topology {
-  width: 92%;
-  height: 92%;
+  width: 100%;
+  height: 100%;
   overflow: visible;
 }
 .topo-paths-layer path {
@@ -188,16 +180,5 @@ onUnmounted(() => {
 .topo-paths-layer path:hover {
   stroke-opacity: 0.9 !important;
 }
-.field-badge {
-  position: absolute;
-  font-family: var(--font-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
-  color: var(--c-ash);
-  pointer-events: none;
-  text-transform: uppercase;
-}
-.top-left { top: 1.2rem; left: 1.5rem; }
-.bottom-right { bottom: 1.2rem; right: 1.5rem; opacity: 0.7; }
 </style>
 

@@ -18,10 +18,22 @@ body {
   background-color: var(--c-bg);
   color: var(--c-text);
   font-family: var(--font-sans);
+  font-feature-settings: var(--font-features);
+  font-optical-sizing: auto;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+  font-weight: 350;
+  letter-spacing: 0.02em;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 ::selection {

@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { wgslVitePlugin } from '@vgpu/wgsl/loader-vite'
 
 export default defineConfig({
   base: '/',
-  plugins: [vue()],
+  plugins: [vue(), wgslVitePlugin()],
   resolve: {
     alias: {
       '@': '/src'

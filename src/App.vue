@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import AppCursor from './components/AppCursor.vue'
 import WebGLBackground from './components/WebGLBackground.vue'
-import GridOverlay from './components/GridOverlay.vue'
+
 import AppHeader from './components/AppHeader.vue'
 import HeroSection from './components/HeroSection.vue'
 import InstallationFrame from './components/InstallationFrame.vue'
@@ -23,7 +23,6 @@ function onLoaded() { loaded.value = true }
   <ScrollProgress />
   <AppCursor />
   <WebGLBackground />
-  <GridOverlay />
   <AppHeader :ready="loaded" />
 
   <main>
@@ -32,11 +31,11 @@ function onLoaded() { loaded.value = true }
     <InstallationFrame
       id="inst-1"
       index="01"
-      title="墨迹拓扑，<em>微分谐振流。</em>"
-      essay="下笔不是坐标的简单连线，而是高阶贝塞尔张力场随硬件压感、倾角与角速度的瞬时微分演化。每一丝游移，皆呈现纯粹的物理美感。"
+      title="Krita 笔刷内核，<em>真实颜料与物理混色。</em>"
+      essay="直接复用 Krita C++ 原生图像处理内核，模拟真实颜料混色与笔触纹理。支持在笔刷工坊中自由调整混色比、动态响应曲线与子帧平滑插值。"
       :specs="[
-        { value: '8192', label: 'Pressure Resolution' },
-        { value: '<span class=\'num-curvature-js\'>0.0034</span>', label: 'Spline Curvature Error' }
+        { value: '240<small>+</small>', label: 'Built-in Presets' },
+        { value: 'Krita C++', label: 'Native Core Engine' }
       ]"
     >
       <TopologyStage />
@@ -45,11 +44,11 @@ function onLoaded() { loaded.value = true }
     <InstallationFrame
       id="inst-2"
       index="02"
-      title="稀疏瓦片，<em>超维空间折叠。</em>"
-      essay="彻底解构传统固定画幅的内存壁垒。按需分配的 64px 稀疏瓦片在三维空间中动态调入调出，赋予创作无垠的图层纵深。"
+      title="稀疏瓦片架构，<em>无限图层与分组。</em>"
+      essay="基于稀疏瓦片内存管理，在移动端大幅面创作中按需分配内存。支持无限图层创建、分组嵌套、剪贴蒙版与 25 种专业混合模式。"
       :specs="[
-        { value: '64<small>PX</small>', label: 'Sparse Tile Unit' },
-        { value: '∞', label: 'Canvas Boundary' }
+        { value: '25<small> 种</small>', label: 'Blend Modes' },
+        { value: 'Unlimited', label: 'Layer Grouping' }
       ]"
     >
       <LatticeStage />
@@ -58,11 +57,11 @@ function onLoaded() { loaded.value = true }
     <InstallationFrame
       id="inst-3"
       index="03"
-      title="光子干涉，<em>莫兰迪色阶。</em>"
-      essay="色彩不再是刺眼的纯色堆砌，而是经由薄膜干涉折射算法过滤后的沉静灰调。在低反差的柔和灰阶中，捕捉光影最微妙的呼吸。"
+      title="莫兰迪配色体系，<em>Material You 动态主题。</em>"
+      essay="采用沉静典雅的莫兰迪低饱和配色，原生支持 Material You 动态莫奈取色与工作区底色定制，让界面隐于创作背景，专注于画布光影。"
       :specs="[
-        { value: '32<small>BIT</small>', label: 'Linear Float Precision' },
-        { value: 'ΔE&lt;0.8', label: 'Color Harmony Index' }
+        { value: 'Monet', label: 'Material You Theme' },
+        { value: 'Morandi', label: 'Color System' }
       ]"
     >
       <PrismStage />
@@ -71,11 +70,11 @@ function onLoaded() { loaded.value = true }
     <InstallationFrame
       id="inst-4"
       index="04"
-      title="时空相图，<em>拓扑事件回溯。</em>"
-      essay="画作的本质是时间的凝固。非破坏性底层历史堆栈以相空间吸引子轨迹精确锚定每一次落笔与擦除，实现真正无损的时序重构。"
+      title="全流程事件录制，<em>独立工程与延时回放。</em>"
+      essay="零性能开销记录笔迹、图层与参数演变全过程。录制数据随 .revp 独立工程文件归档，支持在画廊随时以 0.5x 至 4x 倍速无缝拖拽回放。"
       :specs="[
-        { value: '0<small> LOSS</small>', label: 'Vector Phase Storage' },
-        { value: '.REVP', label: 'Container Architecture' }
+        { value: '.REVP', label: 'Project Archive' },
+        { value: '0.5x–4x', label: 'Timelapse Playback' }
       ]"
     >
       <AttractorStage />

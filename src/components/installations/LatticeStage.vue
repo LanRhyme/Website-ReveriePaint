@@ -142,7 +142,7 @@ onUnmounted(() => {
   <div ref="stageRef" class="lattice-stage" @mousemove="onStageMove" @mouseleave="onStageLeave">
     <!-- Perspective Stage Floor Plane -->
     <div ref="latticeGridRef" class="isometric-lattice-grid">
-      <!-- Underlying Projection Blueprint Mesh -->
+      <!-- Underlying Infinite Projection Blueprint Mesh (Radially Faded) -->
       <div class="blueprint-base" aria-hidden="true"></div>
 
       <!-- 4x4 Sparse Tiles -->
@@ -171,10 +171,6 @@ onUnmounted(() => {
         <span class="tile-depth-shadow"></span>
       </div>
     </div>
-
-    <!-- HUD Telemetry Badges -->
-    <div class="hud-badge hud-top-left">SPARSE TILE POOL · 4×4 OCTREE</div>
-    <div class="hud-badge hud-bottom-right">DYNAMIC ALLOC · ZERO FOOTPRINT</div>
   </div>
 </template>
 
@@ -186,9 +182,10 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   perspective: 1100px;
   user-select: none;
+  background: transparent;
 }
 
 .isometric-lattice-grid {
@@ -202,15 +199,16 @@ onUnmounted(() => {
 
 .blueprint-base {
   position: absolute;
-  inset: -20px;
-  border: 1px dashed rgba(255, 255, 255, 0.1);
+  inset: -80px;
+  border: none;
   background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
   transform: translateZ(-30px);
   pointer-events: none;
-  border-radius: 8px;
+  mask-image: radial-gradient(circle at center, black 35%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at center, black 35%, transparent 75%);
 }
 
 .lattice-tile {
@@ -292,16 +290,6 @@ onUnmounted(() => {
   filter: blur(4px);
 }
 
-.hud-badge {
-  position: absolute;
-  font-family: var(--font-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
-  color: var(--c-ash);
-  pointer-events: none;
-  text-transform: uppercase;
-}
-.hud-top-left { top: 1.2rem; left: 1.5rem; }
-.hud-bottom-right { bottom: 1.2rem; right: 1.5rem; opacity: 0.7; }
+
 </style>
 
