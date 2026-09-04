@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://reveriepaint.lanrhyme.top/sitemap.xml
