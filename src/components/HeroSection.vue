@@ -156,11 +156,11 @@ watch(() => props.ready, (v) => { if (v) playHero() })
     <div class="hero-bottom-manifesto">
       <div class="manifesto-col">
         <strong>内核构型</strong>
-        基于 Krita C++ 经典图像处理管道构建，将工业级多核栅格化算力无损封装于移动手持终端。
+        基于 Krita C++ 经典图像处理管道构建，将工业级多核栅格化算力无损封装于移动手持终端
       </div>
       <div class="manifesto-col">
         <strong>美学准则</strong>
-        摒除冗余工具堆叠，以莫兰迪低饱和光谱与瑞士理性网格重新编排手势与手写笔的灵感流转。
+        摒除冗余工具堆叠，以莫兰迪低饱和光谱与瑞士理性网格重新编排手势与手写笔的灵感流转
       </div>
       <div class="cta-wrap">
         <a ref="btn1Ref" :href="RELEASE_URL" class="pill-btn pill-btn--primary" target="_blank" rel="noopener">

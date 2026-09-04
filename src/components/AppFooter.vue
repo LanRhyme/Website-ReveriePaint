@@ -76,7 +76,7 @@ onMounted(() => {
       <div>
         <h4 class="footer-col-title">About The Philosophy</h4>
         <p class="footer-desc">
-          ReveriePaint 是一场针对移动端数字绘画工具的纯粹主义重构。我们相信工具的终极状态是隐形，让创作者的意念跨越屏幕，直抵艺术本身。
+          ReveriePaint 是一场针对移动端数字绘画工具的纯粹主义重构，我们相信工具的终极状态是隐形，让创作者的意念跨越屏幕，直抵艺术本身
         </p>
       </div>
       <div>
