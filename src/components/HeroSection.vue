@@ -1,15 +1,117 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { gsap } from '../composables/useGsap.js'
 import heroCanvas from '../assets/shots/hero-canvas.webp'
 import heroCanvasSm from '../assets/shots/hero-canvas-sm.webp'
 
 const ready = ref(false)
-onMounted(() => requestAnimationFrame(() => (ready.value = true)))
+const heroRef = ref(null)
+const deviceRef = ref(null)
+const shineRef = ref(null)
+const washRef = ref(null)
+
+const brushCount = ref(0)
+const blendCount = ref(0)
+const filterCount = ref(0)
+
+let deviceQuickToX = null
+let deviceQuickToY = null
+
+function onHeroMouseMove(e) {
+  if (!deviceRef.value || !heroRef.value) return
+  const rect = heroRef.value.getBoundingClientRect()
+  const x = (e.clientX - rect.left) / rect.width - 0.5
+  const y = (e.clientY - rect.top) / rect.height - 0.5
+
+  if (deviceQuickToX && deviceQuickToY) {
+    deviceQuickToX(x * 10)
+    deviceQuickToY(-y * 10)
+  }
+
+  if (shineRef.value) {
+    const shineX = Math.round(((e.clientX - rect.left) / rect.width) * 100)
+    const shineY = Math.round(((e.clientY - rect.top) / rect.height) * 100)
+    shineRef.value.style.background = `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255, 255, 255, 0.18) 0%, transparent 62%)`
+  }
+}
+
+function onHeroMouseLeave() {
+  if (deviceQuickToX && deviceQuickToY) {
+    deviceQuickToX(0)
+    deviceQuickToY(0)
+  }
+  if (shineRef.value) {
+    shineRef.value.style.background = 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 62%)'
+  }
+}
+
+function onBtnMouseMove(e) {
+  const btn = e.currentTarget
+  const rect = btn.getBoundingClientRect()
+  const dx = e.clientX - rect.left - rect.width / 2
+  const dy = e.clientY - rect.top - rect.height / 2
+  gsap.to(btn, { x: dx * 0.22, y: dy * 0.22 - 2, duration: 0.3, ease: 'power1.out' })
+}
+
+function onBtnMouseLeave(e) {
+  gsap.to(e.currentTarget, { x: 0, y: 0, duration: 0.55, ease: 'elastic.out(1, 0.45)' })
+}
+
+onMounted(() => {
+  requestAnimationFrame(() => (ready.value = true))
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  if (!reduceMotion && deviceRef.value) {
+    deviceQuickToX = gsap.quickTo(deviceRef.value, 'rotationY', { duration: 0.7, ease: 'power2.out' })
+    deviceQuickToY = gsap.quickTo(deviceRef.value, 'rotationX', { duration: 0.7, ease: 'power2.out' })
+    gsap.set(deviceRef.value, { transformPerspective: 1100, transformStyle: 'preserve-3d' })
+
+    if (washRef.value) {
+      gsap.to(washRef.value, {
+        scale: 1.06,
+        rotation: 2.5,
+        duration: 9,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut'
+      })
+    }
+  }
+
+  if (reduceMotion) {
+    brushCount.value = 240
+    blendCount.value = 25
+    filterCount.value = 35
+  } else {
+    const obj = { b: 0, l: 0, f: 0 }
+    gsap.to(obj, {
+      b: 240,
+      l: 25,
+      f: 35,
+      duration: 1.8,
+      delay: 0.35,
+      ease: 'power2.out',
+      onUpdate() {
+        brushCount.value = Math.round(obj.b)
+        blendCount.value = Math.round(obj.l)
+        filterCount.value = Math.round(obj.f)
+      }
+    })
+  }
+})
 </script>
 
 <template>
-  <section id="top" class="hero" :class="{ ready }">
-    <div class="hero-wash" aria-hidden="true"></div>
+  <section
+    id="top"
+    ref="heroRef"
+    class="hero"
+    :class="{ ready }"
+    @mousemove="onHeroMouseMove"
+    @mouseleave="onHeroMouseLeave"
+  >
+    <div ref="washRef" class="hero-wash" aria-hidden="true"></div>
 
     <div class="shell hero-grid">
       <!-- 左：文案 -->
@@ -34,6 +136,8 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
             href="https://github.com/LanRhyme/ReveriePaint/releases"
             target="_blank"
             rel="noopener"
+            @mousemove="onBtnMouseMove"
+            @mouseleave="onBtnMouseLeave"
           >
             下载 APK
           </a>
@@ -42,6 +146,8 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
             href="https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android"
             target="_blank"
             rel="noopener"
+            @mousemove="onBtnMouseMove"
+            @mouseleave="onBtnMouseLeave"
           >
             Mirror酱 高速下载
           </a>
@@ -50,6 +156,8 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
             href="https://github.com/LanRhyme/ReveriePaint"
             target="_blank"
             rel="noopener"
+            @mousemove="onBtnMouseMove"
+            @mouseleave="onBtnMouseLeave"
           >
             查看源码
           </a>
@@ -57,15 +165,15 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 
         <dl class="hero-facts">
           <div>
-            <dt>240+</dt>
+            <dt>{{ brushCount }}+</dt>
             <dd>官方物理笔刷</dd>
           </div>
           <div>
-            <dt>25 种</dt>
+            <dt>{{ blendCount }} 种</dt>
             <dd>图层混合模式</dd>
           </div>
           <div>
-            <dt>35 种</dt>
+            <dt>{{ filterCount }} 种</dt>
             <dd>无损实时滤镜</dd>
           </div>
           <div>
@@ -77,8 +185,9 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 
       <!-- 右：设备框 -->
       <div class="hero-device">
-        <div class="device">
+        <div ref="deviceRef" class="device">
           <div class="device-screen">
+            <div ref="shineRef" class="device-shine" aria-hidden="true"></div>
             <img
               :src="heroCanvas"
               :srcset="`${heroCanvasSm} 1000w, ${heroCanvas} 2000w`"
@@ -193,8 +302,8 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   font-weight: 500;
   padding: 13px 26px;
   border-radius: 999px;
-  transition: transform 0.35s var(--ease-out-expo), background 0.3s, border-color 0.3s,
-    box-shadow 0.35s;
+  will-change: transform;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.35s;
 }
 .btn-primary {
   background: var(--ink);
@@ -203,7 +312,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 }
 .btn-primary:hover {
   background: var(--ink-soft);
-  transform: translateY(-2px);
   box-shadow: var(--shadow-l);
 }
 .btn-secondary {
@@ -214,7 +322,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 .btn-secondary:hover {
   background: rgba(20, 22, 26, 0.09);
   border-color: var(--ink);
-  transform: translateY(-2px);
 }
 .btn-ghost {
   color: var(--ink);
@@ -223,7 +330,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 }
 .btn-ghost:hover {
   border-color: var(--ink);
-  transform: translateY(-2px);
 }
 
 .hero-facts {
@@ -255,6 +361,7 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 .hero-device {
   position: relative;
   opacity: 0;
+  perspective: 1100px;
 }
 .ready .hero-device {
   animation: heroRise 1.2s var(--ease-out-expo) 0.2s forwards;
@@ -270,6 +377,8 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
     0 2px 3px rgba(20, 22, 26, 0.14),
     0 18px 40px rgba(20, 22, 26, 0.2),
     0 44px 90px rgba(20, 22, 26, 0.16);
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 /* 屏幕外圈高光，做出金属收边 */
 .device::after {
@@ -287,6 +396,16 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   overflow: hidden;
   background: #eceae6;
   aspect-ratio: 16 / 10;
+}
+.device-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 62%);
+  transition: background 0.12s ease-out;
+  mix-blend-mode: overlay;
 }
 .device-screen img {
   width: 100%;

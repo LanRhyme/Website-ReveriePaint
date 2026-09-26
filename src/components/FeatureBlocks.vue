@@ -1,4 +1,6 @@
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { gsap } from '../composables/useGsap.js'
 import brushBench from '../assets/shots/ui-brush-bench.webp'
 import penSettings from '../assets/shots/ui-pen-settings.webp'
 import filters from '../assets/shots/ui-filters.webp'
@@ -64,10 +66,104 @@ const pills = [
   { img: blend, title: '25 种混合模式', desc: '正片叠底、滤色、叠加、柔光、强光、颜色减淡等完整支持，图层效果直观可视' },
   { img: toolbar, title: '自由定制工具栏', desc: '按个人绘画习惯随心布置 28 个常用工具位，画布界面干净纯粹' }
 ]
+
+const sectionRef = ref(null)
+let ctx = null
+
+function onMediaMouseMove(e) {
+  const card = e.currentTarget
+  const rect = card.getBoundingClientRect()
+  const x = (e.clientX - rect.left) / rect.width - 0.5
+  const y = (e.clientY - rect.top) / rect.height - 0.5
+  gsap.to(card, {
+    rotationY: x * 6,
+    rotationX: -y * 6,
+    duration: 0.45,
+    ease: 'power2.out',
+    transformPerspective: 1000
+  })
+}
+
+function onMediaMouseLeave(e) {
+  gsap.to(e.currentTarget, {
+    rotationY: 0,
+    rotationX: 0,
+    duration: 0.6,
+    ease: 'power2.out'
+  })
+}
+
+onMounted(() => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduce || !sectionRef.value) return
+
+  ctx = gsap.context(() => {
+    // 媒体卡片视差位移
+    const blockEls = sectionRef.value.querySelectorAll('.block')
+    blockEls.forEach((block) => {
+      const img = block.querySelector('.block-media img')
+      if (img) {
+        gsap.fromTo(
+          img,
+          { yPercent: -5, scale: 1.04 },
+          {
+            yPercent: 5,
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: block,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.2
+            }
+          }
+        )
+      }
+
+      // 核心卖点逐条阶梯出现
+      const points = block.querySelectorAll('.block-points li')
+      if (points.length) {
+        gsap.from(points, {
+          opacity: 0,
+          x: -12,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: block,
+            start: 'top 78%',
+            toggleActions: 'play none none none'
+          }
+        })
+      }
+    })
+
+    // 三张并列卡片阶梯出场
+    const pillEls = sectionRef.value.querySelectorAll('.pill')
+    if (pillEls.length) {
+      gsap.from(pillEls, {
+        opacity: 0,
+        y: 26,
+        duration: 0.75,
+        stagger: 0.12,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionRef.value.querySelector('.pills'),
+          start: 'top 84%',
+          toggleActions: 'play none none none'
+        }
+      })
+    }
+  }, sectionRef.value)
+})
+
+onUnmounted(() => {
+  ctx?.revert()
+})
 </script>
 
 <template>
-  <section id="features" class="features">
+  <section id="features" ref="sectionRef" class="features">
     <div class="shell">
       <header class="sec-head reveal">
         <p class="eyebrow">核心特性</p>
@@ -85,7 +181,11 @@ const pills = [
           class="block reveal"
           :class="{ 'is-flip': b.flip }"
         >
-          <div class="block-media">
+          <div
+            class="block-media"
+            @mousemove="onMediaMouseMove"
+            @mouseleave="onMediaMouseLeave"
+          >
             <img :src="b.img" :alt="b.alt" loading="lazy" decoding="async" />
           </div>
 
@@ -102,7 +202,7 @@ const pills = [
 
       <!-- ── 三张并列 ───────────────────────── -->
       <div class="pills">
-        <article v-for="(p, i) in pills" :key="p.title" class="pill reveal" :style="{ transitionDelay: `${i * 70}ms` }">
+        <article v-for="p in pills" :key="p.title" class="pill">
           <div class="pill-shot">
             <img :src="p.img" :alt="`${p.title} 界面`" loading="lazy" decoding="async" />
           </div>
@@ -156,11 +256,18 @@ const pills = [
   background: var(--ui-900);
   border: 1px solid rgba(20, 22, 26, 0.14);
   box-shadow: var(--shadow-l);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: box-shadow 0.4s var(--ease-out-expo);
+}
+.block-media:hover {
+  box-shadow: var(--shadow-xl);
 }
 .block-media img {
   width: 100%;
   height: auto;
   display: block;
+  will-change: transform;
 }
 
 /* 文案一侧 */

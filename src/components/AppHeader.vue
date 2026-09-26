@@ -1,5 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { getLenis } from '../composables/useLenis.js'
+import { gsap } from '../composables/useGsap.js'
 
 const isScrolled = ref(false)
 
@@ -15,10 +17,28 @@ function onScroll() {
 }
 
 function goTo(id) {
-  const el = document.getElementById(id)
+  const el = id === 'top' ? document.body : document.getElementById(id)
   if (!el) return
-  const top = el.getBoundingClientRect().top + window.scrollY - 76
-  window.scrollTo({ top, behavior: 'smooth' })
+  const lenis = getLenis()
+  const offset = id === 'top' ? 0 : -72
+  if (lenis) {
+    lenis.scrollTo(el, { offset, duration: 1.15 })
+  } else {
+    const top = el.getBoundingClientRect().top + window.scrollY + offset
+    window.scrollTo({ top, behavior: 'smooth' })
+  }
+}
+
+function onCtaMouseMove(e) {
+  const btn = e.currentTarget
+  const rect = btn.getBoundingClientRect()
+  const dx = e.clientX - rect.left - rect.width / 2
+  const dy = e.clientY - rect.top - rect.height / 2
+  gsap.to(btn, { x: dx * 0.2, y: dy * 0.2 - 1, duration: 0.25, ease: 'power1.out' })
+}
+
+function onCtaMouseLeave(e) {
+  gsap.to(e.currentTarget, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' })
 }
 
 onMounted(() => {
@@ -56,6 +76,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         href="https://github.com/LanRhyme/ReveriePaint/releases"
         target="_blank"
         rel="noopener"
+        @mousemove="onCtaMouseMove"
+        @mouseleave="onCtaMouseLeave"
       >
         <span>下载</span>
         <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
@@ -153,11 +175,11 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   background: var(--ink);
   padding: 9px 17px;
   border-radius: 999px;
-  transition: transform 0.3s var(--ease-out-expo), background 0.3s;
+  will-change: transform;
+  transition: background 0.3s;
 }
 .cta:hover {
   background: var(--ink-soft);
-  transform: translateY(-1px);
 }
 .cta svg {
   transition: transform 0.3s var(--ease-out-expo);

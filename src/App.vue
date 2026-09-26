@@ -8,8 +8,12 @@ import OriginStory from './components/OriginStory.vue'
 import GetSection from './components/GetSection.vue'
 import AppFooter from './components/AppFooter.vue'
 import { initReveal } from './composables/useReveal.js'
+import { initGsapScroll } from './composables/useGsap.js'
 
-onMounted(() => initReveal())
+onMounted(() => {
+  initReveal()
+  initGsapScroll()
+})
 </script>
 
 <template>

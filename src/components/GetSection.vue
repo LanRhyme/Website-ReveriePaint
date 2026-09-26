@@ -1,13 +1,36 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { gsap } from '../composables/useGsap.js'
 
 const copied = ref(false)
-function copyQQ() {
+const getRef = ref(null)
+let ctx = null
+
+function copyQQ(e) {
   if (navigator?.clipboard?.writeText) {
     navigator.clipboard.writeText('729283213')
     copied.value = true
+    if (e?.currentTarget) {
+      gsap.fromTo(
+        e.currentTarget,
+        { scale: 0.92 },
+        { scale: 1, duration: 0.4, ease: 'back.out(2.5)' }
+      )
+    }
     setTimeout(() => (copied.value = false), 2200)
   }
+}
+
+function onMagneticMouseMove(e) {
+  const btn = e.currentTarget
+  const rect = btn.getBoundingClientRect()
+  const dx = e.clientX - rect.left - rect.width / 2
+  const dy = e.clientY - rect.top - rect.height / 2
+  gsap.to(btn, { x: dx * 0.18, y: dy * 0.18, duration: 0.3, ease: 'power1.out' })
+}
+
+function onMagneticMouseLeave(e) {
+  gsap.to(e.currentTarget, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' })
 }
 
 const meta = [
@@ -46,10 +69,37 @@ const ways = [
     primary: false
   }
 ]
+
+onMounted(() => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduce || !getRef.value) return
+
+  ctx = gsap.context(() => {
+    const metaItems = getRef.value.querySelectorAll('.meta-item')
+    if (metaItems.length) {
+      gsap.from(metaItems, {
+        opacity: 0,
+        y: 16,
+        duration: 0.55,
+        stagger: 0.07,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: getRef.value.querySelector('.meta'),
+          start: 'top 88%',
+          toggleActions: 'play none none none'
+        }
+      })
+    }
+  }, getRef.value)
+})
+
+onUnmounted(() => {
+  ctx?.revert()
+})
 </script>
 
 <template>
-  <section id="get" class="get">
+  <section id="get" ref="getRef" class="get">
     <div class="shell">
       <header class="sec-head reveal">
         <p class="eyebrow">获取应用</p>
@@ -78,7 +128,9 @@ const ways = [
               v-if="w.isQQ"
               type="button"
               class="way-cta cta-copy"
-              @click="copyQQ"
+              @click="copyQQ($event)"
+              @mousemove="onMagneticMouseMove"
+              @mouseleave="onMagneticMouseLeave"
             >
               {{ copied ? '已复制群号 729283213' : '复制群号: 729283213' }}
               <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
@@ -94,6 +146,8 @@ const ways = [
               :class="{ 'cta-solid': l.primary }"
               target="_blank"
               rel="noopener"
+              @mousemove="onMagneticMouseMove"
+              @mouseleave="onMagneticMouseLeave"
             >
               {{ l.text }}
               <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
@@ -202,7 +256,8 @@ const ways = [
   border-radius: 999px;
   background: rgba(20, 22, 26, 0.05);
   border: 1px solid var(--line);
-  transition: transform 0.25s var(--ease-out-expo), background 0.25s, border-color 0.25s;
+  will-change: transform;
+  transition: background 0.25s, border-color 0.25s;
 }
 button.way-cta {
   font-family: inherit;
@@ -214,7 +269,6 @@ button.way-cta {
 .way-cta:hover {
   background: rgba(20, 22, 26, 0.09);
   border-color: var(--ink);
-  transform: translateY(-1px);
 }
 .way-cta:hover svg {
   transform: translate(2px, -2px);

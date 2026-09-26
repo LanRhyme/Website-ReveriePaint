@@ -1,4 +1,7 @@
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { gsap } from '../composables/useGsap.js'
+
 const pillars = [
   {
     num: '01',
@@ -16,10 +19,42 @@ const pillars = [
     desc: '基于 GPL-3.0 协议全量开源。自研 .revp 独立工程与笔迹事件流开放归档，代码属于全球创作者社区，永不设限、永不捆绑。'
   }
 ]
+
+const originRef = ref(null)
+let ctx = null
+
+onMounted(() => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduce || !originRef.value) return
+
+  ctx = gsap.context(() => {
+    const rule = originRef.value.querySelector('.note-rule')
+    if (rule) {
+      gsap.fromTo(
+        rule,
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: rule,
+            start: 'top 90%',
+            toggleActions: 'play none none none'
+          }
+        }
+      )
+    }
+  }, originRef.value)
+})
+
+onUnmounted(() => {
+  ctx?.revert()
+})
 </script>
 
 <template>
-  <section id="origin" class="origin">
+  <section id="origin" ref="originRef" class="origin">
     <div class="shell">
       <header class="sec-head reveal">
         <p class="eyebrow">设计理念</p>
@@ -91,6 +126,11 @@ const pillars = [
   box-shadow: var(--shadow-m);
   border-color: var(--line);
 }
+.pillar-card:hover .card-bar {
+  width: 48px;
+  opacity: 0.8;
+  background: var(--ink);
+}
 
 .card-top {
   display: flex;
@@ -110,6 +150,7 @@ const pillars = [
   height: 2px;
   background: var(--line-strong);
   opacity: 0.4;
+  transition: width 0.35s var(--ease-out-expo), background 0.35s, opacity 0.35s;
 }
 
 .pillar-title {
@@ -139,6 +180,8 @@ const pillars = [
   width: 48px;
   height: 2px;
   background: var(--ink);
+  transform-origin: left;
+  will-change: transform;
 }
 .origin-note p {
   font-size: clamp(1.0625rem, 1.6vw, 1.25rem);

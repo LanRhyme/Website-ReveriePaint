@@ -1,4 +1,6 @@
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { gsap } from '../composables/useGsap.js'
 import wheel from '../assets/shots/ui-wheel.webp'
 import harmony from '../assets/shots/harmony.webp'
 import sphere3d from '../assets/shots/ui-sphere3d.webp'
@@ -60,10 +62,63 @@ const specs = [
     desc: '基于 .revp 独立工程文件打包归档，支持多档后台静默自动保存与意外恢复机制，离线可用且不收集任何数据'
   }
 ]
+
+const toolkitRef = ref(null)
+let ctx = null
+
+function onCardMouseMove(e) {
+  const card = e.currentTarget
+  const rect = card.getBoundingClientRect()
+  const x = (e.clientX - rect.left) / rect.width - 0.5
+  const y = (e.clientY - rect.top) / rect.height - 0.5
+  gsap.to(card, {
+    rotationY: x * 7,
+    rotationX: -y * 7,
+    duration: 0.4,
+    ease: 'power2.out',
+    transformPerspective: 900
+  })
+}
+
+function onCardMouseLeave(e) {
+  gsap.to(e.currentTarget, {
+    rotationY: 0,
+    rotationX: 0,
+    duration: 0.55,
+    ease: 'power2.out'
+  })
+}
+
+onMounted(() => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduce || !toolkitRef.value) return
+
+  ctx = gsap.context(() => {
+    const items = toolkitRef.value.querySelectorAll('.rest-item')
+    if (items.length) {
+      gsap.from(items, {
+        opacity: 0,
+        y: 20,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: toolkitRef.value.querySelector('.rest-list'),
+          start: 'top 86%',
+          toggleActions: 'play none none none'
+        }
+      })
+    }
+  }, toolkitRef.value)
+})
+
+onUnmounted(() => {
+  ctx?.revert()
+})
 </script>
 
 <template>
-  <section id="toolkit" class="toolkit">
+  <section id="toolkit" ref="toolkitRef" class="toolkit">
     <div class="shell">
       <header class="sec-head reveal">
         <p class="eyebrow">色彩工坊</p>
@@ -78,7 +133,11 @@ const specs = [
           class="c-item reveal"
           :style="{ transitionDelay: `${i * 70}ms` }"
         >
-          <div class="c-shot">
+          <div
+            class="c-shot"
+            @mousemove="onCardMouseMove"
+            @mouseleave="onCardMouseLeave"
+          >
             <img :src="c.shot" :alt="c.alt" loading="lazy" decoding="async" />
           </div>
           <figcaption>
@@ -129,6 +188,12 @@ const specs = [
   border: 1px solid rgba(20, 22, 26, 0.14);
   box-shadow: var(--shadow-m);
   aspect-ratio: 3 / 4.2;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: box-shadow 0.4s var(--ease-out-expo);
+}
+.c-item:hover .c-shot {
+  box-shadow: var(--shadow-l);
 }
 .c-shot img {
   width: 100%;
@@ -184,6 +249,11 @@ const specs = [
   display: flex;
   flex-direction: column;
   gap: 10px;
+  transition: background 0.35s ease, transform 0.35s var(--ease-out-expo);
+}
+.rest-item:hover {
+  background: rgba(255, 255, 255, 0.85);
+  transform: translateY(-2px);
 }
 .rest-item h4 {
   font-size: 0.9375rem;
