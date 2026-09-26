@@ -1,27 +1,18 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { wgslVitePlugin } from '@vgpu/wgsl/loader-vite'
 
 export default defineConfig({
   base: '/',
-  plugins: [vue(), wgslVitePlugin()],
+  plugins: [vue()],
   resolve: {
     alias: {
       '@': '/src'
     }
   },
   build: {
-    target: 'esnext',
+    target: 'es2020',
     cssCodeSplit: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'three': ['three'],
-          'vue-vendor': ['vue'],
-          'lenis': ['lenis']
-        }
-      }
-    }
+    assetsInlineLimit: 0
   },
   server: {
     port: 5173,

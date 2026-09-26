@@ -1,38 +1,62 @@
 :root {
-  --c-bg: #0b0c0e;
-  --c-ink: #14161a;
-  --c-ash: #4a525a;
-  --c-mist: #8a949e;
-  --c-text: #eceeed;
-  --c-sand: #d5c3b2;
-  --c-clay: #c49a8f;
-  --c-pine: #7f9485;
-  --c-slate: #6b8294;
-  --c-gold: #bfa37c;
-  --border-wire: rgba(255, 255, 255, 0.07);
-  --border-light: rgba(255, 255, 255, 0.15);
-  --font-display: "Cormorant Garamond", "Noto Serif SC", "Source Han Serif SC", "Source Han Serif CN", "STSong", "Songti SC", "SimSun", serif;
-  --font-serif: "Cormorant Garamond", "Noto Serif SC", "Source Han Serif SC", "Source Han Serif CN", "STSong", "Songti SC", "SimSun", serif;
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans CN", sans-serif;
-  --font-mono: "Space Mono", "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --font-features: "cv02", "cv03", "cv04", "cv11", "kern";
-  --font-feature-tabular: "tnum", "cv02", "cv03", "cv04", "cv11";
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+  /* ── 画布纸感底 ───────────────────────────── */
+  --paper: #f5f2ec;
+  --paper-warm: #efeae1;
+  --paper-deep: #e6e0d5;
+  --card: #fdfcfa;
 
-  /* 参考设计莫兰迪新体系：柔和纸感、低饱和五色 */
-  --ip-ink: #16130f;
-  --ip-ink2: #1d1913;
-  --ip-ink3: #26211a;
-  --ip-cream: #ece6d8;
-  --ip-cream-dim: #a9a391;
-  --ip-cream-40: rgba(236, 230, 216, 0.42);
-  --ip-hairline: rgba(236, 230, 216, 0.09);
-  --ip-moss: #9da98e;
-  --ip-bean: #c3a39e;
-  --ip-haze: #8fa3b4;
-  --ip-sand: #c8b48d;
-  --ip-mauve: #a79bb6;
-  --ip-clay: #b08a75;
+  /* ── 墨色（渐层文字与结构线） ──────────────── */
+  --ink: #14161a;
+  --ink-soft: #2b2f36;
+  --ink-mid: #5d646e;
+  --ink-soft-2: #8d949e;
+  --ink-ghost: #b8bcc2;
+
+  /* ── 界面深灰（对齐 app 自身的暗色 UI） ────── */
+  --ui-900: #17191c;
+  --ui-800: #1e2126;
+  --ui-700: #262a2f;
+  --ui-600: #32373d;
+  --ui-line: rgba(255, 255, 255, 0.08);
+  --ui-text: #e8e9ea;
+  --ui-text-dim: #9aa0a7;
+
+  /* ── 界面强调色（截图里出现的那个蓝） ──────── */
+  --accent: #5b7fc7;
+  --accent-deep: #46689f;
+
+  /* ── 莫兰迪点缀 ───────────────────────────── */
+  --moss: #9da98e;
+  --bean: #c3a39e;
+  --haze: #8fa3b4;
+  --sand: #c8b48d;
+  --mauve: #a79bb6;
+  --clay: #b08a75;
+
+  /* ── 边框 ─────────────────────────────────── */
+  --line: rgba(20, 22, 26, 0.1);
+  --line-strong: rgba(20, 22, 26, 0.18);
+  --line-faint: rgba(20, 22, 26, 0.055);
+
+  /* ── 字体 ─────────────────────────────────── */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans CN", sans-serif;
+  --font-serif: "Noto Serif SC", "Source Han Serif SC", "Source Han Serif CN", "Songti SC",
+    "STSong", ui-serif, serif;
+  --font-mono: "Space Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  --font-features: "cv02", "cv03", "cv04", "cv11", "kern";
+
+  /* ── 缓动 ─────────────────────────────────── */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ── 阴影 ─────────────────────────────────── */
+  --shadow-s: 0 1px 2px rgba(20, 22, 26, 0.05), 0 2px 8px rgba(20, 22, 26, 0.04);
+  --shadow-m: 0 2px 6px rgba(20, 22, 26, 0.06), 0 12px 32px rgba(20, 22, 26, 0.07);
+  --shadow-l: 0 4px 14px rgba(20, 22, 26, 0.08), 0 28px 70px rgba(20, 22, 26, 0.12);
+
+  /* ── 版心 ─────────────────────────────────── */
+  --shell: 1200px;
+  --gutter: clamp(20px, 5vw, 64px);
 }

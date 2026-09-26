@@ -11,12 +11,12 @@
 html {
   scroll-behavior: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--c-ash) transparent;
+  scrollbar-color: var(--ink-ghost) transparent;
 }
 
 body {
-  background-color: var(--c-bg);
-  color: var(--c-text);
+  background-color: var(--paper);
+  color: var(--ink);
   font-family: var(--font-sans);
   font-feature-settings: var(--font-features);
   font-optical-sizing: auto;
@@ -28,20 +28,30 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
-  font-weight: 350;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  letter-spacing: -0.015em;
 }
 
 p {
   text-wrap: pretty;
 }
 
-::selection {
-  background: var(--c-clay);
-  color: #fff;
+img {
+  display: block;
+  max-width: 100%;
 }
 
-/* Lenis 官方推荐 reset：避免与原生 smooth 冲突，防止滚动高度重复计算导致“页面重复两遍” */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ── Lenis reset ────────────────────────────────── */
 html.lenis,
 html.lenis body {
   height: auto;
@@ -58,102 +68,137 @@ html.lenis body {
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
-
-/* lenis 生效时禁用原生 smooth，由 Lenis 接管 */
 html.lenis {
   scroll-behavior: auto;
 }
 
-/* hide native cursor only on fine-pointer devices where custom cursor is active */
-@media (pointer: fine) {
-  body.has-custom-cursor,
-  body.has-custom-cursor * {
-    cursor: none !important;
-  }
-}
-
-/* focus visible for a11y */
+/* ── 可访问性：焦点环 ───────────────────────────── */
 a:focus-visible,
 button:focus-visible {
-  outline: 1px solid var(--c-gold);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
+  border-radius: 2px;
 }
 
-/* reduce motion */
+/* ── 减少动态效果 ───────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-  html {
-    scroll-behavior: auto;
+    scroll-behavior: auto !important;
   }
 }
 
-/* scrollbar */
+/* ── 滚动条 ─────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--c-ash);
+  background: var(--ink-ghost);
+  border: 3px solid var(--paper);
   border-radius: 999px;
 }
-
-/* 防止移动端 100vh 抖动与超长空白：统一使用 dvh 回退 */
-@supports (height: 100dvh) {
-  .hero-exhibition {
-    min-height: 100dvh;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-soft-2);
 }
 
-/* 移动端触摸优化 */
-@media (pointer: coarse) {
-  body.has-custom-cursor,
-  body.has-custom-cursor * {
-    cursor: auto !important;
-  }
+/* ════════════════════════════════════════════════
+   共用工具类
+   ════════════════════════════════════════════════ */
+
+/* 版心容器 */
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 
-/* === 参考设计通用工具类 === */
-/* 细分隔线 */
-.hairline {
-  border-color: var(--ip-hairline);
+/* 章节大标题 */
+.h-display {
+  font-size: clamp(2rem, 5.4vw, 3.75rem);
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+  font-weight: 500;
 }
-/* 小号大写标签：索引/编号/坐标感 */
-.label-caps {
+
+.h-section {
+  font-size: clamp(1.5rem, 3.2vw, 2.25rem);
+  line-height: 1.25;
+  letter-spacing: -0.022em;
+  font-weight: 500;
+}
+
+/* 等宽小标签 */
+.eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.42em;
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ip-cream-40);
+  color: var(--ink-soft-2);
 }
-/* 标题浅渐变：米白→暗褐，背景裁切透明字 */
-.text-veil {
-  background: linear-gradient(180deg, #f4efe2 0%, #efe9da 42%, #b5ad99 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+
+/* 正文段落 */
+.lede {
+  font-size: clamp(1rem, 1.5vw, 1.1875rem);
+  line-height: 1.85;
+  color: var(--ink-mid);
 }
-/* 竖排文字 */
-.v-text {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
+
+/* 衬线引文（用于叙事段落，呼应手绘草稿的气质） */
+.quote-serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.005em;
 }
-/* 胶片噪点层（feTurbulence） */
-.noise {
+
+/* 细分隔线 */
+.rule {
+  height: 1px;
+  background: var(--line-faint);
+  border: 0;
+}
+
+/* 铅笔排线纹理（手绘感底纹） */
+.sketch-tex {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 160px 160px;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  mix-blend-mode: multiply;
+}
+
+/* 入场动画基类：由 IntersectionObserver 添加 .is-in */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.72s var(--ease-out-expo), transform 0.72s var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* 屏幕阅读器可见 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

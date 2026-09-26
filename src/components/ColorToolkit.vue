@@ -1,0 +1,214 @@
+<script setup>
+import wheel from '../assets/shots/ui-wheel.webp'
+import harmony from '../assets/shots/harmony.webp'
+import sphere3d from '../assets/shots/ui-sphere3d.webp'
+import palette from '../assets/shots/ui-palette.webp'
+
+/**
+ * 色彩体系与全架构特性矩阵
+ */
+const colors = [
+  {
+    shot: wheel,
+    title: 'SAI 经典 V-HSV 色轮',
+    desc: '还原 PaintTool SAI 标志性的取色模式：外侧色相环取色，内侧方形区域精准调节饱和度与明度，支持滑杆数值精确微调。',
+    alt: 'PaintTool SAI 经典 V-HSV 色轮，色相环搭配方形饱和明度区域与 H/S/V 滑杆'
+  },
+  {
+    shot: harmony,
+    title: '色彩调和助手',
+    desc: '内置互补色、分裂互补、类似色、三等分等色彩理论法则，在色环上智能标定关联色彩，一键归档至工程色卡。',
+    alt: '和谐色轮，在色环上渲染出关联色点'
+  },
+  {
+    shot: sphere3d,
+    title: '3D 光影受光球',
+    desc: '模拟球体物理受光环境，拖曳光源光标即可即时提取受光点的高光、固有色、明暗交界与环境反光暗部。',
+    alt: '3D 光影球取色面板，球体上指示受光点，标出高光、固有色与暗部'
+  },
+  {
+    shot: palette,
+    title: '智能色卡与图片拾色',
+    desc: '内置基础调色板与莫兰迪精选色系，支持直接从导入的参考图片中批量提炼高质感专属色板。',
+    alt: '色卡面板，含基本色、莫兰迪配色与从图片提取的色卡'
+  }
+]
+
+const specs = [
+  {
+    title: '图层与图层组管理',
+    desc: '动态稀疏瓦片内存管理，百层大画布轻盈顺畅；支持图层组嵌套折叠、剪贴蒙版、Alpha 锁定与 25 种混合模式'
+  },
+  {
+    title: '动画与悬浮创作辅助',
+    desc: '内置逐帧手绘动画时间轴与洋葱皮透视辅助；支持画布悬浮参考窗、自由双指视口变换与无损高精度裁剪'
+  },
+  {
+    title: '全流程事件流延时摄影',
+    desc: '零性能额外损耗记录所有笔迹、图层演变与滤镜变迁；随 .revp 独立工程文件完整归档，支持 0.5x–4x 倍速无缝拖动回放'
+  },
+  {
+    title: '纸感触觉与莫兰迪美学',
+    desc: '集成真实纸张微摩擦音效与手写笔震动反馈；原生支持 Material You 动态取色与自由工作区底色定制'
+  },
+  {
+    title: '触控手势与视口变换',
+    desc: '双指捏合流畅平移、缩放与任意角度旋转画布；双指点击撤销、三指点击重做与长按快捷吸色，丝滑跟手'
+  },
+  {
+    title: '独立工程与离线安全',
+    desc: '基于 .revp 独立工程文件打包归档，支持多档后台静默自动保存与意外恢复机制，离线可用且不收集任何数据'
+  }
+]
+</script>
+
+<template>
+  <section id="toolkit" class="toolkit">
+    <div class="shell">
+      <header class="sec-head reveal">
+        <p class="eyebrow">色彩工坊</p>
+        <h2 class="h-section">契合专业画师直觉的色彩体系</h2>
+      </header>
+
+      <!-- ── 色彩四图 ───────────────────────── -->
+      <div class="color-row">
+        <figure
+          v-for="(c, i) in colors"
+          :key="c.title"
+          class="c-item reveal"
+          :style="{ transitionDelay: `${i * 70}ms` }"
+        >
+          <div class="c-shot">
+            <img :src="c.shot" :alt="c.alt" loading="lazy" decoding="async" />
+          </div>
+          <figcaption>
+            <h3>{{ c.title }}</h3>
+            <p>{{ c.desc }}</p>
+          </figcaption>
+        </figure>
+      </div>
+
+      <!-- ── 全架构特性矩阵 ──────────────────── -->
+      <div class="rest reveal">
+        <p class="eyebrow">架构特性矩阵</p>
+        <div class="rest-list">
+          <div v-for="s in specs" :key="s.title" class="rest-item">
+            <h4>{{ s.title }}</h4>
+            <p>{{ s.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<style scoped>
+.toolkit {
+  padding: clamp(68px, 10vh, 116px) 0;
+}
+
+.sec-head {
+  max-width: 44ch;
+  margin-bottom: clamp(40px, 6vh, 58px);
+}
+.sec-head .h-section {
+  margin-top: 14px;
+}
+
+/* ── 色彩四图 ─────────────────────────────── */
+.color-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(16px, 2.2vw, 26px);
+}
+
+.c-shot {
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ui-900);
+  border: 1px solid rgba(20, 22, 26, 0.14);
+  box-shadow: var(--shadow-m);
+  aspect-ratio: 3 / 4.2;
+}
+.c-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.8s var(--ease-out-expo);
+}
+.c-item:hover .c-shot img {
+  transform: scale(1.03);
+}
+
+.c-item figcaption {
+  margin-top: 16px;
+}
+.c-item h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+}
+.c-item figcaption p {
+  margin-top: 8px;
+  font-size: 0.84375rem;
+  line-height: 1.78;
+  color: var(--ink-mid);
+}
+.c-item abbr {
+  text-decoration: none;
+  border-bottom: 1px dotted var(--ink-ghost);
+  cursor: help;
+}
+
+/* ── 清单 ─────────────────────────────────── */
+.rest {
+  margin-top: clamp(56px, 8.6vh, 92px);
+  padding-top: clamp(38px, 5.6vh, 54px);
+  border-top: 1px solid var(--line-faint);
+}
+
+.rest-list {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line-faint);
+  border: 1px solid var(--line-faint);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.rest-item {
+  background: var(--card);
+  padding: 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rest-item h4 {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.rest-item p {
+  font-size: 0.875rem;
+  line-height: 1.78;
+  color: var(--ink-mid);
+}
+
+@media (max-width: 980px) {
+  .color-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 26px 20px;
+  }
+  .rest-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .rest-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+</style>

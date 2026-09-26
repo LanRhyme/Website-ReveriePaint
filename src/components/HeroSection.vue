@@ -1,377 +1,330 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import anime from 'animejs'
-import { useMagnetic } from '../composables/useMagnetic.js'
+import { ref, onMounted } from 'vue'
+import heroCanvas from '../assets/shots/hero-canvas.webp'
+import heroCanvasSm from '../assets/shots/hero-canvas-sm.webp'
 
-const props = defineProps({ ready: Boolean })
-
-const sectionRef = ref(null)
-const titleRef = ref(null)
-const btn1Ref = ref(null)
-const btn2Ref = ref(null)
-
-useMagnetic(btn1Ref, 0.22)
-useMagnetic(btn2Ref, 0.22)
-
-const GITHUB_URL = 'https://github.com/LanRhyme/ReveriePaint'
-const RELEASE_URL = 'https://github.com/LanRhyme/ReveriePaint/releases'
-
-function splitTitle() {
-  const el = titleRef.value
-  if (!el || el.dataset.split === '1') return
-  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null)
-  const texts = []
-  while (walker.nextNode()) texts.push(walker.currentNode)
-  texts.forEach((node) => {
-    if (!node.textContent.trim()) return
-    const frag = document.createDocumentFragment()
-    ;[...node.textContent].forEach((ch) => {
-      if (ch === ' ') {
-        frag.appendChild(document.createTextNode(' '))
-      } else {
-        const s = document.createElement('span')
-        s.className = 'char'
-        s.textContent = ch
-        s.style.display = 'inline-block'
-        s.style.willChange = 'transform, opacity'
-        frag.appendChild(s)
-      }
-    })
-    node.parentNode.replaceChild(frag, node)
-  })
-  el.dataset.split = '1'
-}
-
-function playHero() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    sectionRef.value?.classList.add('is-visible')
-    return
-  }
-  splitTitle()
-  const tl = anime.timeline({ easing: 'easeOutExpo' })
-  tl.add({
-    targets: '.hero-precision-tag .line-seq',
-    scaleX: [0, 1],
-    opacity: [0, 1],
-    duration: 800,
-    easing: 'easeOutExpo'
-  })
-    .add({
-      targets: '.hero-precision-tag .tag-text',
-      translateY: [12, 0],
-      opacity: [0, 1],
-      duration: 700,
-      easing: 'easeOutExpo'
-    }, '-=500')
-    .add({
-      targets: '.hero-title-giant .char',
-      translateY: ['110%', '0%'],
-      opacity: [0, 1],
-      rotateZ: [3, 0],
-      duration: 900,
-      delay: anime.stagger(38),
-      easing: 'easeOutExpo'
-    }, '-=400')
-    .add({
-      targets: '.hero-bottom-manifesto',
-      opacity: [0, 1],
-      duration: 600,
-      easing: 'linear'
-    }, '-=600')
-    .add({
-      targets: '.manifesto-col',
-      translateY: [18, 0],
-      opacity: [0, 1],
-      duration: 700,
-      delay: anime.stagger(140),
-      easing: 'easeOutExpo'
-    }, '-=400')
-    .add({
-      targets: '.cta-wrap',
-      translateY: [18, 0],
-      opacity: [0, 1],
-      duration: 700,
-      easing: 'easeOutExpo'
-    }, '-=500')
-    .add({
-      targets: '.pill-btn',
-      scale: [0.96, 1],
-      duration: 700,
-      delay: anime.stagger(90),
-      easing: 'easeOutExpo'
-    }, '-=450')
-    .add({
-      targets: '.scroll-hint',
-      opacity: [0, 1],
-      translateY: [10, 0],
-      duration: 700,
-      easing: 'easeOutQuad'
-    }, '-=200')
-
-  anime({
-    targets: '.scroll-hint .scroll-dot',
-    translateY: [0, 6, 0],
-    duration: 1800,
-    loop: true,
-    easing: 'easeInOutSine',
-    delay: 2000
-  })
-
-  const title = titleRef.value
-  if (title && !window.matchMedia('(pointer: coarse)').matches) {
-    const onMove = (e) => {
-      const rect = title.getBoundingClientRect()
-      const cx = rect.left + rect.width / 2
-      const cy = rect.top + rect.height / 2
-      const dx = (e.clientX - cx) / rect.width
-      const dy = (e.clientY - cy) / rect.height
-      anime({
-        targets: '.hero-title-giant .char',
-        translateX: (el, i) => dx * (6 + (i % 4) * 2),
-        translateY: (el, i) => dy * (4 + (i % 3) * 2),
-        duration: 900,
-        easing: 'easeOutQuad'
-      })
-    }
-    window.addEventListener('mousemove', onMove, { passive: true })
-  }
-}
-
-onMounted(() => { if (props.ready) playHero() })
-watch(() => props.ready, (v) => { if (v) playHero() })
+const ready = ref(false)
+onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 </script>
 
 <template>
-  <section ref="sectionRef" class="hero-exhibition">
-    <div class="hero-precision-tag">
-      <span class="line-seq"></span>
-      <span class="tag-text">Aesthetic Pure Digital Canvas · Android / ARMv8-A</span>
-    </div>
+  <section id="top" class="hero" :class="{ ready }">
+    <div class="hero-wash" aria-hidden="true"></div>
 
-    <h1 ref="titleRef" class="hero-title-giant">
-      心之所向<br />
-      落笔<span class="serif-italic">成境</span>
-    </h1>
+    <div class="shell hero-grid">
+      <!-- 左：文案 -->
+      <div class="hero-copy">
+        <p class="eyebrow hero-eyebrow">
+          <span class="dot" aria-hidden="true"></span>
+          Android 平板专业创作 · GPL-3.0 开源 · QQ群 729283213
+        </p>
 
-    <div class="hero-bottom-manifesto">
-      <div class="manifesto-col">
-        <strong>内核构型</strong>
-        基于 Krita C++ 经典图像处理管道构建，将工业级多核栅格化算力无损封装于移动手持终端
-      </div>
-      <div class="manifesto-col">
-        <strong>美学准则</strong>
-        摒除冗余工具堆叠，以莫兰迪低饱和光谱与瑞士理性网格重新编排手势与手写笔的灵感流转
-      </div>
-      <div class="cta-wrap">
-        <a ref="btn1Ref" :href="RELEASE_URL" class="pill-btn pill-btn--primary" target="_blank" rel="noopener">
-          <span class="pill-fill" aria-hidden="true"></span>
-          <span class="pill-label">下载 APK · Releases</span>
-          <span class="pill-arrow" aria-hidden="true">↗</span>
-        </a>
-        <a ref="btn2Ref" :href="GITHUB_URL" class="pill-btn pill-btn--ghost" target="_blank" rel="noopener">
-          <span class="pill-fill" aria-hidden="true"></span>
-          <span class="pill-label">GitHub 仓库</span>
-          <span class="pill-arrow" aria-hidden="true">↗</span>
-        </a>
-        <div class="cta-sub"><span>GPL-3.0</span><i></i><span>ARM64-V8A</span><i></i><span>120 FPS</span><i></i><span>开源开放</span></div>
-      </div>
-    </div>
+        <h1 class="hero-title">
+          把桌面级图像内核，<br />
+          <em>装进安卓平板</em>
+        </h1>
 
-    <div class="scroll-hint" aria-hidden="true">
-      <span class="scroll-label">SCROLL</span>
-      <span class="scroll-track"><span class="scroll-dot"></span></span>
+        <p class="hero-sub">
+          融合 <b>Krita C++ 原生图像处理内核</b>与现代化触控交互。具备 240+ 官方笔刷预设、动态稀疏瓦片图层、多协议压感手写笔专属调校与全流程事件流延时回放，让专业创作在移动端彻底摆脱妥协。
+        </p>
+
+        <div class="hero-actions">
+          <a
+            class="btn btn-primary"
+            href="https://github.com/LanRhyme/ReveriePaint/releases"
+            target="_blank"
+            rel="noopener"
+          >
+            下载 APK
+          </a>
+          <a
+            class="btn btn-secondary"
+            href="https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android"
+            target="_blank"
+            rel="noopener"
+          >
+            Mirror酱 高速下载
+          </a>
+          <a
+            class="btn btn-ghost"
+            href="https://github.com/LanRhyme/ReveriePaint"
+            target="_blank"
+            rel="noopener"
+          >
+            查看源码
+          </a>
+        </div>
+
+        <dl class="hero-facts">
+          <div>
+            <dt>240+</dt>
+            <dd>官方物理笔刷</dd>
+          </div>
+          <div>
+            <dt>25 种</dt>
+            <dd>图层混合模式</dd>
+          </div>
+          <div>
+            <dt>35 种</dt>
+            <dd>无损实时滤镜</dd>
+          </div>
+          <div>
+            <dt>GPL-3.0</dt>
+            <dd>永久免费开源</dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- 右：设备框 -->
+      <div class="hero-device">
+        <div class="device">
+          <div class="device-screen">
+            <img
+              :src="heroCanvas"
+              :srcset="`${heroCanvasSm} 1000w, ${heroCanvas} 2000w`"
+              sizes="(max-width: 960px) 90vw, 760px"
+              alt="ReveriePaint 画布上绘制的飞龙与猫的线稿"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </div>
+        </div>
+        <p class="device-note">实机绘制展示 · 线稿与笔刷测试</p>
+      </div>
     </div>
   </section>
 </template>
 
 <style scoped>
-.hero-exhibition {
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 7rem 8vw 4rem;
+.hero {
   position: relative;
+  padding: clamp(104px, 14vh, 156px) 0 clamp(56px, 8vh, 88px);
   overflow: hidden;
 }
 
-.hero-precision-tag {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: var(--c-clay);
-  margin-bottom: 2.2rem;
+.hero-wash {
+  position: absolute;
+  inset: -24% -12% auto -12%;
+  height: 118%;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 32% at 78% 14%, rgba(143, 163, 180, 0.14) 0%, transparent 68%),
+    radial-gradient(36% 28% at 6% 4%, rgba(195, 163, 158, 0.11) 0%, transparent 66%),
+    radial-gradient(50% 38% at 44% 70%, rgba(200, 180, 141, 0.09) 0%, transparent 70%);
+  filter: blur(6px);
+}
+
+.hero-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  align-items: center;
+  gap: clamp(40px, 5vw, 76px);
+}
+
+/* ── 文案 ─────────────────────────────────── */
+.hero-eyebrow {
   display: flex;
   align-items: center;
-  gap: 1.4rem;
+  gap: 9px;
+  margin-bottom: 24px;
+  opacity: 0;
 }
-.hero-precision-tag .line-seq {
-  width: 40px;
-  height: 1px;
-  background: var(--c-clay);
-  flex-shrink: 0;
-  transform-origin: left;
+.hero-eyebrow .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--moss);
+  box-shadow: 0 0 0 3px rgba(157, 169, 142, 0.2);
 }
-.tag-text { display: inline-block; }
+.ready .hero-eyebrow {
+  animation: heroRise 0.85s var(--ease-out-expo) 0.05s forwards;
+}
 
-.hero-title-giant {
-  font-family: var(--font-serif);
-  font-size: clamp(3.2rem, 8.4vw, 8.2rem);
-  font-weight: 300;
-  line-height: 1.14;
-  letter-spacing: 0.03em;
-  max-width: 1400px;
-  margin-bottom: 3rem;
-  overflow: visible;
-}
-.hero-title-giant :deep(.char) {
-  display: inline-block;
-  will-change: transform, opacity;
-}
-.hero-title-giant .serif-italic {
-  font-family: var(--font-serif);
-  color: var(--c-sand);
+.hero-title {
+  font-size: clamp(1.9rem, 4.1vw, 3.15rem);
+  line-height: 1.26;
+  letter-spacing: -0.032em;
   font-weight: 400;
-  letter-spacing: 0.05em;
-  margin-left: 0.35rem;
+  color: var(--ink-mid);
+  opacity: 0;
+}
+.hero-title em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--ink);
+}
+.ready .hero-title {
+  animation: heroRise 1s var(--ease-out-expo) 0.14s forwards;
 }
 
-.hero-bottom-manifesto {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.2fr;
-  border-top: 1px solid var(--border-wire);
-  padding-top: 2rem;
-  gap: 2.4rem;
-  align-items: flex-start;
+.hero-sub {
+  margin-top: 26px;
+  max-width: 46ch;
+  font-size: clamp(0.9375rem, 1.25vw, 1.0625rem);
+  line-height: 1.92;
+  color: var(--ink-mid);
+  opacity: 0;
 }
-.manifesto-col {
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  line-height: 2.0;
-  color: var(--c-mist);
-  letter-spacing: 0.04em;
-  font-weight: 300;
-}
-.manifesto-col strong {
-  font-family: var(--font-mono);
-  color: var(--c-text);
-  display: block;
-  margin-bottom: 0.5rem;
+.hero-sub b {
+  color: var(--ink);
   font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-size: 0.7rem;
+}
+.ready .hero-sub {
+  animation: heroRise 1s var(--ease-out-expo) 0.26s forwards;
 }
 
-.cta-wrap {
+.hero-actions {
+  margin-top: 32px;
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  align-items: flex-start;
-  will-change: transform;
+  flex-wrap: wrap;
+  gap: 11px;
+  opacity: 0;
 }
-.pill-btn {
-  position: relative;
+.ready .hero-actions {
+  animation: heroRise 1s var(--ease-out-expo) 0.36s forwards;
+}
+
+.btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.9rem;
-  padding: 0.95rem 1.9rem;
+  gap: 8px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 13px 26px;
   border-radius: 999px;
-  text-decoration: none;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  overflow: hidden;
-  cursor: pointer;
-  isolation: isolate;
-  transition: border-color 0.4s var(--ease-silk), color 0.4s var(--ease-silk);
+  transition: transform 0.35s var(--ease-out-expo), background 0.3s, border-color 0.3s,
+    box-shadow 0.35s;
 }
-.pill-fill {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  transform: translateY(101%);
-  transition: transform 0.55s var(--ease-silk);
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: var(--shadow-m);
 }
-.pill-btn:hover .pill-fill { transform: translateY(0); }
-.pill-label { position: relative; z-index: 1; }
-.pill-arrow {
+.btn-primary:hover {
+  background: var(--ink-soft);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-l);
+}
+.btn-secondary {
+  color: var(--ink);
+  background: rgba(20, 22, 26, 0.05);
+  border: 1px solid var(--line-strong);
+}
+.btn-secondary:hover {
+  background: rgba(20, 22, 26, 0.09);
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+.btn-ghost {
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  background: rgba(253, 252, 250, 0.55);
+}
+.btn-ghost:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.hero-facts {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line-faint);
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(24px, 3.4vw, 44px);
+  opacity: 0;
+}
+.ready .hero-facts {
+  animation: heroRise 0.9s var(--ease-out-expo) 0.46s forwards;
+}
+.hero-facts dt {
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-feature-settings: "tnum";
+  line-height: 1.2;
+}
+.hero-facts dd {
+  margin-top: 3px;
+  font-size: 0.75rem;
+  color: var(--ink-soft-2);
+}
+
+/* ── 设备框 ───────────────────────────────── */
+.hero-device {
   position: relative;
-  z-index: 1;
-  font-size: 0.85rem;
-  transition: transform 0.4s var(--ease-silk);
+  opacity: 0;
 }
-.pill-btn:hover .pill-arrow { transform: translate(3px, -3px); }
-
-.pill-btn--primary {
-  border: 1px solid var(--ip-sand);
-  color: var(--ip-cream);
-  background: rgba(236, 230, 216, 0.04);
-}
-.pill-btn--primary .pill-fill { background: var(--ip-cream); }
-.pill-btn--primary:hover { border-color: var(--ip-sand); color: var(--ip-ink); }
-
-.pill-btn--ghost {
-  border: 1px solid var(--ip-hairline);
-  color: var(--ip-cream-dim);
-  background: transparent;
-}
-.pill-btn--ghost .pill-fill { background: var(--ip-ink3); }
-.pill-btn--ghost:hover { border-color: var(--ip-cream-40); color: var(--ip-cream); }
-
-.cta-sub {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 0.56rem;
-  letter-spacing: 0.16em;
-  color: var(--c-ash);
-  text-transform: uppercase;
-  margin-top: 0.35rem;
-  padding-left: 0.4rem;
-}
-.cta-sub i {
-  width: 2px;
-  height: 2px;
-  background: var(--c-ash);
-  border-radius: 50%;
-  opacity: 0.6;
-  display: inline-block;
+.ready .hero-device {
+  animation: heroRise 1.2s var(--ease-out-expo) 0.2s forwards;
 }
 
-.scroll-hint {
+.device {
+  /* 深色平板边框，圆角与内边距模拟真实设备 */
+  position: relative;
+  padding: 13px;
+  border-radius: 22px;
+  background: linear-gradient(158deg, #34383e 0%, #1c1f23 42%, #121417 100%);
+  box-shadow:
+    0 2px 3px rgba(20, 22, 26, 0.14),
+    0 18px 40px rgba(20, 22, 26, 0.2),
+    0 44px 90px rgba(20, 22, 26, 0.16);
+}
+/* 屏幕外圈高光，做出金属收边 */
+.device::after {
+  content: '';
   position: absolute;
-  left: 8vw;
-  bottom: 1.8rem;
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.28em;
-  color: var(--c-ash);
+  inset: 6px;
+  border-radius: 17px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  pointer-events: none;
 }
-.scroll-track { width: 1px; height: 32px; background: rgba(255,255,255,0.12); position: relative; overflow: hidden; }
-.scroll-dot { position: absolute; top: 0; left: 0; width: 100%; height: 12px; background: var(--c-sand); }
 
-@media (max-width: 1024px) {
-  .hero-exhibition { padding: 6rem 6vw 3rem; }
-  .hero-bottom-manifesto { grid-template-columns: 1fr; gap: 1.8rem; }
-  .scroll-hint { display: none; }
+.device-screen {
+  position: relative;
+  border-radius: 11px;
+  overflow: hidden;
+  background: #eceae6;
+  aspect-ratio: 16 / 10;
 }
-@media (max-width: 640px) {
-  .hero-exhibition { padding: 5.5rem 5vw 2.5rem; min-height: auto; }
-  .hero-precision-tag { font-size: 0.58rem; letter-spacing: 0.18em; gap: 0.9rem; margin-bottom: 1.6rem; }
-  .hero-precision-tag .line-seq { width: 24px; }
-  .hero-title-giant { font-size: clamp(2.6rem, 11vw, 3.8rem); margin-bottom: 2rem; line-height: 0.95; }
-  .hero-bottom-manifesto { padding-top: 1.4rem; gap: 1.2rem; }
-  .manifesto-col { font-size: 0.68rem; line-height: 1.7; }
-  .cta-wrap { gap: 0.65rem; }
-  .pill-btn { padding: 0.85rem 1.4rem; font-size: 0.68rem; letter-spacing: 0.14em; }
+.device-screen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.device-note {
+  margin-top: 14px;
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--ink-ghost);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 960px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+  .hero-device {
+    order: 2;
+  }
+  .device-note {
+    text-align: left;
+  }
+}
+</style>
+
+<style>
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 </style>
