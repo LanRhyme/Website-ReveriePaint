@@ -97,95 +97,94 @@ onMounted(() => {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   if (reduce || !sectionRef.value) return
 
-  ctx = gsap.context(() => {
-    ScrollTrigger.matchMedia({
-      // 桌面端：视差滑动
-      '(min-width: 901px)': () => {
-        const blockEls = sectionRef.value.querySelectorAll('.block')
-        blockEls.forEach((block) => {
-          const img = block.querySelector('.block-media img')
-          if (img) {
-            gsap.fromTo(
-              img,
-              { yPercent: -5, scale: 1.04 },
-              {
-                yPercent: 5,
-                scale: 1,
-                ease: 'none',
-                scrollTrigger: {
-                  trigger: block,
-                  start: 'top bottom',
-                  end: 'bottom top',
-                  scrub: 1.2
-                }
-              }
-            )
-          }
-        })
-      },
-      // 手机与平板端：滚动到视口中央平滑放大聚焦
-      '(max-width: 900px)': () => {
-        const blockEls = sectionRef.value.querySelectorAll('.block')
-        blockEls.forEach((block) => {
-          const media = block.querySelector('.block-media')
-          if (media) {
-            gsap.fromTo(
-              media,
-              { scale: 0.94, opacity: 0.78 },
-              {
-                scale: 1,
-                opacity: 1,
-                ease: 'power1.out',
-                scrollTrigger: {
-                  trigger: block,
-                  start: 'top 88%',
-                  end: 'top 42%',
-                  scrub: 0.6
-                }
-              }
-            )
-          }
-        })
-      }
-    })
+  ctx = gsap.matchMedia(sectionRef.value)
 
-    // 核心卖点逐条阶梯出现
+  // 桌面端：视差滑动
+  ctx.add('(min-width: 901px)', () => {
     const blockEls = sectionRef.value.querySelectorAll('.block')
     blockEls.forEach((block) => {
-      const points = block.querySelectorAll('.block-points li')
-      if (points.length) {
-        gsap.from(points, {
-          opacity: 0,
-          x: -12,
-          duration: 0.6,
-          stagger: 0.08,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: block,
-            start: 'top 78%',
-            toggleActions: 'play none none none'
+      const img = block.querySelector('.block-media img')
+      if (img) {
+        gsap.fromTo(
+          img,
+          { yPercent: -5, scale: 1.04 },
+          {
+            yPercent: 5,
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: block,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.2
+            }
           }
-        })
+        )
       }
     })
+  })
 
-    // 三张并列卡片阶梯出场
-    const pillEls = sectionRef.value.querySelectorAll('.pill')
-    if (pillEls.length) {
-      gsap.from(pillEls, {
+  // 手机与平板端：滚动到视口中央平滑放大聚焦
+  ctx.add('(max-width: 900px)', () => {
+    const blockEls = sectionRef.value.querySelectorAll('.block')
+    blockEls.forEach((block) => {
+      const media = block.querySelector('.block-media')
+      if (media) {
+        gsap.fromTo(
+          media,
+          { scale: 0.94, opacity: 0.78 },
+          {
+            scale: 1,
+            opacity: 1,
+            ease: 'power1.out',
+            scrollTrigger: {
+              trigger: block,
+              start: 'top 88%',
+              end: 'top 42%',
+              scrub: 0.6
+            }
+          }
+        )
+      }
+    })
+  })
+
+  // 核心卖点逐条阶梯出现
+  const blockEls = sectionRef.value.querySelectorAll('.block')
+  blockEls.forEach((block) => {
+    const points = block.querySelectorAll('.block-points li')
+    if (points.length) {
+      gsap.from(points, {
         opacity: 0,
-        y: 26,
-        duration: 0.75,
-        stagger: 0.12,
+        x: -12,
+        duration: 0.6,
+        stagger: 0.08,
         ease: 'power2.out',
         scrollTrigger: {
-          trigger: sectionRef.value.querySelector('.pills'),
-          start: 'top 84%',
+          trigger: block,
+          start: 'top 78%',
           toggleActions: 'play none none none'
         }
       })
     }
-  }, sectionRef.value)
+  })
+
+  // 三张并列卡片阶梯出场
+  const pillEls = sectionRef.value.querySelectorAll('.pill')
+  if (pillEls.length) {
+    gsap.from(pillEls, {
+      opacity: 0,
+      y: 26,
+      duration: 0.75,
+      stagger: 0.12,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: sectionRef.value.querySelector('.pills'),
+        start: 'top 84%',
+        toggleActions: 'play none none none'
+      }
+    })
+  }
 })
 
 onUnmounted(() => {

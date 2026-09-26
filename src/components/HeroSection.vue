@@ -198,24 +198,21 @@ onMounted(() => {
     }
 
     // 针对手机与平板：首屏设备随页面滚动纵深后退折叠
-    scrollCtx = gsap.context(() => {
-      ScrollTrigger.matchMedia({
-        '(max-width: 960px)': () => {
-          gsap.to(deviceRef.value, {
-            rotationX: 10,
-            scale: 0.94,
-            yPercent: 8,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: heroRef.value,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: 1.2
-            }
-          })
+    scrollCtx = gsap.matchMedia(heroRef.value)
+    scrollCtx.add('(max-width: 960px)', () => {
+      gsap.to(deviceRef.value, {
+        rotationX: 10,
+        scale: 0.94,
+        yPercent: 8,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.value,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.2
         }
       })
-    }, heroRef.value)
+    })
   }
 
   if (reduceMotion) {
