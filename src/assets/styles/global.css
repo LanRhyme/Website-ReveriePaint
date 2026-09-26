@@ -202,3 +202,32 @@ button:focus-visible {
   white-space: nowrap;
   border: 0;
 }
+
+/* ── 触控设备专属微交互（手机与平板） ─────────────── */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  .btn,
+  .way-cta,
+  .nav-link,
+  .pill,
+  .pillar-card,
+  .rest-item {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:active,
+  .btn:active,
+  .way-cta:active,
+  .nav-link:active {
+    transform: scale(0.96) !important;
+    transition: transform 0.12s var(--ease-out-expo) !important;
+  }
+
+  .pillar-card:active,
+  .rest-item:active,
+  .pill:active {
+    transform: scale(0.985) !important;
+    transition: transform 0.14s var(--ease-out-expo) !important;
+  }
+}
+

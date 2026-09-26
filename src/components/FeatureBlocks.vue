@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { gsap } from '../composables/useGsap.js'
+import { gsap, ScrollTrigger } from '../composables/useGsap.js'
 import brushBench from '../assets/shots/ui-brush-bench.webp'
 import penSettings from '../assets/shots/ui-pen-settings.webp'
 import filters from '../assets/shots/ui-filters.webp'
@@ -98,29 +98,60 @@ onMounted(() => {
   if (reduce || !sectionRef.value) return
 
   ctx = gsap.context(() => {
-    // 媒体卡片视差位移
+    ScrollTrigger.matchMedia({
+      // 桌面端：视差滑动
+      '(min-width: 901px)': () => {
+        const blockEls = sectionRef.value.querySelectorAll('.block')
+        blockEls.forEach((block) => {
+          const img = block.querySelector('.block-media img')
+          if (img) {
+            gsap.fromTo(
+              img,
+              { yPercent: -5, scale: 1.04 },
+              {
+                yPercent: 5,
+                scale: 1,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: block,
+                  start: 'top bottom',
+                  end: 'bottom top',
+                  scrub: 1.2
+                }
+              }
+            )
+          }
+        })
+      },
+      // 手机与平板端：滚动到视口中央平滑放大聚焦
+      '(max-width: 900px)': () => {
+        const blockEls = sectionRef.value.querySelectorAll('.block')
+        blockEls.forEach((block) => {
+          const media = block.querySelector('.block-media')
+          if (media) {
+            gsap.fromTo(
+              media,
+              { scale: 0.94, opacity: 0.78 },
+              {
+                scale: 1,
+                opacity: 1,
+                ease: 'power1.out',
+                scrollTrigger: {
+                  trigger: block,
+                  start: 'top 88%',
+                  end: 'top 42%',
+                  scrub: 0.6
+                }
+              }
+            )
+          }
+        })
+      }
+    })
+
+    // 核心卖点逐条阶梯出现
     const blockEls = sectionRef.value.querySelectorAll('.block')
     blockEls.forEach((block) => {
-      const img = block.querySelector('.block-media img')
-      if (img) {
-        gsap.fromTo(
-          img,
-          { yPercent: -5, scale: 1.04 },
-          {
-            yPercent: 5,
-            scale: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: block,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 1.2
-            }
-          }
-        )
-      }
-
-      // 核心卖点逐条阶梯出现
       const points = block.querySelectorAll('.block-points li')
       if (points.length) {
         gsap.from(points, {

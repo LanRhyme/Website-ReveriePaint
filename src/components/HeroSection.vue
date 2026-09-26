@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { gsap } from '../composables/useGsap.js'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { gsap, ScrollTrigger } from '../composables/useGsap.js'
 import heroCanvas from '../assets/shots/hero-canvas.webp'
 import heroCanvasSm from '../assets/shots/hero-canvas-sm.webp'
 
@@ -9,6 +9,8 @@ const heroRef = ref(null)
 const deviceRef = ref(null)
 const shineRef = ref(null)
 const washRef = ref(null)
+const canvasRef = ref(null)
+const hasStrokes = ref(false)
 
 const brushCount = ref(0)
 const blendCount = ref(0)
@@ -16,6 +18,98 @@ const filterCount = ref(0)
 
 let deviceQuickToX = null
 let deviceQuickToY = null
+let drawingCtx = null
+let isDrawing = false
+let lastPoint = null
+let dpr = 1
+let scrollCtx = null
+
+function initCanvas() {
+  if (!canvasRef.value) return
+  const canvas = canvasRef.value
+  const rect = canvas.getBoundingClientRect()
+  if (rect.width === 0 || rect.height === 0) return
+  dpr = window.devicePixelRatio || 1
+  canvas.width = Math.round(rect.width * dpr)
+  canvas.height = Math.round(rect.height * dpr)
+  drawingCtx = canvas.getContext('2d')
+  drawingCtx.scale(dpr, dpr)
+  drawingCtx.lineCap = 'round'
+  drawingCtx.lineJoin = 'round'
+  drawingCtx.strokeStyle = 'rgba(28, 32, 38, 0.88)'
+}
+
+function getCanvasPos(e) {
+  const canvas = canvasRef.value
+  const rect = canvas.getBoundingClientRect()
+  return {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top,
+    pressure: e.pressure || 0,
+    time: Date.now()
+  }
+}
+
+function startDraw(e) {
+  if (!canvasRef.value || !drawingCtx) return
+  canvasRef.value.setPointerCapture?.(e.pointerId)
+  isDrawing = true
+  hasStrokes.value = true
+  lastPoint = getCanvasPos(e)
+
+  if (navigator?.vibrate) {
+    navigator.vibrate(6)
+  }
+
+  const radius = lastPoint.pressure > 0 ? 1.5 + lastPoint.pressure * 5 : 2.8
+  drawingCtx.beginPath()
+  drawingCtx.arc(lastPoint.x, lastPoint.y, radius, 0, Math.PI * 2)
+  drawingCtx.fillStyle = 'rgba(28, 32, 38, 0.88)'
+  drawingCtx.fill()
+}
+
+function drawStroke(e) {
+  if (!isDrawing || !lastPoint || !drawingCtx) return
+  const current = getCanvasPos(e)
+  const dist = Math.hypot(current.x - lastPoint.x, current.y - lastPoint.y)
+  if (dist < 1.5) return
+
+  const dt = Math.max(1, current.time - lastPoint.time)
+  const speed = dist / dt
+
+  let lineWidth = 3
+  if (current.pressure > 0) {
+    lineWidth = 1.8 + current.pressure * 12
+  } else {
+    lineWidth = Math.max(1.6, Math.min(8.5, 7.5 - speed * 1.8))
+  }
+
+  drawingCtx.beginPath()
+  drawingCtx.lineWidth = lineWidth
+  drawingCtx.moveTo(lastPoint.x, lastPoint.y)
+  const midX = (lastPoint.x + current.x) / 2
+  const midY = (lastPoint.y + current.y) / 2
+  drawingCtx.quadraticCurveTo(lastPoint.x, lastPoint.y, midX, midY)
+  drawingCtx.stroke()
+
+  lastPoint = current
+}
+
+function endDraw(e) {
+  if (!isDrawing) return
+  isDrawing = false
+  lastPoint = null
+  if (canvasRef.value?.hasPointerCapture?.(e.pointerId)) {
+    canvasRef.value.releasePointerCapture(e.pointerId)
+  }
+}
+
+function clearCanvas() {
+  if (!canvasRef.value || !drawingCtx) return
+  const canvas = canvasRef.value
+  drawingCtx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr)
+  hasStrokes.value = false
+}
 
 function onHeroMouseMove(e) {
   if (!deviceRef.value || !heroRef.value) return
@@ -45,6 +139,21 @@ function onHeroMouseLeave() {
   }
 }
 
+function onOrientation(e) {
+  if (e.gamma == null || e.beta == null) return
+  const tiltY = Math.max(-10, Math.min(10, e.gamma * 0.35))
+  const tiltX = Math.max(-10, Math.min(10, (e.beta - 45) * 0.35))
+  if (deviceQuickToX && deviceQuickToY) {
+    deviceQuickToX(tiltY)
+    deviceQuickToY(-tiltX)
+  }
+  if (shineRef.value) {
+    const shineX = Math.round(50 + tiltY * 3.5)
+    const shineY = Math.round(50 + tiltX * 3.5)
+    shineRef.value.style.background = `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255, 255, 255, 0.16) 0%, transparent 62%)`
+  }
+}
+
 function onBtnMouseMove(e) {
   const btn = e.currentTarget
   const rect = btn.getBoundingClientRect()
@@ -58,7 +167,12 @@ function onBtnMouseLeave(e) {
 }
 
 onMounted(() => {
-  requestAnimationFrame(() => (ready.value = true))
+  requestAnimationFrame(() => {
+    ready.value = true
+    initCanvas()
+  })
+
+  window.addEventListener('resize', initCanvas)
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -66,6 +180,11 @@ onMounted(() => {
     deviceQuickToX = gsap.quickTo(deviceRef.value, 'rotationY', { duration: 0.7, ease: 'power2.out' })
     deviceQuickToY = gsap.quickTo(deviceRef.value, 'rotationX', { duration: 0.7, ease: 'power2.out' })
     gsap.set(deviceRef.value, { transformPerspective: 1100, transformStyle: 'preserve-3d' })
+
+    // 移动端/平板设备陀螺仪体感倾斜
+    if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
+      window.addEventListener('deviceorientation', onOrientation, { passive: true })
+    }
 
     if (washRef.value) {
       gsap.to(washRef.value, {
@@ -77,6 +196,26 @@ onMounted(() => {
         ease: 'sine.inOut'
       })
     }
+
+    // 针对手机与平板：首屏设备随页面滚动纵深后退折叠
+    scrollCtx = gsap.context(() => {
+      ScrollTrigger.matchMedia({
+        '(max-width: 960px)': () => {
+          gsap.to(deviceRef.value, {
+            rotationX: 10,
+            scale: 0.94,
+            yPercent: 8,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.value,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 1.2
+            }
+          })
+        }
+      })
+    }, heroRef.value)
   }
 
   if (reduceMotion) {
@@ -99,6 +238,12 @@ onMounted(() => {
       }
     })
   }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', initCanvas)
+  window.removeEventListener('deviceorientation', onOrientation)
+  scrollCtx?.revert()
 })
 </script>
 
@@ -196,9 +341,33 @@ onMounted(() => {
               fetchpriority="high"
               decoding="async"
             />
+            <canvas
+              ref="canvasRef"
+              class="device-canvas"
+              @pointerdown="startDraw"
+              @pointermove="drawStroke"
+              @pointerup="endDraw"
+              @pointercancel="endDraw"
+            ></canvas>
+            <div class="canvas-hud">
+              <span class="canvas-tip">
+                <svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true">
+                  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" fill="currentColor"/>
+                </svg>
+                触摸或手写笔在此试笔
+              </span>
+              <button
+                v-if="hasStrokes"
+                type="button"
+                class="btn-clear"
+                @click.stop="clearCanvas"
+              >
+                清除笔迹
+              </button>
+            </div>
           </div>
         </div>
-        <p class="device-note">实机绘制展示 · 线稿与笔刷测试</p>
+        <p class="device-note">实机绘制展示 · 支持直接触控涂抹测试</p>
       </div>
     </div>
   </section>
@@ -411,6 +580,70 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.device-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.canvas-hud {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.canvas-tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--ink-mid);
+  border: 1px solid rgba(20, 22, 26, 0.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.btn-clear {
+  pointer-events: auto;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(28, 32, 38, 0.78);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-clear:hover {
+  background: rgba(28, 32, 38, 0.94);
+  transform: translateY(-1px);
+}
+.btn-clear:active {
+  transform: scale(0.92);
 }
 
 .device-note {

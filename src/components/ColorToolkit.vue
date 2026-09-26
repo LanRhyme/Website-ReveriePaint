@@ -63,8 +63,29 @@ const specs = [
   }
 ]
 
+const activeColorIndex = ref(0)
+const colorRowRef = ref(null)
 const toolkitRef = ref(null)
 let ctx = null
+
+function onColorScroll() {
+  if (!colorRowRef.value) return
+  const el = colorRowRef.value
+  const itemWidth = el.scrollWidth / colors.length
+  activeColorIndex.value = Math.min(
+    colors.length - 1,
+    Math.max(0, Math.round(el.scrollLeft / itemWidth))
+  )
+}
+
+function scrollToColor(index) {
+  if (!colorRowRef.value) return
+  const el = colorRowRef.value
+  const items = el.querySelectorAll('.c-item')
+  if (items[index]) {
+    items[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+  }
+}
 
 function onCardMouseMove(e) {
   const card = e.currentTarget
@@ -126,7 +147,7 @@ onUnmounted(() => {
       </header>
 
       <!-- ── 色彩四图 ───────────────────────── -->
-      <div class="color-row">
+      <div ref="colorRowRef" class="color-row" @scroll.passive="onColorScroll">
         <figure
           v-for="(c, i) in colors"
           :key="c.title"
@@ -145,6 +166,19 @@ onUnmounted(() => {
             <p>{{ c.desc }}</p>
           </figcaption>
         </figure>
+      </div>
+
+      <!-- 手机端轮播指示点 -->
+      <div class="mobile-dots" aria-hidden="true">
+        <button
+          v-for="(_, i) in colors"
+          :key="i"
+          type="button"
+          class="dot"
+          :class="{ active: activeColorIndex === i }"
+          :aria-label="`切换到第 ${i + 1} 项色彩功能`"
+          @click="scrollToColor(i)"
+        ></button>
       </div>
 
       <!-- ── 全架构特性矩阵 ──────────────────── -->
@@ -267,6 +301,30 @@ onUnmounted(() => {
   color: var(--ink-mid);
 }
 
+.mobile-dots {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  margin-top: 22px;
+}
+.mobile-dots .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line-strong);
+  opacity: 0.35;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: width 0.35s var(--ease-out-expo), opacity 0.35s, background 0.35s;
+}
+.mobile-dots .dot.active {
+  width: 22px;
+  opacity: 1;
+  background: var(--ink);
+}
+
 @media (max-width: 980px) {
   .color-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -274,6 +332,30 @@ onUnmounted(() => {
   }
   .rest-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 680px) {
+  .color-row {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 16px;
+    padding-bottom: 6px;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  .color-row::-webkit-scrollbar {
+    display: none;
+  }
+  .c-item {
+    flex: 0 0 82vw;
+    max-width: 320px;
+    scroll-snap-align: center;
+  }
+  .mobile-dots {
+    display: flex;
   }
 }
 @media (max-width: 640px) {
