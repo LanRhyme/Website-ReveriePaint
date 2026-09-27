@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
@@ -12,7 +13,13 @@ export default defineConfig({
   build: {
     target: 'es2020',
     cssCodeSplit: true,
-    assetsInlineLimit: 0
+    assetsInlineLimit: 0,
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        docs: resolve(__dirname, 'docs/index.html')
+      }
+    }
   },
   server: {
     port: 5173,

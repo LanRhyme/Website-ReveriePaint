@@ -2,6 +2,7 @@
 const year = new Date().getFullYear()
 
 const links = [
+  { label: '使用文档', href: '/docs/' },
   { label: 'GitHub', href: 'https://github.com/LanRhyme/ReveriePaint' },
   { label: 'Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases' },
   { label: 'Mirror酱 高速', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android' },

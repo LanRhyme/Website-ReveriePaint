@@ -75,6 +75,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         <button v-for="item in NAV" :key="item.id" class="nav-link" type="button" @click="goTo(item.id)">
           {{ item.label }}
         </button>
+        <a href="/docs/" class="nav-link">使用文档</a>
       </nav>
 
       <a
@@ -120,6 +121,16 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
               <path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
+          <a
+            class="mobile-nav-link"
+            href="/docs/"
+            @click="menuOpen = false"
+          >
+            <span>使用文档</span>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+              <path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
           <div class="mobile-nav-divider"></div>
           <a
             class="mobile-nav-cta"
