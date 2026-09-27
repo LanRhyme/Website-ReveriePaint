@@ -192,20 +192,10 @@ onUnmounted(() => {
             @mousemove="onBtnMouseMove"
             @mouseleave="onBtnMouseLeave"
           >
-            <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
               <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v10.766c-.917-.35-2.107-.691-3.287-.811-1.094-.11-2.278-.037-3.213.493V2.687z" fill="currentColor"/>
             </svg>
             <span>使用文档</span>
-          </a>
-          <a
-            class="btn btn-secondary"
-            href="https://github.com/LanRhyme/ReveriePaint/releases"
-            target="_blank"
-            rel="noopener"
-            @mousemove="onBtnMouseMove"
-            @mouseleave="onBtnMouseLeave"
-          >
-            Releases
           </a>
           <a
             class="btn btn-ghost"
