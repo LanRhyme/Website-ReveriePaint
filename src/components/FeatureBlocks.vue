@@ -99,8 +99,8 @@ onMounted(() => {
 
   ctx = gsap.matchMedia(sectionRef.value)
 
-  // 桌面端：视差滑动
-  ctx.add('(min-width: 901px)', () => {
+  // 桌面与平板端：视差滑动
+  ctx.add('(min-width: 769px)', () => {
     const blockEls = sectionRef.value.querySelectorAll('.block')
     blockEls.forEach((block) => {
       const img = block.querySelector('.block-media img')
@@ -124,8 +124,8 @@ onMounted(() => {
     })
   })
 
-  // 手机与平板端：滚动到视口中央平滑放大聚焦
-  ctx.add('(max-width: 900px)', () => {
+  // 手机端：滚动到视口中央平滑放大聚焦
+  ctx.add('(max-width: 768px)', () => {
     const blockEls = sectionRef.value.querySelectorAll('.block')
     blockEls.forEach((block) => {
       const media = block.querySelector('.block-media')
@@ -367,10 +367,11 @@ onUnmounted(() => {
   border: 1px solid rgba(20, 22, 26, 0.12);
   margin-bottom: 18px;
   box-shadow: var(--shadow-s);
+  aspect-ratio: 16 / 10.2;
 }
 .pill-shot img {
   width: 100%;
-  height: 240px;
+  height: 100%;
   object-fit: cover;
   object-position: top center;
   transition: transform 0.7s var(--ease-out-expo);
@@ -392,11 +393,29 @@ onUnmounted(() => {
 }
 
 /* ══ 响应式 ═════════════════════════════════ */
-@media (max-width: 900px) {
+@media (max-width: 960px) {
+  .block {
+    gap: 28px;
+  }
+  .pills {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .features {
+    padding: clamp(48px, 8vh, 84px) 0;
+  }
+  .sec-head {
+    margin-bottom: 38px;
+  }
+  .blocks {
+    gap: clamp(40px, 7vh, 60px);
+  }
   .block,
   .block.is-flip {
     grid-template-columns: minmax(0, 1fr);
-    gap: 26px;
+    gap: 20px;
   }
   /* 移动端统一图在上、文在下 */
   .block.is-flip .block-media {
@@ -405,11 +424,26 @@ onUnmounted(() => {
   .block.is-flip .block-copy {
     order: 0;
   }
-  .pills {
-    grid-template-columns: minmax(0, 1fr);
+  .block-copy {
+    max-width: 100%;
   }
-  .pill-shot img {
-    height: 220px;
+  .block-title {
+    font-size: clamp(1.1875rem, 4.6vw, 1.45rem);
+    line-height: 1.35;
+  }
+  .block-body {
+    margin-top: 12px;
+    line-height: 1.76;
+  }
+  .block-points {
+    margin-top: 14px;
+    gap: 7px;
+  }
+  .pills {
+    margin-top: clamp(44px, 7vh, 64px);
+    padding-top: clamp(32px, 5vh, 48px);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
   }
 }
 </style>

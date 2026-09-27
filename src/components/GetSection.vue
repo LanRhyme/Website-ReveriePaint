@@ -312,12 +312,53 @@ button.way-cta {
   text-align: center;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 960px) {
+  .get {
+    padding: clamp(52px, 8vh, 96px) 0;
+  }
   .meta {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .ways {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ways {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .get {
+    padding: clamp(44px, 6vh, 72px) 0;
+  }
+  .sec-head {
+    margin-bottom: 22px;
+  }
+  .meta {
+    margin-bottom: 26px;
+  }
+  .meta-item {
+    padding: 14px 16px;
+  }
+  .way {
+    padding: 20px 18px;
+  }
+  .way-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .way-cta {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+    font-size: 0.875rem;
+    padding: 10px 16px;
   }
 }
 </style>

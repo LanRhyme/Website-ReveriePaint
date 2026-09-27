@@ -114,4 +114,24 @@ const links = [
 .foot-meta {
   max-width: 46ch;
 }
+
+@media (max-width: 680px) {
+  .foot-main {
+    flex-direction: column;
+    gap: 22px;
+  }
+  .foot-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 16px;
+    width: 100%;
+  }
+  .foot-links a {
+    padding: 3px 0;
+  }
+  .foot-base {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
 </style>

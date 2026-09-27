@@ -326,6 +326,9 @@ onUnmounted(() => {
 }
 
 @media (max-width: 980px) {
+  .toolkit {
+    padding: clamp(52px, 8vh, 96px) 0;
+  }
   .color-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 26px 20px;
@@ -334,14 +337,21 @@ onUnmounted(() => {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
 @media (max-width: 680px) {
+  .toolkit {
+    padding: clamp(44px, 7vh, 72px) 0;
+  }
+  .sec-head {
+    margin-bottom: 28px;
+  }
   .color-row {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     gap: 16px;
-    padding-bottom: 6px;
+    padding-block: 8px 14px;
     margin-inline: calc(var(--gutter) * -1);
     padding-inline: var(--gutter);
     scrollbar-width: none;
@@ -350,17 +360,25 @@ onUnmounted(() => {
     display: none;
   }
   .c-item {
-    flex: 0 0 82vw;
-    max-width: 320px;
+    flex: 0 0 clamp(240px, 78vw, 300px);
     scroll-snap-align: center;
   }
   .mobile-dots {
     display: flex;
   }
+  .rest {
+    margin-top: clamp(40px, 6vh, 60px);
+    padding-top: clamp(28px, 4vh, 40px);
+  }
 }
+
 @media (max-width: 640px) {
   .rest-list {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .rest-item {
+    padding: 18px 20px;
+    gap: 8px;
   }
 }
 </style>

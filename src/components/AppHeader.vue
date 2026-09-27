@@ -4,6 +4,7 @@ import { getLenis } from '../composables/useLenis.js'
 import { gsap } from '../composables/useGsap.js'
 
 const isScrolled = ref(false)
+const menuOpen = ref(false)
 
 const NAV = [
   { id: 'features', label: '核心特性' },
@@ -29,6 +30,11 @@ function goTo(id) {
   }
 }
 
+function handleNavClick(id) {
+  menuOpen.value = false
+  goTo(id)
+}
+
 function onCtaMouseMove(e) {
   const btn = e.currentTarget
   const rect = btn.getBoundingClientRect()
@@ -49,9 +55,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 </script>
 
 <template>
-  <header class="site-header" :class="{ 'is-scrolled': isScrolled }">
+  <header class="site-header" :class="{ 'is-scrolled': isScrolled, 'has-menu': menuOpen }">
     <div class="shell bar">
-      <a class="brand" href="#top" @click.prevent="goTo('top')">
+      <a class="brand" href="#top" @click.prevent="handleNavClick('top')">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 22 22" width="22" height="22">
             <rect x="1" y="1" width="20" height="20" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.3" />
@@ -84,7 +90,52 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
           <path d="M4 12 L12 4 M6 4 h6 v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </a>
+
+      <!-- 移动端汉堡菜单按钮 -->
+      <button
+        class="menu-toggle"
+        type="button"
+        :aria-expanded="menuOpen"
+        aria-label="导航菜单"
+        @click="menuOpen = !menuOpen"
+      >
+        <span class="menu-line" :class="{ 'is-open': menuOpen }"></span>
+        <span class="menu-line" :class="{ 'is-open': menuOpen }"></span>
+      </button>
     </div>
+
+    <!-- 移动端全屏/下拉式导航菜单 -->
+    <transition name="drawer">
+      <div v-if="menuOpen" class="mobile-drawer" @click.self="menuOpen = false">
+        <nav class="mobile-nav" aria-label="移动端导航菜单">
+          <button
+            v-for="item in NAV"
+            :key="item.id"
+            class="mobile-nav-link"
+            type="button"
+            @click="handleNavClick(item.id)"
+          >
+            <span>{{ item.label }}</span>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+              <path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="mobile-nav-divider"></div>
+          <a
+            class="mobile-nav-cta"
+            href="https://github.com/LanRhyme/ReveriePaint/releases"
+            target="_blank"
+            rel="noopener"
+            @click="menuOpen = false"
+          >
+            <span>前往 Releases 下载 APK</span>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+              <path d="M4 12 L12 4 M6 4 h6 v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </nav>
+      </div>
+    </transition>
   </header>
 </template>
 
@@ -188,13 +239,144 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   transform: translate(2px, -2px);
 }
 
-@media (max-width: 720px) {
+/* ── 移动端汉堡切换按钮 ─────────────────── */
+.menu-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.65);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 0;
+  color: var(--ink);
+  transition: background 0.25s, border-color 0.25s;
+}
+.menu-toggle:hover {
+  background: #fff;
+  border-color: var(--ink);
+}
+.menu-line {
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform 0.3s var(--ease-out-expo), opacity 0.3s;
+}
+.menu-line.is-open:first-child {
+  transform: translateY(3.25px) rotate(45deg);
+}
+.menu-line.is-open:last-child {
+  transform: translateY(-3.25px) rotate(-45deg);
+}
+
+/* ── 移动端菜单抽屉 ─────────────────────── */
+.mobile-drawer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(245, 242, 236, 0.95);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom: 1px solid var(--line-faint);
+  box-shadow: 0 16px 36px rgba(20, 22, 26, 0.1);
+  padding: 16px 20px 24px;
+}
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: var(--shell);
+  margin-inline: auto;
+}
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 10px;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.mobile-nav-link:active {
+  background: rgba(20, 22, 26, 0.06);
+}
+.mobile-nav-link svg {
+  color: var(--ink-ghost);
+}
+.mobile-nav-divider {
+  height: 1px;
+  background: var(--line-faint);
+  margin: 10px 0;
+}
+.mobile-nav-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.25s;
+}
+.mobile-nav-cta:active {
+  background: var(--ink-soft);
+}
+
+/* 抽屉过渡动效 */
+.drawer-enter-active,
+.drawer-leave-active {
+  transition: opacity 0.25s var(--ease-out-expo), transform 0.25s var(--ease-out-expo);
+}
+.drawer-enter-from,
+.drawer-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+@media (max-width: 960px) {
+  .bar {
+    gap: 16px;
+  }
+  .nav {
+    gap: 2px;
+  }
+  .nav-link {
+    font-size: 0.8125rem;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 768px) {
   .nav,
   .brand-text i {
     display: none;
   }
+  .menu-toggle {
+    display: flex;
+  }
   .cta {
     margin-left: auto;
+    padding: 8px 14px;
+    font-size: 0.75rem;
   }
 }
 </style>

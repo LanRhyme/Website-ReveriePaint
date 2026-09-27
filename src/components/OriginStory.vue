@@ -189,10 +189,35 @@ onUnmounted(() => {
   color: var(--ink);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 960px) {
+  .origin {
+    padding: clamp(52px, 8vh, 96px) 0;
+  }
+  .pillars {
+    gap: 16px;
+  }
+  .pillar-card {
+    padding: 22px 20px;
+  }
+}
+
+@media (max-width: 720px) {
+  .origin {
+    padding: clamp(44px, 7vh, 72px) 0;
+  }
+  .sec-head {
+    margin-bottom: 32px;
+  }
   .pillars {
     grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
+    gap: 16px;
+  }
+  .origin-note {
+    margin-top: 36px;
+  }
+  .origin-note p {
+    font-size: 1.0625rem;
+    line-height: 1.7;
   }
 }
 </style>
