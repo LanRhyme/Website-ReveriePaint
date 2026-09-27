@@ -46,6 +46,7 @@ const ways = [
     body: '国内设备推荐使用 Mirror酱 免翻高速通道直接下载，亦可访问 GitHub Releases 获取官方构建包。',
     links: [
       { text: 'Mirror酱 高速下载', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android', primary: true },
+      { text: '官方使用文档', href: '/docs/', primary: false },
       { text: 'GitHub Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: false }
     ],
     primary: true
