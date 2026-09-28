@@ -12,106 +12,56 @@ import imgUiLeftbar from './assets/docs/doc-ui-leftbar.webp'
 import imgLayersPresets from './assets/docs/doc-layers-presets.webp'
 import imgFeedbackIssue from './assets/docs/doc-feedback-issue.webp'
 
-// 章节导航结构
+// 五大核心章节导航（精简清晰版）
 const navSections = [
   {
-    group: '快速入门',
+    index: '01',
+    group: '入门与手势',
     items: [
-      { id: 'intro', label: '软件架构与系统兼容性' },
-      { id: 'install', label: '获取 APK 安装包' },
-      { id: 'permissions', label: '安装步骤与系统授权' },
-      { id: 'roadmap', label: '已知待优化与路线图' }
+      { id: 'intro-install', label: '软件架构与安装授权' },
+      { id: 'canvas-ui', label: '画布总览与工具定制' },
+      { id: 'gestures-touch', label: '触控手势与防误触' }
     ]
   },
   {
-    group: '画布与触控手势',
+    index: '02',
+    group: '图层与核心机制',
     items: [
-      { id: 'gestures-touch', label: '核心触控手势清单' },
-      { id: 'eyedropper', label: '长按取色与防遮挡偏移' },
-      { id: 'pen-mode', label: '仅手写笔模式与防误触' }
+      { id: 'inherit-alpha', label: '继承透明度（剪贴蒙版）' },
+      { id: 'layer-system', label: '图层体系与混合模式' }
     ]
   },
   {
-    group: '图层与继承不透明度',
+    index: '03',
+    group: '手写笔与工坊',
     items: [
-      { id: 'layer-types', label: '图层类型与组织架构' },
-      { id: 'inherit-alpha', label: '继承不透明度（剪贴蒙版）' },
-      { id: 'alpha-compare', label: '锁定透明度与继承透明度对比' },
-      { id: 'layer-ops', label: '图层进阶操作与独奏' },
-      { id: 'blend-modes', label: '图层混合模式参考' },
-      { id: 'layer-specs', label: '图层数量与推荐规格' }
+      { id: 'stylus-hardware', label: '多品牌手写笔适配' },
+      { id: 'stylus-experience', label: '压感曲线与纸感声学' },
+      { id: 'brush-studio', label: '笔刷工坊与平滑算法' }
     ]
   },
   {
-    group: '手写笔硬件与微震声学',
+    index: '04',
+    group: '创作与进阶工具',
     items: [
-      { id: 'stylus-brands', label: '多品牌手写笔深度适配' },
-      { id: 'pressure-curve', label: '全局压感曲线微调' },
-      { id: 'paper-sound', label: '纸感微震与声学引擎' },
-      { id: 'stylus-cursor', label: '笔尖光标与落笔预测' }
+      { id: 'color-tools', label: '色彩面板与参考视窗' },
+      { id: 'filters-suite', label: '35 种滤镜与线稿提取' },
+      { id: 'selection-transform', label: '选区运算与空间变换' },
+      { id: 'animation-workflow', label: '逐帧动画与洋葱皮' }
     ]
   },
   {
-    group: '笔刷工坊与动力学',
+    index: '05',
+    group: '工程与社群',
     items: [
-      { id: 'brush-import', label: '导入笔刷（分享与手动）' },
-      { id: 'brush-formats', label: '支持的笔刷格式生态' },
-      { id: 'abr-tips', label: 'Photoshop ABR 转换技巧' },
-      { id: 'brush-studio', label: '笔刷工坊八大调校维度' },
-      { id: 'brush-stabilizer', label: '笔迹平滑与防抖算法' }
-    ]
-  },
-  {
-    group: '界面与色彩工具',
-    items: [
-      { id: 'ui-overview', label: '主画布界面总览' },
-      { id: 'ui-toolbar', label: '工具栏滑动与排布定制' },
-      { id: 'color-picker', label: '悬浮取色面板与固定' },
-      { id: 'color-reference', label: '浮动参考图视窗' },
-      { id: 'tools-list', label: '全量工具清单一览' }
-    ]
-  },
-  {
-    group: '实时滤镜与通道处理',
-    items: [
-      { id: 'filters-overview', label: '35 种专业级滤镜分类' },
-      { id: 'filters-map', label: '渐变映射与黑白线稿提取' }
-    ]
-  },
-  {
-    group: '选区与空间变换',
-    items: [
-      { id: 'selection-tools', label: '选区工具族与布尔运算' },
-      { id: 'transform-modes', label: '自由变换与空间映射' }
-    ]
-  },
-  {
-    group: '逐帧动画与时间轴',
-    items: [
-      { id: 'anim-timeline', label: '时间轴面板与帧管理' },
-      { id: 'anim-onion', label: '洋葱皮透光台' },
-      { id: 'anim-playback', label: '预渲染缓存与动效导出' }
-    ]
-  },
-  {
-    group: '工程规范与延时摄影',
-    items: [
-      { id: 'file-revp', label: '.revp 自研工程规范' },
-      { id: 'timelapse-record', label: '无损笔迹延时摄影回放' },
-      { id: 'file-interop', label: '跨软件文件互通与导出' }
-    ]
-  },
-  {
-    group: '问题与社群',
-    items: [
-      { id: 'feedback', label: 'Bug 反馈与 GitHub 规范' },
-      { id: 'community', label: '创作者交流群' }
+      { id: 'project-timelapse', label: '工程规范与延时摄影' },
+      { id: 'community-feedback', label: '问题反馈与创作者群' }
     ]
   }
 ]
 
 const searchQuery = ref('')
-const activeSectionId = ref('intro')
+const activeSectionId = ref('intro-install')
 const mobileMenuOpen = ref(false)
 const showBackToTop = ref(false)
 const scrollProgress = ref(0)
@@ -274,7 +224,7 @@ onUnmounted(() => {
             aria-label="目录"
             @click="mobileMenuOpen = !mobileMenuOpen"
           >
-            {{ mobileMenuOpen ? '关闭' : '目录' }}
+            {{ mobileMenuOpen ? '收起' : '目录' }}
           </button>
         </div>
       </div>
@@ -282,11 +232,14 @@ onUnmounted(() => {
 
     <!-- 核心视图区域（居中平衡双栏布局） -->
     <div class="docs-viewport">
-      <!-- 左侧大纲导航栏 -->
+      <!-- 左侧大纲导航栏（5 大章节清晰流） -->
       <aside :class="['docs-sidebar', { 'is-open': mobileMenuOpen }]">
         <nav class="sidebar-nav">
           <div v-for="group in filteredNav" :key="group.group" class="nav-group">
-            <div class="group-title">{{ group.group }}</div>
+            <div class="group-title">
+              <span class="group-num">{{ group.index }}</span>
+              <span class="group-text">{{ group.group }}</span>
+            </div>
             <ul class="group-list">
               <li v-for="item in group.items" :key="item.id">
                 <a
@@ -294,7 +247,7 @@ onUnmounted(() => {
                   :class="['nav-item', { active: activeSectionId === item.id }]"
                   @click.prevent="scrollToAnchor(item.id)"
                 >
-                  {{ item.label }}
+                  <span class="item-text">{{ item.label }}</span>
                 </a>
               </li>
             </ul>
@@ -323,11 +276,11 @@ onUnmounted(() => {
           </p>
         </header>
 
-        <!-- 1. 快速入门 -->
-        <section id="intro" class="doc-section">
+        <!-- 01 入门与手势 -->
+        <section id="intro-install" class="doc-section">
           <h2>
-            <a href="#intro" class="anchor">#</a>
-            软件架构与系统兼容性
+            <a href="#intro-install" class="anchor">#</a>
+            软件架构与安装授权
           </h2>
           <p>
             ReveriePaint 深度整合 Krita 核心图形内核，采用 C++ 原生底层与 Android 硬件加速通道直接渲染，杜绝跨平台 Web 包装层的性能损耗
@@ -340,18 +293,13 @@ onUnmounted(() => {
               <strong>内存调度：</strong>无硬编码图层上限，系统依照设备当前可用物理内存动态评估最大安全图层深度
             </div>
             <div class="bullet-card">
-              <strong>鸿蒙设备提示：</strong>由于图形驱动差异，HarmonyOS NEXT 纯血架构兼容性较弱，推荐在标准 Android 设备上使用
+              <strong>系统兼容提示：</strong>由于图形驱动差异，HarmonyOS NEXT 纯血架构兼容性较弱，推荐在标准 Android 设备上使用
             </div>
           </div>
-        </section>
 
-        <section id="install" class="doc-section">
-          <h2>
-            <a href="#install" class="anchor">#</a>
-            获取 APK 安装包
-          </h2>
+          <h3 class="doc-h3">获取 APK 安装包与系统授权</h3>
           <p>
-            ReveriePaint 遵循 GPL-3.0 协议完全开源，所有编译产物均发布在 GitHub Releases，确保文件纯净安全
+            ReveriePaint 遵循 GPL-3.0 协议开源，所有安装包均发布于 GitHub Releases，确保文件纯净安全：
           </p>
           <figure class="clean-figure" @click="openLightbox(imgInstallRepo, 'GitHub Releases 下载入口')">
             <img :src="imgInstallRepo" alt="GitHub Releases 下载入口" loading="lazy" />
@@ -374,25 +322,13 @@ onUnmounted(() => {
           <div class="note-box">
             <p><strong>备选渠道：</strong>若网络访问受限，可在官方创作者交流群（群号 <code>729283213</code>）群文件中直接获取最新 APK 安装包</p>
           </div>
-        </section>
-
-        <section id="permissions" class="doc-section">
-          <h2>
-            <a href="#permissions" class="anchor">#</a>
-            安装步骤与系统授权
-          </h2>
           <ul class="bullet-list">
             <li>在系统浏览器或文件管理器中点击下载的 APK 文件，允许「安装未知来源应用」</li>
             <li>首次启动提示授予存储空间权限，用于工程读写与笔刷资源加载</li>
             <li>支持蓝牙与外设连接授权，用于获取手写笔电量、侧键动作与星闪超采样数据</li>
           </ul>
-        </section>
 
-        <section id="roadmap" class="doc-section">
-          <h2>
-            <a href="#roadmap" class="anchor">#</a>
-            已知待优化与路线图
-          </h2>
+          <h3 class="doc-h3">已知待优化与路线图</h3>
           <ul class="bullet-list">
             <li><strong>液化工具与对称尺：</strong>移动端交互与多线程计算正在重构优化中，后续更新开放</li>
             <li><strong>Photoshop ABR 格式：</strong>后续版本将实现直接解析 <code>.abr</code> 二进制笔刷包</li>
@@ -400,14 +336,35 @@ onUnmounted(() => {
           </ul>
         </section>
 
-        <!-- 2. 画布与触控手势 -->
+        <section id="canvas-ui" class="doc-section">
+          <h2>
+            <a href="#canvas-ui" class="anchor">#</a>
+            画布总览与工具定制
+          </h2>
+          <p>
+            画布界面针对触控与大屏平板深度优化，提供可伸缩、可定制的沉浸创作视界：
+          </p>
+          <figure class="clean-figure" @click="openLightbox(imgUiMain, 'ReveriePaint 平板主画布界面总览')">
+            <img :src="imgUiMain" alt="ReveriePaint 平板主画布界面总览" loading="lazy" />
+            <figcaption>各功能分区：左侧工具栏、快捷滑块、图层面板、色轮与浮动视窗</figcaption>
+          </figure>
+          <figure class="clean-figure" style="max-width: 580px;" @click="openLightbox(imgUiLeftbar, '左侧菜单栏使用说明')">
+            <img :src="imgUiLeftbar" alt="左侧菜单栏使用说明" loading="lazy" />
+            <figcaption>工具栏支持上下滑动浏览，点击底部展开按钮可自由编辑常用工具排布</figcaption>
+          </figure>
+          <figure class="clean-figure" style="max-width: 580px;" @click="openLightbox(imgUiSettings, '主题设置界面')">
+            <img :src="imgUiSettings" alt="主题设置界面" loading="lazy" />
+            <figcaption>设置 ＞ 偏好与硬件 ＞ 主题设置，可调整界面尺寸与侧边滑块板长短</figcaption>
+          </figure>
+        </section>
+
         <section id="gestures-touch" class="doc-section">
           <h2>
             <a href="#gestures-touch" class="anchor">#</a>
-            核心触控手势清单
+            触控手势与防误触
           </h2>
           <p>
-            画布内置全手势识别引擎，精准区分单指拾色、双指漫游与多指快捷回退
+            画布内置全手势识别引擎，精准区分单指拾色、双指漫游与多指快捷回退：
           </p>
           <div class="table-container">
             <table class="doc-table">
@@ -422,7 +379,7 @@ onUnmounted(() => {
                 <tr>
                   <td><code>双指捏合 / 旋转 / 移动</code></td>
                   <td>画布缩放、旋转与平移</td>
-                  <td>零延迟双线性滤波变换，松手后保持当前视图视角</td>
+                  <td>零延迟双线性滤波变换，松手后保持当前视角</td>
                 </tr>
                 <tr>
                   <td><code>双指同时轻点</code></td>
@@ -447,54 +404,20 @@ onUnmounted(() => {
               </tbody>
             </table>
           </div>
-        </section>
 
-        <section id="eyedropper" class="doc-section">
-          <h2>
-            <a href="#eyedropper" class="anchor">#</a>
-            长按取色与防遮挡偏移
-          </h2>
-          <p>
-            无需反复切换吸管工具，手指在画布任意位置长按即可实时吸色
-          </p>
+          <h3 class="doc-h3">长按取色与防遮挡偏移</h3>
           <ul class="bullet-list">
             <li><strong>悬浮动态取色环：</strong>内环显示当前画笔原色，外环显示触点下方最新采样色，便于对比明度与冷暖差异</li>
             <li><strong>防遮挡垂直偏移：</strong>取色圆环自动向上偏移显示在手指上方，解决指尖遮挡视线问题</li>
-            <li><strong>灵敏度调节：</strong>可在「偏好设置」中调节长按触发响应时间与位移防抖容差</li>
+            <li><strong>仅手写笔模式：</strong>开启后画布仅接收主动手写笔输入，手指仅用于缩放漫游，手掌自然贴靠不误触</li>
           </ul>
         </section>
 
-        <section id="pen-mode" class="doc-section">
-          <h2>
-            <a href="#pen-mode" class="anchor">#</a>
-            仅手写笔模式与防误触
-          </h2>
-          <p>
-            开启「仅手写笔模式」后，画布绘制通道仅接收主动手写笔输入，手指仅用于缩放旋转和长按取色，手掌自然贴合屏幕书写也不会产生误触杂线
-          </p>
-        </section>
-
-        <!-- 3. 图层与继承不透明度 (核心专章) -->
-        <section id="layer-types" class="doc-section">
-          <h2>
-            <a href="#layer-types" class="anchor">#</a>
-            图层类型与组织架构
-          </h2>
-          <p>
-            ReveriePaint 具备完整的图层堆栈架构，支持以下原生图层形式：
-          </p>
-          <ul class="bullet-list">
-            <li><strong>绘画图层（Paint Layer）：</strong>标准栅格位图层，承载水彩、油画、勾线等笔刷渲染像素</li>
-            <li><strong>图层组（Group Layer）：</strong>容器层，用于组织多个相关图层，具备独立的合成通道与混合隔离模式</li>
-            <li><strong>滤镜图层（Filter Layer）：</strong>非破坏性动态滤镜，实时对下方内容应用模糊、调色或特效，可随时双击调整参数或栅格化</li>
-            <li><strong>填充图层（Fill Layer）：</strong>纯色或图案平铺背景图层</li>
-          </ul>
-        </section>
-
+        <!-- 02 图层与核心机制 -->
         <section id="inherit-alpha" class="doc-section">
           <h2>
             <a href="#inherit-alpha" class="anchor">#</a>
-            继承不透明度（Inherit Alpha）替代传统剪贴蒙版
+            继承透明度（Inherit Alpha）替代传统剪贴蒙版
           </h2>
           <p>
             许多从 Photoshop、Procreate 或 SAI 转入的画师会寻找独立的「剪贴蒙版」按钮，在 ReveriePaint 中，由于采用与 Krita 完全同源的通道渲染架构，剪切操作由<strong>「继承透明度（Inherit Alpha）」结合「图层组（Group）」</strong>完美实现
@@ -569,13 +492,8 @@ onUnmounted(() => {
           <div class="note-box warning">
             <p><strong>图层组穿透（Pass-through）说明：</strong>图层组默认处于隔离状态，组内继承透明度仅在组内有效，绝不渗漏到组外，若在图层组菜单中打开「穿透」，组内内容将向下继承外部整个画布的透明度</p>
           </div>
-        </section>
 
-        <section id="alpha-compare" class="doc-section">
-          <h2>
-            <a href="#alpha-compare" class="anchor">#</a>
-            锁定透明度与继承透明度对比
-          </h2>
+          <h3 class="doc-h3">锁定透明度与继承透明度对比</h3>
           <div class="table-container">
             <table class="doc-table">
               <thead>
@@ -611,30 +529,31 @@ onUnmounted(() => {
           </div>
         </section>
 
-        <section id="layer-ops" class="doc-section">
+        <section id="layer-system" class="doc-section">
           <h2>
-            <a href="#layer-ops" class="anchor">#</a>
-            图层进阶操作与独奏
+            <a href="#layer-system" class="anchor">#</a>
+            图层体系与混合模式
           </h2>
-          <p>在图层行上点击进入图层操作面板，提供专业级操作命令：</p>
+          <p>
+            ReveriePaint 具备完整的图层堆栈架构，支持以下原生图层形式：
+          </p>
           <ul class="bullet-list">
-            <li><strong>独奏模式（Solo）：</strong>点击图层眼睛图标旁的独奏按钮，画布瞬时仅展示当前图层内容，便于检查局部杂线或细微漏色</li>
+            <li><strong>绘画图层（Paint Layer）：</strong>标准栅格位图层，承载水彩、油画、勾线等笔刷渲染像素</li>
+            <li><strong>图层组（Group Layer）：</strong>容器层，用于组织多个相关图层，具备独立的合成通道与混合隔离模式</li>
+            <li><strong>滤镜图层（Filter Layer）：</strong>非破坏性动态滤镜，实时对下方内容应用模糊、调色或特效，可随时双击调整参数或栅格化</li>
+            <li><strong>填充图层（Fill Layer）：</strong>纯色或图案平铺背景图层</li>
+          </ul>
+
+          <h3 class="doc-h3">进阶图层操作</h3>
+          <ul class="bullet-list">
+            <li><strong>独奏模式（Solo）：</strong>瞬时仅展示当前图层内容，便于检查局部杂线或细微漏色</li>
             <li><strong>向下合并（Merge Down）：</strong>将当前图层合并至下方相邻图层</li>
             <li><strong>合并图层组（Flatten Group）：</strong>将整个图层组及其所有子图层烘焙为单个平片图层</li>
             <li><strong>从图层载入选区：</strong>根据当前图层的不透明度像素一键生成精确选区</li>
             <li><strong>栅格化（Rasterize）：</strong>将滤镜图层、渐变图层或文字图层转为标准可绘图像素</li>
-            <li><strong>图层水平 / 垂直翻转：</strong>独立翻转单个图层而不变动画布其他元素</li>
           </ul>
-        </section>
 
-        <section id="blend-modes" class="doc-section">
-          <h2>
-            <a href="#blend-modes" class="anchor">#</a>
-            图层混合模式参考
-          </h2>
-          <p>
-            ReveriePaint 完整继承 Krita 的色彩合成通道，支持 25 种核心混合模式：
-          </p>
+          <h3 class="doc-h3">25 种图层混合模式参考</h3>
           <div class="tool-list-clean">
             <div class="tool-row">
               <span class="tool-head">基础常规</span>
@@ -661,16 +580,9 @@ onUnmounted(() => {
               <span>色相（Hue）、饱和度（Saturation）、颜色（Color）、明度（Luminosity）</span>
             </div>
           </div>
-        </section>
 
-        <section id="layer-specs" class="doc-section">
-          <h2>
-            <a href="#layer-specs" class="anchor">#</a>
-            图层数量与推荐规格
-          </h2>
-          <p>
-            系统根据设备物理运存动态计算安全层数，创建画布时右下角会实时预估：
-          </p>
+          <h3 class="doc-h3">图层数量与推荐规格</h3>
+          <p>系统根据设备物理运存动态计算安全层数，创建画布时右下角会实时预估：</p>
           <figure class="clean-figure" style="max-width: 540px;" @click="openLightbox(imgLayersPresets, '画布图层规格')">
             <img :src="imgLayersPresets" alt="画布图层规格" loading="lazy" />
             <figcaption>不同分辨率预设在典型设备上的安全推荐图层数</figcaption>
@@ -682,11 +594,11 @@ onUnmounted(() => {
           </ul>
         </section>
 
-        <!-- 4. 手写笔硬件与微震声学 -->
-        <section id="stylus-brands" class="doc-section">
+        <!-- 03 手写笔与工坊 -->
+        <section id="stylus-hardware" class="doc-section">
           <h2>
-            <a href="#stylus-brands" class="anchor">#</a>
-            多品牌手写笔深度适配
+            <a href="#stylus-hardware" class="anchor">#</a>
+            多品牌手写笔适配
           </h2>
           <p>
             内置多品牌专用驱动适配层，充分释放高端手写笔专属硬件特性：
@@ -724,15 +636,18 @@ onUnmounted(() => {
               </tbody>
             </table>
           </div>
+          <p>
+            支持悬浮光标样式定制：包含笔刷真实外轮廓、十字精细准星、居中圆点或系统原生光标；配合落笔笔迹预测引擎，高刷屏幕跟手感更强
+          </p>
         </section>
 
-        <section id="pressure-curve" class="doc-section">
+        <section id="stylus-experience" class="doc-section">
           <h2>
-            <a href="#pressure-curve" class="anchor">#</a>
-            全局压感曲线微调
+            <a href="#stylus-experience" class="anchor">#</a>
+            压感曲线与纸感声学
           </h2>
           <p>
-            在「设置 ＞ 手写笔」中提供基于贝塞尔样条的全局压力映射编辑器，画师可根据个人下笔轻重习惯调整控制点，亦可直接套用预设：
+            在「设置 ＞ 手写笔」中提供基于贝塞尔样条的全局压力映射编辑器，画师可根据个人下笔轻重习惯调整控制点：
           </p>
           <ul class="bullet-list">
             <li><strong>线性（Linear）：</strong>输入压感与输出线宽 1:1 真实映射</li>
@@ -740,13 +655,8 @@ onUnmounted(() => {
             <li><strong>硬实（Hard）：</strong>需用力才能画出最大笔触，适合重力度勾线与雕刻细节</li>
             <li><strong>S 形对比（Sigmoid）：</strong>两头平缓中间灵敏，增强轻重笔触的戏剧化反差</li>
           </ul>
-        </section>
 
-        <section id="paper-sound" class="doc-section">
-          <h2>
-            <a href="#paper-sound" class="anchor">#</a>
-            纸感微震与声学引擎
-          </h2>
+          <h3 class="doc-h3">纸感微震与声学引擎</h3>
           <p>
             ReveriePaint 独家研发 PaperSoundEngine，通过分析运笔速度、即时压力与加速度，在设备扬声器与震动马达上实时合成真实纸张摩擦声效：
           </p>
@@ -754,28 +664,17 @@ onUnmounted(() => {
             <li><strong>铅笔纸质（Pencil）：</strong>具有真实微粒摩擦感的颗粒感声效，低速轻柔，高速清脆</li>
             <li><strong>钢笔墨水（Ink）：</strong>顺滑沉稳的湿墨流动阻尼感声效</li>
             <li><strong>机械轻嗒（Tick）：</strong>富有节奏感的微触觉确认音</li>
-            <li><strong>动态低通滤波：</strong>运笔速度越快高频泛音越饱满，完美还原纸上沙沙作画的沉浸感</li>
+            <li><strong>动态低通滤波：</strong>运笔速度越快高频泛音越饱满，还原纸上沙沙作画的沉浸感</li>
           </ul>
         </section>
 
-        <section id="stylus-cursor" class="doc-section">
+        <section id="brush-studio" class="doc-section">
           <h2>
-            <a href="#stylus-cursor" class="anchor">#</a>
-            笔尖光标与落笔预测
+            <a href="#brush-studio" class="anchor">#</a>
+            笔刷工坊与平滑算法
           </h2>
           <p>
-            支持悬浮光标样式定制：包含笔刷真实外轮廓轮廓、十字精细准星、居中圆点或系统原生光标；配合落笔笔迹预测引擎，高刷屏幕跟手感更强
-          </p>
-        </section>
-
-        <!-- 5. 笔刷工坊与动力学 -->
-        <section id="brush-import" class="doc-section">
-          <h2>
-            <a href="#brush-import" class="anchor">#</a>
-            导入笔刷（分享与手动）
-          </h2>
-          <p>
-            支持两种导入途径，推荐使用系统级分享一键导入：
+            支持导入多种行业标准笔刷格式，并提供系统分享一键快速导入：
           </p>
           <figure class="clean-figure" @click="openLightbox(imgBrushImport, '笔刷面板导入界面')">
             <img :src="imgBrushImport" alt="笔刷面板导入界面" loading="lazy" />
@@ -783,49 +682,15 @@ onUnmounted(() => {
           </figure>
           <ul class="bullet-list">
             <li><strong>系统分享导入（首选）：</strong>在 QQ、微信、网盘或文件管理器中直接点击笔刷文件（<code>.kpp</code> / <code>.bundle</code>），选择「用其他应用打开」或「分享」，点选 <strong>ReveriePaint</strong> 即可秒级导入</li>
-            <li><strong>应用内手动导入：</strong>在画布左侧画笔面板中点击「导入」按钮，调起系统文件管理器选取笔刷</li>
+            <li><strong>支持格式：</strong>Krita 原生 <code>.kpp</code> 预设、<code>.bundle</code> 资源包以及 MyPaint <code>.myb</code> 引擎笔刷</li>
+            <li><strong>PS ABR 技巧：</strong>将 <code>.abr</code> 中的笔尖图案导出为透明背景 <code>.png</code> 后，在笔刷工坊中点击「导入自定义」即可直接收录使用</li>
           </ul>
           <figure class="clean-figure" style="max-width: 520px;" @click="openLightbox(imgBrushQq, 'QQ 接收文件打开方式')">
             <img :src="imgBrushQq" alt="QQ 接收文件打开方式" loading="lazy" />
             <figcaption>QQ 内接收文件后点击右上角三个点，选择用其他应用打开</figcaption>
           </figure>
-        </section>
 
-        <section id="brush-formats" class="doc-section">
-          <h2>
-            <a href="#brush-formats" class="anchor">#</a>
-            支持的笔刷格式生态
-          </h2>
-          <ul class="bullet-list">
-            <li><strong>.kpp（Krita Paintop Preset）：</strong>Krita 原生预设格式，内嵌预览缩略图、笔刷引擎设定、笔尖蒙版与动力学参数</li>
-            <li><strong>.bundle（Krita 资源包）：</strong>包含多个笔刷预设、笔尖贴图与纸纹材质的综合压缩包，导入时自动完成全套解包</li>
-            <li><strong>.myb（MyPaint 笔刷）：</strong>兼容 MyPaint 水彩与涂抹预设引擎</li>
-          </ul>
-        </section>
-
-        <section id="abr-tips" class="doc-section">
-          <h2>
-            <a href="#abr-tips" class="anchor">#</a>
-            Photoshop ABR 转换技巧
-          </h2>
-          <p>
-            由于 Photoshop <code>.abr</code> 采用私有二进制封闭封装，可将 ABR 中的笔尖图案导出为透明背景 <code>.png</code> 后导入：
-          </p>
-          <ol class="ordered-list">
-            <li>使用在线转换工具或 ABR Viewer 提取 <code>.abr</code> 内部笔尖为透明 <code>.png</code></li>
-            <li>在 ReveriePaint 笔刷面板中点击「新建笔刷」进入「高级工坊」</li>
-            <li>在「笔尖形状（Tip & Mask）」中点击「导入自定义」，选取保存的 PNG 笔尖即可永久归档入库</li>
-          </ol>
-        </section>
-
-        <section id="brush-studio" class="doc-section">
-          <h2>
-            <a href="#brush-studio" class="anchor">#</a>
-            笔刷工坊八大调校维度
-          </h2>
-          <p>
-            长按任意笔刷点击编辑即可进入 Brush Studio 深度调校工作台：
-          </p>
+          <h3 class="doc-h3">笔刷工坊八大调校维度</h3>
           <div class="tool-list-clean">
             <div class="tool-row">
               <span class="tool-head">笔尖与遮罩</span>
@@ -860,79 +725,29 @@ onUnmounted(() => {
               <span>Properties：笔刷命名、作者署名与自定义手绘缩略图标</span>
             </div>
           </div>
-        </section>
 
-        <section id="brush-stabilizer" class="doc-section">
-          <h2>
-            <a href="#brush-stabilizer" class="anchor">#</a>
-            笔迹平滑与防抖算法
-          </h2>
-          <p>
-            针对不同绘画习惯，工具栏提供四档平滑模式切换：
-          </p>
+          <h3 class="doc-h3">四档防抖稳定器</h3>
           <ul class="bullet-list">
-            <li><strong>无平滑（None）：</strong>100% 忠实记录传感器原生采样坐标，极速无延迟，适合草图速写</li>
+            <li><strong>无平滑（None）：</strong>100% 忠实记录原生采样坐标，极速无延迟，适合草图速写</li>
             <li><strong>基本平滑（Basic）：</strong>轻量滑动平均插值算法，消除手部细微生理抖动</li>
-            <li><strong>加权平滑（Weighted）：</strong>按笔画距离动态计算阻尼，勾线更加圆润流畅</li>
+            <li><strong>加权平滑（Weighted）：</strong>按笔画距离动态计算阻尼，勾线圆润流畅</li>
             <li><strong>延迟稳定器（Stabilizer）：</strong>拉绳稳定模型，笔尖后方牵引弹性绳，彻底消除一切抖褶</li>
           </ul>
         </section>
 
-        <!-- 6. 界面与色彩工具 -->
-        <section id="ui-overview" class="doc-section">
+        <!-- 04 创作与进阶工具 -->
+        <section id="color-tools" class="doc-section">
           <h2>
-            <a href="#ui-overview" class="anchor">#</a>
-            主画布界面总览
-          </h2>
-          <figure class="clean-figure" @click="openLightbox(imgUiMain, 'ReveriePaint 平板主画布界面总览')">
-            <img :src="imgUiMain" alt="ReveriePaint 平板主画布界面总览" loading="lazy" />
-            <figcaption>各功能分区：左侧工具栏、快捷滑块、图层面板、色轮与浮动视窗</figcaption>
-          </figure>
-        </section>
-
-        <section id="ui-toolbar" class="doc-section">
-          <h2>
-            <a href="#ui-toolbar" class="anchor">#</a>
-            工具栏滑动与排布定制
-          </h2>
-          <figure class="clean-figure" style="max-width: 580px;" @click="openLightbox(imgUiLeftbar, '左侧菜单栏使用说明')">
-            <img :src="imgUiLeftbar" alt="左侧菜单栏使用说明" loading="lazy" />
-            <figcaption>工具栏支持上下滑动浏览，点击底部展开按钮可自由编辑常用工具排布</figcaption>
-          </figure>
-        </section>
-
-        <section id="color-picker" class="doc-section">
-          <h2>
-            <a href="#color-picker" class="anchor">#</a>
-            悬浮取色面板与固定
+            <a href="#color-tools" class="anchor">#</a>
+            色彩面板与参考视窗
           </h2>
           <ul class="bullet-list">
-            <li><strong>按住顶栏拖拽：</strong>可将取色板移动至画布任意顺手位置</li>
-            <li><strong>点击图钉固定：</strong>点击色轮左上角图钉图标将其固定置顶，边画边取色</li>
+            <li><strong>悬浮取色面板：</strong>可拖拽至屏幕任意位置，点击左上角图钉图标置顶常驻，边画边取色</li>
             <li><strong>五合一取色模式：</strong>HSV 色轮、饱和度方块、和谐配色环、预设色卡与 RGB 滑块一键切换</li>
+            <li><strong>浮动参考图视窗：</strong>支持独立加载外部高清参考图，窗口内支持双指独立平移缩放，点击即可直接取色</li>
           </ul>
-        </section>
 
-        <section id="color-reference" class="doc-section">
-          <h2>
-            <a href="#color-reference" class="anchor">#</a>
-            浮动参考图视窗
-          </h2>
-          <p>
-            点击顶部「参考」按钮可呼出独立的悬浮参考图视窗：
-          </p>
-          <ul class="bullet-list">
-            <li>支持加载外部本地图片作为画作参考，不占用画布实际图层</li>
-            <li>参考窗口内支持双指独立平移与缩放，与主画布视角互不干扰</li>
-            <li>手指或手写笔点击参考图内部即可直接吸色并应用到当前画笔</li>
-          </ul>
-        </section>
-
-        <section id="tools-list" class="doc-section">
-          <h2>
-            <a href="#tools-list" class="anchor">#</a>
-            全量工具清单一览
-          </h2>
+          <h3 class="doc-h3">全量工具清单一览</h3>
           <div class="tool-list-clean">
             <div class="tool-row">
               <span class="tool-head">基础绘画</span>
@@ -953,11 +768,10 @@ onUnmounted(() => {
           </div>
         </section>
 
-        <!-- 7. 实时滤镜与通道处理 -->
-        <section id="filters-overview" class="doc-section">
+        <section id="filters-suite" class="doc-section">
           <h2>
-            <a href="#filters-overview" class="anchor">#</a>
-            35 种专业级滤镜分类
+            <a href="#filters-suite" class="anchor">#</a>
+            35 种滤镜与线稿提取
           </h2>
           <p>
             ReveriePaint 内置完整的 GPU 加速滤镜矩阵，可作用于当前图层或创建动态滤镜图层：
@@ -994,103 +808,51 @@ onUnmounted(() => {
               </tbody>
             </table>
           </div>
-        </section>
 
-        <section id="filters-map" class="doc-section">
-          <h2>
-            <a href="#filters-map" class="anchor">#</a>
-            渐变映射与黑白线稿提取
-          </h2>
-          <p>
-            内置两款数字绘画高频使用的通道滤镜：
-          </p>
+          <h3 class="doc-h3">高频核心通道滤镜</h3>
           <ul class="bullet-list">
-            <li><strong>亮度转 Alpha（Luminance to Alpha）：</strong>纸上手绘草稿拍照导入后，一键将画面白纸区域完全转为透明，保留纯净的黑色铅笔线条，省去繁琐抠图步骤</li>
+            <li><strong>亮度转 Alpha（Luminance to Alpha）：</strong>纸上手绘草稿拍照导入后，一键将白纸完全转为透明，保留纯净的黑色铅笔线条，免去繁琐抠图</li>
             <li><strong>渐变映射（Gradient Map）：</strong>黑白灰阶二分素描一键上色神器，通过自定义色带将图像由暗到明的灰度精准映射为丰富色彩</li>
           </ul>
         </section>
 
-        <!-- 8. 选区与空间变换 -->
-        <section id="selection-tools" class="doc-section">
+        <section id="selection-transform" class="doc-section">
           <h2>
-            <a href="#selection-tools" class="anchor">#</a>
-            选区工具族与布尔运算
+            <a href="#selection-transform" class="anchor">#</a>
+            选区运算与空间变换
           </h2>
           <p>
-            支持自由套索、几何矩形/椭圆、多边形以及魔棒连续选择；面板提供完整的选区布尔运算控制：
+            选区面板提供自由套索、几何矩形/椭圆、多边形以及魔棒连续选择，并支持完整布尔运算：
           </p>
           <ul class="bullet-list">
-            <li><strong>新建选区：</strong>替换当前选区</li>
-            <li><strong>添加模式（+）：</strong>按住追加选区区域</li>
-            <li><strong>减去模式（-）：</strong>镂空剔除指定区域</li>
-            <li><strong>相交模式（∩）：</strong>仅保留重叠部分</li>
-            <li><strong>边缘处理：</strong>支持一键反向选择、选区边缘羽化柔化以及像素级扩展/收缩</li>
+            <li><strong>布尔运算：</strong>支持新建选区、添加模式（+）、减去模式（-）、相交模式（∩）</li>
+            <li><strong>边缘处理：</strong>支持一键反向选择、选区边缘羽化柔化以及像素级扩展与收缩</li>
             <li><strong>提取命令：</strong>支持「剪切到新图层」、「复制到新图层」与直接清空选区内容</li>
+            <li><strong>自由变换：</strong>支持八控制手柄自由拉伸、锁定等比缩放、自由旋转与镜像对称翻转，配合高质量双三次插值重采样减少失真</li>
           </ul>
         </section>
 
-        <section id="transform-modes" class="doc-section">
+        <section id="animation-workflow" class="doc-section">
           <h2>
-            <a href="#transform-modes" class="anchor">#</a>
-            自由变换与空间映射
+            <a href="#animation-workflow" class="anchor">#</a>
+            逐帧动画与洋葱皮
           </h2>
           <p>
-            变换工具支持针对当前图层或局部选区内容执行空间矩阵变换：
+            展开动画时间轴后，画作即刻进入逐帧原画工作流：
           </p>
           <ul class="bullet-list">
-            <li><strong>自由变换：</strong>支持八个控制手柄任意拉伸缩放</li>
-            <li><strong>锁定宽高比：</strong>等比例缩放，避免人物形体失真</li>
-            <li><strong>旋转与翻转：</strong>任意角度微调、90 度步进旋转与水平/垂直轴向对称镜像</li>
-            <li><strong>双三次插值重采样：</strong>变换过程中提供高质量像素重建，最大限度减少缩放模糊</li>
+            <li><strong>时间轴控制：</strong>自由插入空白关键帧或复制现有帧，调节单帧驻留时间适配一拍一、一拍二节奏</li>
+            <li><strong>洋葱皮透光台：</strong>前续帧默认为朱红色标，后续帧默认为青绿色标，附带透明度阶梯衰减与仅显示关键帧模式</li>
+            <li><strong>预渲染缓存引擎：</strong>内置动态 RAM 预渲染机制，提前合成显存纹理，保证 60fps 丝滑播放不卡顿</li>
+            <li><strong>动效导出：</strong>支持一键输出为 GIF 动图、MP4 高清动画视频或连续 PNG 序列帧</li>
           </ul>
         </section>
 
-        <!-- 9. 逐帧动画与时间轴 -->
-        <section id="anim-timeline" class="doc-section">
+        <!-- 05 工程与社群 -->
+        <section id="project-timelapse" class="doc-section">
           <h2>
-            <a href="#anim-timeline" class="anchor">#</a>
-            时间轴面板与帧管理
-          </h2>
-          <p>
-            展开动画时间轴后，画作转为逐帧动画工作流：
-          </p>
-          <ul class="bullet-list">
-            <li><strong>关键帧与空白帧：</strong>随时在指定时间点插入空白关键帧或复制现有帧进行原画绘制</li>
-            <li><strong>帧间隔与保持：</strong>支持调整单帧驻留时间，适配一拍一、一拍二或一拍三节奏</li>
-            <li><strong>帧操作菜单：</strong>支持帧的剪切、复制、粘贴、反转与向后顺移</li>
-          </ul>
-        </section>
-
-        <section id="anim-onion" class="doc-section">
-          <h2>
-            <a href="#anim-onion" class="anchor">#</a>
-            洋葱皮透光台
-          </h2>
-          <p>
-            提供专业二维动画透光台辅助视效：
-          </p>
-          <ul class="bullet-list">
-            <li><strong>色标标注：</strong>前续帧默认为朱红色标记，后续帧默认为青绿色标记，便于区分动态走势</li>
-            <li><strong>透明度阶梯衰减：</strong>离当前帧越远的画幅透明度自动降低，避免线条视觉杂乱</li>
-            <li><strong>仅显示关键帧模式：</strong>可过滤中间过渡帧，专注于极重要动作节点对齐</li>
-          </ul>
-        </section>
-
-        <section id="anim-playback" class="doc-section">
-          <h2>
-            <a href="#anim-playback" class="anchor">#</a>
-            预渲染缓存与动效导出
-          </h2>
-          <p>
-            内置动态 RAM 预渲染缓存机制，播放时提前将多图层合成为显存纹理，确保 60fps 丝滑预览不掉帧；支持导出为 GIF 动图、MP4 高清视频或连续 PNG 序列帧
-          </p>
-        </section>
-
-        <!-- 10. 工程规范与延时摄影 -->
-        <section id="file-revp" class="doc-section">
-          <h2>
-            <a href="#file-revp" class="anchor">#</a>
-            .revp 自研工程规范
+            <a href="#project-timelapse" class="anchor">#</a>
+            工程规范与延时摄影
           </h2>
           <p>
             <code>.revp</code> 是 ReveriePaint 自研的原生高性能工程归档格式，采用标准 ZIP 封装协议：
@@ -1100,16 +862,8 @@ onUnmounted(() => {
             <li><strong>无损分块位图：</strong>图层像素采用无损压缩分块存储，大幅降低读写功耗与存盘耗时</li>
             <li><strong>timelapse.bin：</strong>内嵌笔画事件流二进制记录，无损保留作画过程全轨迹</li>
           </ul>
-        </section>
 
-        <section id="timelapse-record" class="doc-section">
-          <h2>
-            <a href="#timelapse-record" class="anchor">#</a>
-            无损笔迹延时摄影回放
-          </h2>
-          <p>
-            ReveriePaint 的延时摄影与传统手机录屏具有本质差异：
-          </p>
+          <h3 class="doc-h3">无损笔迹延时摄影回放</h3>
           <div class="feature-bullets">
             <div class="bullet-card">
               <strong>事件流记录：</strong>后台仅记录笔尖坐标、压力传感器数据与工具切换事件，几乎零 CPU/GPU 功耗占用，工程体积仅增加数兆字节
@@ -1118,29 +872,19 @@ onUnmounted(() => {
               <strong>无损 4K 生成：</strong>导出延时摄影时，由后台渲染内核以原始分辨率重新仿真回放画画过程，输出清晰度极高的 4K MP4 视频，无任何界面遮挡
             </div>
           </div>
-        </section>
 
-        <section id="file-interop" class="doc-section">
-          <h2>
-            <a href="#file-interop" class="anchor">#</a>
-            跨软件文件互通与导出
-          </h2>
-          <p>
-            在「导出」面板中提供多种跨平台文件转换支持：
-          </p>
+          <h3 class="doc-h3">跨软件文件互通与导出</h3>
           <ul class="bullet-list">
             <li><strong>.kra：</strong>Krita 原生标准规范，100% 完整保留正片叠底与继承透明度设置</li>
             <li><strong>.psd：</strong>Photoshop 分层文档，便于导入桌面端继续排版修图</li>
-            <li><strong>TIFF：</strong>印刷工业级位图，无损色彩压缩</li>
-            <li><strong>PNG / WebP / JPG：</strong>适合网络分享与社交平台发布的通用平片格式</li>
+            <li><strong>TIFF / PNG / WebP / JPG：</strong>适合印刷出版与网络社交平台发布的通用格式</li>
           </ul>
         </section>
 
-        <!-- 11. 问题与社群 -->
-        <section id="feedback" class="doc-section">
+        <section id="community-feedback" class="doc-section">
           <h2>
-            <a href="#feedback" class="anchor">#</a>
-            Bug 反馈与 GitHub 规范
+            <a href="#community-feedback" class="anchor">#</a>
+            问题反馈与创作者群
           </h2>
           <p>
             遇到程序异常或可复现的缺陷，建议优先在 GitHub Issues 提交反馈以追踪修复进展：
@@ -1162,16 +906,9 @@ onUnmounted(() => {
               前往 GitHub Issues 提交反馈 →
             </a>
           </div>
-        </section>
 
-        <section id="community" class="doc-section">
-          <h2>
-            <a href="#community" class="anchor">#</a>
-            创作者交流群
-          </h2>
-          <p>
-            欢迎加入画师社群交流作画技巧、反馈建议或抢先体验测试安装包：
-          </p>
+          <h3 class="doc-h3">创作者交流群</h3>
+          <p>欢迎加入画师社群交流作画技巧、反馈建议或抢先体验测试安装包：</p>
           <div class="qq-clean-box">
             <div>
               <strong>ReveriePaint 创作者交流群</strong>
@@ -1391,19 +1128,19 @@ onUnmounted(() => {
 
 /* 侧边栏：左侧固定 */
 .docs-sidebar {
-  width: 220px;
+  width: 230px;
   flex-shrink: 0;
   position: sticky;
   top: 84px;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
-  padding-right: 16px;
+  padding-right: 18px;
   border-right: 1px solid var(--line-faint);
 }
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 .nav-group {
   display: flex;
@@ -1411,13 +1148,22 @@ onUnmounted(() => {
   gap: 4px;
 }
 .group-title {
-  font-size: 0.6875rem;
-  font-weight: 600;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px 6px;
+}
+.group-num {
   font-family: var(--font-mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 0.6875rem;
+  color: var(--ink-ghost);
+  font-weight: 500;
+}
+.group-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: var(--ink-soft-2);
-  padding: 3px 6px;
 }
 .group-list {
   list-style: none;
@@ -1426,13 +1172,15 @@ onUnmounted(() => {
   gap: 2px;
 }
 .nav-item {
-  display: block;
+  display: flex;
+  align-items: center;
   font-size: 0.8125rem;
   color: var(--ink-mid);
-  padding: 5px 8px;
+  padding: 6px 10px;
   border-radius: 6px;
-  line-height: 1.45;
-  transition: color 0.15s, background 0.15s;
+  line-height: 1.4;
+  border-left: 2px solid transparent;
+  transition: all 0.15s ease;
 }
 .nav-item:hover {
   color: var(--ink);
@@ -1442,6 +1190,7 @@ onUnmounted(() => {
   color: var(--ink);
   font-weight: 500;
   background: rgba(20, 22, 26, 0.06);
+  border-left-color: var(--ink);
 }
 .search-empty {
   font-size: 0.8125rem;
@@ -1499,7 +1248,7 @@ onUnmounted(() => {
 .doc-h3 {
   font-size: 1.05rem;
   font-weight: 500;
-  margin: 20px 0 10px;
+  margin: 22px 0 10px;
   color: var(--ink);
 }
 .anchor {
