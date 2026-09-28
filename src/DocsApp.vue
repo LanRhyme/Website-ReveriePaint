@@ -70,6 +70,71 @@ const lightboxImg = ref(null)
 
 const allItems = computed(() => navSections.flatMap((g) => g.items))
 
+const currentItem = computed(() => {
+  return allItems.value.find((item) => item.id === activeSectionId.value) || allItems.value[0]
+})
+
+const currentGroup = computed(() => {
+  for (const g of navSections) {
+    if (g.items.some((item) => item.id === activeSectionId.value)) {
+      return g
+    }
+  }
+  return navSections[0]
+})
+
+const currentGroupTitle = computed(() => currentGroup.value ? `${currentGroup.value.index} ${currentGroup.value.group}` : '')
+const currentItemTitle = computed(() => currentItem.value ? currentItem.value.label : '')
+
+let isProgrammaticScroll = false
+let scrollTimer = null
+
+function updateActiveSection() {
+  if (isProgrammaticScroll) return
+
+  const scrollY = window.pageYOffset || document.documentElement.scrollTop
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight
+
+  // 1. 顶部位置优先激活第一项
+  if (scrollY < 120) {
+    if (allItems.value.length > 0) {
+      activeSectionId.value = allItems.value[0].id
+    }
+    return
+  }
+
+  // 2. 滚动触底时激活最后一项
+  if (docHeight > 0 && scrollY >= docHeight - 70) {
+    if (allItems.value.length > 0) {
+      activeSectionId.value = allItems.value[allItems.value.length - 1].id
+    }
+    return
+  }
+
+  // 3. 动态寻找阅读中线（移动端 160px / 桌面端 180px）所在的章节
+  const isMobile = window.innerWidth <= 960
+  const readingLine = isMobile ? 160 : 180
+  let matchedId = null
+
+  for (let i = allItems.value.length - 1; i >= 0; i--) {
+    const item = allItems.value[i]
+    const el = document.getElementById(item.id)
+    if (el) {
+      const rect = el.getBoundingClientRect()
+      if (rect.top <= readingLine) {
+        matchedId = item.id
+        break
+      }
+    }
+  }
+
+  if (matchedId) {
+    activeSectionId.value = matchedId
+  } else if (allItems.value.length > 0) {
+    activeSectionId.value = allItems.value[0].id
+  }
+}
+
 function copyText(key, text) {
   if (navigator?.clipboard?.writeText) {
     navigator.clipboard.writeText(text)
@@ -104,10 +169,20 @@ function scrollToAnchor(id) {
   mobileMenuOpen.value = false
   const el = document.getElementById(id)
   if (el) {
-    const yOffset = -76
-    const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
-    window.scrollTo({ top: y, behavior: 'smooth' })
+    isProgrammaticScroll = true
     activeSectionId.value = id
+
+    const isMobile = window.innerWidth <= 960
+    const yOffset = isMobile ? -108 : -76
+    const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
+
+    window.scrollTo({ top: y, behavior: 'smooth' })
+
+    clearTimeout(scrollTimer)
+    scrollTimer = setTimeout(() => {
+      isProgrammaticScroll = false
+      updateActiveSection()
+    }, 700)
   }
 }
 
@@ -115,23 +190,25 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
+function toggleMobileMenu() {
+  mobileMenuOpen.value = !mobileMenuOpen.value
+  if (mobileMenuOpen.value) {
+    setTimeout(() => {
+      const activeEl = document.querySelector('.docs-sidebar .nav-item.active')
+      if (activeEl) {
+        activeEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+      }
+    }, 120)
+  }
+}
+
 function onScroll() {
-  const scrollY = window.pageYOffset
+  const scrollY = window.pageYOffset || document.documentElement.scrollTop
   const docHeight = document.documentElement.scrollHeight - window.innerHeight
   scrollProgress.value = docHeight > 0 ? Math.min(100, Math.max(0, (scrollY / docHeight) * 100)) : 0
   showBackToTop.value = scrollY > 400
 
-  for (let i = allItems.value.length - 1; i >= 0; i--) {
-    const item = allItems.value[i]
-    const el = document.getElementById(item.id)
-    if (el) {
-      const top = el.getBoundingClientRect().top
-      if (top <= 140) {
-        activeSectionId.value = item.id
-        break
-      }
-    }
-  }
+  updateActiveSection()
 }
 
 const filteredNav = computed(() => {
@@ -149,16 +226,21 @@ const filteredNav = computed(() => {
 
 onMounted(() => {
   window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('resize', updateActiveSection, { passive: true })
   window.addEventListener('keydown', handleKeydown)
   if (window.location.hash) {
     const id = window.location.hash.replace('#', '')
     setTimeout(() => scrollToAnchor(id), 120)
+  } else {
+    updateActiveSection()
   }
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('resize', updateActiveSection)
   window.removeEventListener('keydown', handleKeydown)
+  clearTimeout(scrollTimer)
 })
 </script>
 
@@ -202,18 +284,18 @@ onUnmounted(() => {
         </div>
 
         <div class="header-nav">
-          <a href="/" class="header-link">官网首页</a>
+          <a href="/" class="header-link desktop-only">官网首页</a>
           <a
             href="https://github.com/LanRhyme/ReveriePaint"
             target="_blank"
             rel="noopener"
-            class="header-link"
+            class="header-link desktop-only"
           >
             GitHub
           </a>
           <button
             type="button"
-            class="header-copy-btn"
+            class="header-copy-btn desktop-only"
             @click="copyText('qqHeader', '729283213')"
           >
             {{ copiedMap['qqHeader'] ? '群号已复制' : 'QQ 群 729283213' }}
@@ -222,13 +304,30 @@ onUnmounted(() => {
             type="button"
             class="mobile-menu-btn"
             aria-label="目录"
-            @click="mobileMenuOpen = !mobileMenuOpen"
+            @click="toggleMobileMenu"
           >
             {{ mobileMenuOpen ? '收起' : '目录' }}
           </button>
         </div>
       </div>
     </header>
+
+    <!-- 移动端吸顶章节指示条（实时随滚动同步章节，点击展开目录） -->
+    <div class="mobile-subbar" @click="toggleMobileMenu">
+      <div class="mobile-subbar-inner">
+        <div class="mobile-subbar-title">
+          <span class="subbar-group">{{ currentGroupTitle }}</span>
+          <span class="subbar-sep">/</span>
+          <span class="subbar-item">{{ currentItemTitle }}</span>
+        </div>
+        <div :class="['mobile-subbar-btn', { 'is-open': mobileMenuOpen }]">
+          <span>{{ mobileMenuOpen ? '收起' : '目录' }}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </div>
+      </div>
+    </div>
 
     <!-- 核心视图区域（居中平衡双栏布局） -->
     <div class="docs-viewport">
@@ -254,6 +353,18 @@ onUnmounted(() => {
           </div>
           <div v-if="filteredNav.length === 0" class="search-empty">
             无匹配章节内容
+          </div>
+
+          <!-- 移动端侧边抽屉底部快捷外链 -->
+          <div class="sidebar-mobile-footer">
+            <div class="mobile-footer-divider"></div>
+            <div class="mobile-footer-links">
+              <a href="/" class="mobile-footer-link">官网首页</a>
+              <a href="https://github.com/LanRhyme/ReveriePaint/releases" target="_blank" rel="noopener" class="mobile-footer-link">Releases</a>
+              <a href="https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android" target="_blank" rel="noopener" class="mobile-footer-link">Mirror酱</a>
+              <a href="https://github.com/LanRhyme/ReveriePaint" target="_blank" rel="noopener" class="mobile-footer-link">GitHub</a>
+              <a href="https://qm.qq.com/q/729283213" target="_blank" rel="noopener" class="mobile-footer-link">QQ 交流群</a>
+            </div>
           </div>
         </nav>
       </aside>
@@ -1214,14 +1325,86 @@ onUnmounted(() => {
 
 .mobile-menu-btn {
   display: none;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
   border: 1px solid var(--line-strong);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.8);
   font-family: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.78125rem;
+  font-weight: 500;
   color: var(--ink);
   cursor: pointer;
+  transition: background 0.2s;
+}
+
+/* ══ 移动端专属吸顶章节指示条 ═══════════════════ */
+.mobile-subbar {
+  display: none;
+  position: sticky;
+  top: 58px;
+  z-index: 35;
+  background: rgba(245, 242, 236, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line-faint);
+  height: 42px;
+  cursor: pointer;
+  user-select: none;
+}
+.mobile-subbar-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mobile-subbar-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78125rem;
+  color: var(--ink);
+  min-width: 0;
+  overflow: hidden;
+}
+.subbar-group {
+  font-size: 0.71875rem;
+  font-family: var(--font-mono);
+  color: var(--ink-soft-2);
+  flex-shrink: 0;
+}
+.subbar-sep {
+  color: var(--ink-ghost);
+  font-size: 0.6875rem;
+  flex-shrink: 0;
+}
+.subbar-item {
+  font-weight: 500;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mobile-subbar-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--ink-mid);
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(20, 22, 26, 0.05);
+  transition: background 0.15s, color 0.15s;
+}
+.mobile-subbar-btn svg {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mobile-subbar-btn.is-open svg {
+  transform: rotate(180deg);
 }
 
 /* ══ 居中平衡双栏布局 ═══════════════════════════ */
@@ -1304,6 +1487,30 @@ onUnmounted(() => {
   font-size: 0.8125rem;
   color: var(--ink-ghost);
   padding: 10px 8px;
+}
+
+/* 侧边栏移动端底部快捷外链 */
+.sidebar-mobile-footer {
+  display: none;
+  margin-top: 16px;
+}
+.mobile-footer-divider {
+  height: 1px;
+  background: var(--line-faint);
+  margin-bottom: 12px;
+}
+.mobile-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+.mobile-footer-link {
+  font-size: 0.8125rem;
+  color: var(--ink-mid);
+  text-decoration: none;
+}
+.mobile-footer-link:hover {
+  color: var(--ink);
 }
 
 /* 正文流 */
@@ -1525,12 +1732,14 @@ onUnmounted(() => {
 .table-container {
   margin: 16px 0;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: 8px;
   border: 1px solid var(--line);
   background: #fff;
 }
 .doc-table {
   width: 100%;
+  min-width: 520px;
   border-collapse: collapse;
   font-size: 0.84375rem;
   line-height: 1.6;
@@ -1606,6 +1815,8 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .tree-line {
   display: flex;
@@ -1740,8 +1951,8 @@ onUnmounted(() => {
 /* 回到顶部 */
 .back-top {
   position: fixed;
-  right: 28px;
-  bottom: 28px;
+  right: 24px;
+  bottom: 24px;
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -1806,23 +2017,29 @@ onUnmounted(() => {
 
 /* 移动端与平板响应式适配 */
 @media (max-width: 960px) {
+  .mobile-subbar {
+    display: block;
+  }
+  .desktop-only {
+    display: none !important;
+  }
   .docs-viewport {
-    gap: 24px;
-    padding: 24px 16px 80px;
+    gap: 0;
+    padding: 20px 16px 80px;
   }
   .docs-sidebar {
     position: fixed;
-    top: 58px;
+    top: 100px;
     left: 0;
     bottom: 0;
-    width: 260px;
+    width: min(320px, 86vw);
     background: var(--paper);
     z-index: 90;
-    padding: 20px 16px;
+    padding: 20px 18px 30px;
     border-right: 1px solid var(--line);
     transform: translateX(-100%);
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.12);
   }
   .docs-sidebar.is-open {
     transform: translateX(0);
@@ -1831,18 +2048,23 @@ onUnmounted(() => {
     position: fixed;
     inset: 0;
     top: 58px;
-    background: rgba(20, 22, 26, 0.3);
-    z-index: 80;
-    backdrop-filter: blur(2px);
+    background: rgba(20, 22, 26, 0.32);
+    z-index: 85;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
   .mobile-menu-btn {
     display: block;
   }
-  .header-search {
-    max-width: 200px;
+  .sidebar-mobile-footer {
+    display: block;
   }
-  .header-copy-btn {
-    display: none;
+  .table-container {
+    margin: 14px -6px;
+    border-radius: 6px;
+  }
+  .doc-section {
+    scroll-margin-top: 110px;
   }
 }
 
@@ -1853,22 +2075,63 @@ onUnmounted(() => {
   .header-search {
     display: none;
   }
+  .brand-text {
+    font-size: 0.9375rem;
+  }
+  .docs-viewport {
+    padding: 16px 12px 80px;
+  }
+  .doc-lead-header {
+    padding-bottom: 16px;
+  }
   .doc-title {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
+  }
+  .doc-desc {
+    font-size: 0.875rem;
+    line-height: 1.68;
+  }
+  .doc-section h2 {
+    font-size: 1.1875rem;
+  }
+  .doc-section p,
+  .bullet-list li,
+  .ordered-list li {
+    font-size: 0.875rem;
+    line-height: 1.72;
   }
   .layer-steps {
     grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .step-card {
+    padding: 12px;
+  }
+  .layer-tree-card {
+    padding: 12px 14px;
+    font-size: 0.75rem;
+  }
+  .tree-child {
+    padding-left: 12px;
   }
   .tool-row {
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
+    font-size: 0.8125rem;
   }
   .tool-head {
     width: auto;
+    font-weight: 600;
   }
   .qq-clean-box {
     flex-direction: column;
     align-items: flex-start;
+    padding: 14px;
+  }
+  .qq-num {
+    margin-left: 0;
+    margin-top: 4px;
+    display: block;
   }
   .qq-btn-group {
     width: 100%;
