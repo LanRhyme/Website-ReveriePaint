@@ -2048,10 +2048,9 @@ onUnmounted(() => {
     position: fixed;
     inset: 0;
     top: 58px;
-    background: rgba(20, 22, 26, 0.32);
+    background: transparent;
     z-index: 85;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    pointer-events: auto;
   }
   .mobile-menu-btn {
     display: block;
