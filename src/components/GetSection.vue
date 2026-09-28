@@ -52,7 +52,7 @@ const ways = [
     primary: true
   },
   {
-    title: '创作者交流群',
+    title: '交流群',
     body: '欢迎加入 ReveriePaint 创作者交流群，交流平板手绘体验、反馈功能建议与获取最新构建。',
     isQQ: true,
     links: [

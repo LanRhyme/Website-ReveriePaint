@@ -56,7 +56,7 @@ const navSections = [
     group: '工程与社群',
     items: [
       { id: 'project-timelapse', label: '工程规范与延时摄影' },
-      { id: 'community-feedback', label: '问题反馈与创作者群' }
+      { id: 'community-feedback', label: '问题反馈与交流群' }
     ]
   }
 ]
@@ -411,7 +411,7 @@ onUnmounted(() => {
 
           <h3 class="doc-h3">获取 APK 安装包通道</h3>
           <p>
-            ReveriePaint 遵循 GPL-3.0 协议开源，官方优先推荐通过 GitHub Releases 获取正版构建，国内免翻环境亦可通过第三方 Mirror酱 或 QQ 群文件下载：
+            ReveriePaint 遵循 GPL-3.0 协议开源，官方优先推荐通过 GitHub Releases 获取正版构建，国内网络环境亦可通过 Mirror酱 下载：
           </p>
           <figure class="clean-figure" @click="openLightbox(imgInstallRepo, 'GitHub Releases 下载入口')">
             <img :src="imgInstallRepo" alt="GitHub Releases 下载入口" loading="lazy" />
@@ -436,11 +436,8 @@ onUnmounted(() => {
               rel="noopener"
               class="download-pill"
             >
-              Mirror酱镜像下载（第三方免翻通道） →
+              Mirror酱镜像下载（第三方付费高速下载服务） →
             </a>
-          </div>
-          <div class="note-box">
-            <p><strong>备选渠道：</strong>若外部网络访问受限，可在官方创作者交流群（群号 <code>729283213</code>）群文件中直接获取最新 APK 安装包</p>
           </div>
           <ul class="bullet-list">
             <li>在系统浏览器或文件管理器中点击下载的 APK 文件，允许「安装未知来源应用」</li>
@@ -1225,7 +1222,7 @@ onUnmounted(() => {
             </a>
           </div>
 
-          <h3 class="doc-h3">创作者交流群</h3>
+          <h3 class="doc-h3">交流群</h3>
           <p>欢迎加入画师社群交流作画技巧、反馈建议或抢先体验测试安装包：</p>
           <div class="qq-clean-box">
             <div>
