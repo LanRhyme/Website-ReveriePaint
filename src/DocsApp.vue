@@ -28,7 +28,7 @@ const navSections = [
     group: '图层与核心机制',
     items: [
       { id: 'inherit-alpha', label: '继承透明度（剪贴蒙版）' },
-      { id: 'layer-system', label: '图层体系与描边系统' }
+      { id: 'layer-system', label: '图层体系与混合模式' }
     ]
   },
   {
@@ -395,14 +395,14 @@ onUnmounted(() => {
             软件架构与安装授权
           </h2>
           <p>
-            ReveriePaint 深度整合 Krita 核心图形内核，采用 C++ 原生底层与 Android 硬件加速通道直接渲染，杜绝跨平台 Web 包装层的性能损耗
+            ReveriePaint 深度整合 Krita 核心图形内核，专为 Android 触控与平板设备优化打造，提供流畅跟手的原生绘画体验
           </p>
           <div class="feature-bullets">
             <div class="bullet-card">
               <strong>系统基准：</strong>适用于 Android 7.0 及以上版本（API Level 24+），推荐 64 位 ARM64 架构芯片
             </div>
             <div class="bullet-card">
-              <strong>内存调度：</strong>无硬编码图层上限，系统依照设备当前可用物理内存动态评估最大安全图层深度
+              <strong>内存调度：</strong>无硬编码图层上限，系统依照设备当前可用内存动态评估最大安全图层深度
             </div>
             <div class="bullet-card">
               <strong>系统兼容提示：</strong>由于图形驱动差异，HarmonyOS NEXT 纯血架构兼容性较弱，推荐在标准 Android 设备上使用
@@ -523,27 +523,27 @@ onUnmounted(() => {
                 <tr>
                   <td><code>双指捏合 / 旋转 / 移动</code></td>
                   <td>画布缩放、旋转与平移</td>
-                  <td>围绕双指中心几何旋转与缩放补偿，零延迟双线性滤波变换</td>
+                  <td>围绕双指中心平滑缩放、旋转与拖拽平移，松手后保持当前视角</td>
                 </tr>
                 <tr>
                   <td><code>双指同时轻点</code></td>
                   <td>撤销（Undo）</td>
-                  <td>触控时长小于 360ms 瞬时回退上一笔或上一次图层修改</td>
+                  <td>轻触屏幕瞬时回退上一笔或上一次图层修改</td>
                 </tr>
                 <tr>
                   <td><code>双指按住不放</code></td>
                   <td>连续高速撤销</td>
-                  <td>保持双指贴紧屏幕超过 420ms 持续向前回溯历史记录</td>
+                  <td>双指按在屏幕上不放即可持续向前快速回退历史记录</td>
                 </tr>
                 <tr>
                   <td><code>三指同时轻点</code></td>
                   <td>重做（Redo）</td>
-                  <td>触控时长小于 380ms 瞬时恢复刚刚撤销的操作步数</td>
+                  <td>轻触屏幕瞬时恢复刚刚撤销的操作步数</td>
                 </tr>
                 <tr>
                   <td><code>三指按住不放</code></td>
                   <td>连续高速重做</td>
-                  <td>保持三指贴紧屏幕超过 420ms 持续向后恢复操作</td>
+                  <td>三指按在屏幕上不放即可持续向后快速恢复操作</td>
                 </tr>
                 <tr>
                   <td><code>双指快速向内捏合</code></td>
@@ -768,28 +768,17 @@ onUnmounted(() => {
         <section id="layer-system" class="doc-section">
           <h2>
             <a href="#layer-system" class="anchor">#</a>
-            图层体系与描边系统
+            图层体系与混合模式
           </h2>
           <p>
-            ReveriePaint 具备完整的专业级图层堆栈架构，支持以下原生图层形式：
+            ReveriePaint 具备完整的图层堆栈架构，支持以下原生图层形式：
           </p>
           <ul class="bullet-list">
             <li><strong>绘画图层（Paint Layer）：</strong>标准栅格位图层，承载水彩、油画、勾线等笔刷渲染像素</li>
-            <li><strong>描边图层（Stroke Layer）：</strong>全新原生描边系统，基于 Felzenszwalb-Huttenlocher EDT 2D 欧几里得距离变换的高性能形态学管线，支持外描边、内描边与居中描边，动态调节粗细与颜色，运笔与抬笔保持 100% 像素级样式一致，可随时一键栅格化</li>
+            <li><strong>描边图层（Stroke Layer）：</strong>专为轮廓勾线设计的图层，在上面作画会自动实时生成描边，可随时调整粗细、颜色、位置（外侧/居中/内侧）或转为普通图层</li>
             <li><strong>图层组（Group Layer）：</strong>容器层，用于组织多个相关图层，具备独立的合成通道与混合隔离模式</li>
             <li><strong>滤镜图层（Filter Layer）：</strong>非破坏性动态滤镜，实时对下方内容应用模糊、调色或特效，可随时双击调整参数或栅格化</li>
             <li><strong>填充图层（Fill Layer）：</strong>纯色或图案平铺背景图层</li>
-          </ul>
-
-          <h3 class="doc-h3">全新描边图层系统（Stroke Layer）</h3>
-          <p>
-            专为动漫勾线描边、文字贴纸与二次元插画外轮廓打造的实时距离场管线：
-          </p>
-          <ul class="bullet-list">
-            <li><strong>图层面板直接创建：</strong>点击图层面板「+」下拉菜单即可一键新建描边图层，图层列表项带有专有指示标签</li>
-            <li><strong>线性亚像素抗锯齿：</strong>采用线性 EDT 距离变换管线，彻底摒弃传统 PSD 描边重投影开销，消除落笔抬笔样式突变</li>
-            <li><strong>位置模式自由切换：</strong>在图层详情面板中支持外描边（Outer）、居中描边（Center）与内描边（Inner）三种贴合形式</li>
-            <li><strong>实时动态调参：</strong>支持实时调节描边粗细（Size）、色彩与不透明度，支持单步入撤销栈与二次确认栅格化</li>
           </ul>
 
           <h3 class="doc-h3">进阶图层操作</h3>
@@ -830,7 +819,7 @@ onUnmounted(() => {
           </div>
 
           <h3 class="doc-h3">图层数量与推荐规格</h3>
-          <p>系统根据设备物理运存动态计算安全层数，创建画布时右下角会实时预估：</p>
+          <p>系统根据设备当前运行内存自动评估安全层数，创建画布时右下角会实时预估：</p>
           <figure class="clean-figure" style="max-width: 540px;" @click="openLightbox(imgLayersPresets, '画布图层规格')">
             <img :src="imgLayersPresets" alt="画布图层规格" loading="lazy" />
             <figcaption>不同分辨率预设在典型设备上的安全推荐图层数</figcaption>
@@ -901,7 +890,7 @@ onUnmounted(() => {
             <li><strong>线性（Linear）：</strong>输入压感与输出线宽 1:1 真实映射</li>
             <li><strong>轻柔（Soft）：</strong>轻压即可出浓墨，适合手劲较轻、喜欢轻快排线的画师</li>
             <li><strong>硬实（Hard）：</strong>需用力才能画出最大笔触，适合重力度勾线与雕刻细节</li>
-            <li><strong>S 形对比（Sigmoid）：</strong>两头平缓中间灵敏，增强轻重笔触的戏剧化反差</li>
+            <li><strong>S 形对比（S-Curve）：</strong>两头平缓中间灵敏，增强轻重笔触的对比反差</li>
           </ul>
 
           <h3 class="doc-h3">纸感微震与声学引擎</h3>
@@ -998,7 +987,7 @@ onUnmounted(() => {
 
           <h3 class="doc-h3">3D 光影球调色系统（Shading Sphere）</h3>
           <p>
-            专为插画光影与二分/厚涂打造的 3D 立体照明调色模型，采用三次 Hermite 曲面插值与 Sigmoid S 型对比度调和光影模型：
+            专为插画二分与厚涂上色设计的 3D 光影取色工具，通过直观的立体球体模拟光源与阴影明暗变化：
           </p>
           <ul class="bullet-list">
             <li><strong>三大光影锚点：</strong>分别设定固有色（Base/Local）、主光源受光色（Key Light）与环境反光/阴影色（Shadow/Ambient）</li>
@@ -1066,7 +1055,7 @@ onUnmounted(() => {
           <h3 class="doc-h3">对称绘画系统（Symmetry）</h3>
           <ul class="bullet-list">
             <li><strong>4 种对称模式：</strong>垂直对称（左右镜像）、水平对称（上下镜像）、四分象限对称、径向 8 瓣对称（曼陀罗花纹）</li>
-            <li><strong>120Hz 实时压感同步：</strong>热路径零分配与零 JNI 锁开销，保证镜像分支笔画粗细与压感严格同步响应</li>
+            <li><strong>实时压感对称响应：</strong>镜像笔画与触控笔压感保持一致，两侧下笔线条粗细与浓淡完全同步</li>
             <li><strong>防误触加固：</strong>移除高敏感全屏拖拽，仅中心圆柄可拖动定位，垂直与水平限制单轴移动，避免作画误拖镜像轴</li>
             <li><strong>一键居中复位：</strong>辅助面板提供「重置居中」快捷按钮，瞬时恢复轴线居中对齐</li>
           </ul>
@@ -1173,7 +1162,7 @@ onUnmounted(() => {
             <li><strong>手笔职责分流：</strong>手写笔落笔 100% 保持在当前活动帧绘制，双指手势（捏合/旋转/平移）自由微调参考帧位移对位</li>
             <li><strong>洋葱皮透光台：</strong>前续帧默认为朱红色标，后续帧默认为青绿色标，支持线性（Linear）、指数平滑（Smooth）与恒定不透明度（Constant）三档衰减曲线</li>
             <li><strong>仅关键帧透光过滤：</strong>自动跳过一拍多重复保持帧，仅透光穿透真实关键帧</li>
-            <li><strong>多格式动效导出：</strong>支持一键输出为 GIF 动图（带 LZW 动态调色板优化）、MP4 高清动画视频（MediaCodec 硬件编码）或连续 PNG 序列帧 Zip 压缩包，支持音频波形联动</li>
+            <li><strong>多格式动效导出：</strong>支持一键导出为 GIF 动图、MP4 高清动画视频或连续 PNG 序列帧压缩包，支持导入音频并联动显示波形</li>
           </ul>
         </section>
 
@@ -1188,7 +1177,7 @@ onUnmounted(() => {
           </p>
           <ul class="bullet-list">
             <li><strong>manifest.json：</strong>记录画布分辨率、色彩空间、图层组织层级树与混合模式元数据</li>
-            <li><strong>多核并行分块写盘：</strong>图层像素采用多核并行 PNG 编码与分块写盘管线，消除 ZIP 二次压缩开销，超大工程存盘速度提升约 4 倍</li>
+            <li><strong>快速并行保存：</strong>采用多线程快速存盘技术，保存大文件更流畅，显著减少等待时间</li>
             <li><strong>timelapse.bin：</strong>内嵌笔画事件流二进制记录，无损保留作画过程全轨迹</li>
           </ul>
 
