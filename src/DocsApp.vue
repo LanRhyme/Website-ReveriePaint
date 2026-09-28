@@ -20,7 +20,7 @@ const navSections = [
     items: [
       { id: 'intro-install', label: '软件架构与安装授权' },
       { id: 'canvas-ui', label: '画布总览与工具定制' },
-      { id: 'gestures-touch', label: '触控手势与智能快形' }
+      { id: 'gestures-touch', label: '触控手势与快捷操作' }
     ]
   },
   {
@@ -28,7 +28,7 @@ const navSections = [
     group: '图层与核心机制',
     items: [
       { id: 'inherit-alpha', label: '继承透明度（剪贴蒙版）' },
-      { id: 'layer-system', label: '图层体系与混合模式' }
+      { id: 'layer-system', label: '图层体系与描边系统' }
     ]
   },
   {
@@ -44,9 +44,10 @@ const navSections = [
     index: '04',
     group: '创作与进阶工具',
     items: [
-      { id: 'color-tools', label: '色彩面板与参考视窗' },
+      { id: 'color-tools', label: '色彩面板与 3D 光影球' },
+      { id: 'shapes-guides', label: '几何形状与绘图辅助' },
+      { id: 'selection-transform', label: '选区运算与液化变换' },
       { id: 'filters-suite', label: '35 种滤镜与线稿提取' },
-      { id: 'selection-transform', label: '选区运算与空间变换' },
       { id: 'animation-workflow', label: '逐帧动画与洋葱皮' }
     ]
   },
@@ -449,8 +450,7 @@ onUnmounted(() => {
 
           <h3 class="doc-h3">已知待优化与路线图</h3>
           <ul class="bullet-list">
-            <li><strong>液化工具与对称尺：</strong>移动端交互与多线程计算正在重构优化中，后续更新开放</li>
-            <li><strong>Photoshop ABR 格式：</strong>后续版本将实现直接解析 <code>.abr</code> 二进制笔刷包</li>
+            <li><strong>Photoshop ABR 格式：</strong>后续版本将实现直接解析 <code>.abr</code> 二进制笔刷包（当前支持提取 PNG 笔尖导入工坊）</li>
             <li><strong>矢量文字编辑：</strong>更丰富的排版对齐与外置字体加载正在排期适配</li>
           </ul>
         </section>
@@ -476,21 +476,39 @@ onUnmounted(() => {
             <figcaption>设置 ＞ 偏好与硬件 ＞ 主题设置，可调整界面尺寸与侧边滑块板长短</figcaption>
           </figure>
 
+          <h3 class="doc-h3">画布手势裁切扩展与重采样</h3>
+          <p>
+            点击顶栏画布调整入口可随时重塑画幅边界与分辨率，手势下沉穿透且支持完整撤销与重做：
+          </p>
+          <ul class="bullet-list">
+            <li><strong>裁切与扩展（Crop & Expand）：</strong>支持双指直接捏合选框或向外扩展画布边界，配合九宫格锚点对齐锁定基准方向，改动尺寸不拉伸画面原有像素</li>
+            <li><strong>全图重采样（Resample & Scale）：</strong>支持自由比例与原始比例锁定，对全画布所有图层像素执行高质量重采样插值缩放</li>
+            <li><strong>实时安全看板：</strong>调整尺寸时面板动态推算并展示当前设备内存下的最大安全推荐图层数</li>
+            <li><strong>悬浮折叠面板：</strong>面板宽度缩减至 352dp 紧凑布局，标题栏全行支持自由拖拽悬浮与避让边缘贴合，支持快速折叠收起</li>
+          </ul>
+
+          <h3 class="doc-h3">左手模式与防误触</h3>
+          <ul class="bullet-list">
+            <li><strong>全界面镜像停靠：</strong>在偏好设置中开启左手模式后，工具栏、快捷滑块、顶栏以及全部浮动面板自适应镜像至屏幕右侧</li>
+            <li><strong>动态边缘返回手势排除：</strong>基于 Android 10+ 动态全高度排除左右边缘返回手势，彻底避免在画布边缘运笔起笔时误触发系统返回</li>
+          </ul>
+
           <h3 class="doc-h3">画布视图辅助设置</h3>
           <ul class="bullet-list">
             <li><strong>像素网格（Pixel Grid）：</strong>超微距放大画布超过 1600% 时自动显现单像素网格分界线，精准绘制像素画</li>
             <li><strong>放大插值平滑（Magnification Interpolation）：</strong>开启时放大视口采用双线性平滑滤波，关闭时呈现清晰马赛克锐利边缘</li>
-            <li><strong>快捷侧滑块（Quick Sliders）：</strong>常驻左侧控制笔刷尺寸与不透明度，可配置单滑块或双滑块展开</li>
+            <li><strong>快捷侧滑块（Quick Sliders）：</strong>常驻控制笔刷尺寸与不透明度，可配置单滑块或双滑块展开</li>
+            <li><strong>画布自由旋转（Canvas Rotation）：</strong>可开启或锁定画布旋转手势，防止双指缩放漫游时误触倾斜</li>
           </ul>
         </section>
 
         <section id="gestures-touch" class="doc-section">
           <h2>
             <a href="#gestures-touch" class="anchor">#</a>
-            触控手势与智能快形
+            触控手势与快捷操作
           </h2>
           <p>
-            画布内置全手势识别引擎，精准区分单指拾色、双指漫游与多指快捷回退：
+            画布内置原生硬件级多点手势识别引擎，精准区分单指取色、双指漫游与多指快捷回退：
           </p>
           <div class="table-container">
             <table class="doc-table">
@@ -505,51 +523,52 @@ onUnmounted(() => {
                 <tr>
                   <td><code>双指捏合 / 旋转 / 移动</code></td>
                   <td>画布缩放、旋转与平移</td>
-                  <td>零延迟双线性滤波变换，松手后保持当前视角</td>
+                  <td>围绕双指中心几何旋转与缩放补偿，零延迟双线性滤波变换</td>
                 </tr>
                 <tr>
                   <td><code>双指同时轻点</code></td>
                   <td>撤销（Undo）</td>
-                  <td>即刻回退上一笔或上一次图层修改</td>
+                  <td>触控时长小于 360ms 瞬时回退上一笔或上一次图层修改</td>
                 </tr>
                 <tr>
                   <td><code>双指按住不放</code></td>
                   <td>连续高速撤销</td>
-                  <td>保持双指贴紧屏幕即可持续向前回溯历史记录</td>
+                  <td>保持双指贴紧屏幕超过 420ms 持续向前回溯历史记录</td>
                 </tr>
                 <tr>
                   <td><code>三指同时轻点</code></td>
                   <td>重做（Redo）</td>
-                  <td>恢复刚刚撤销的操作步数</td>
+                  <td>触控时长小于 380ms 瞬时恢复刚刚撤销的操作步数</td>
+                </tr>
+                <tr>
+                  <td><code>三指按住不放</code></td>
+                  <td>连续高速重做</td>
+                  <td>保持三指贴紧屏幕超过 420ms 持续向后恢复操作</td>
                 </tr>
                 <tr>
                   <td><code>双指快速向内捏合</code></td>
-                  <td>适应屏幕（Fit View）</td>
-                  <td>瞬时将画布居中并缩放至完整可视范围</td>
+                  <td>适应屏幕（Quick-Pinch to Fit）</td>
+                  <td>瞬时将画布居中并缩放至满屏可视范围，附带平滑阻尼过渡动画</td>
+                </tr>
+                <tr>
+                  <td><code>单指长按屏幕不放</code></td>
+                  <td>悬浮取色（Eyedropper）</td>
+                  <td>呼出双环动态取色盘，垂直防遮挡偏移显示在手指上方</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <h3 class="doc-h3">智能快形绘制（QuickShape）</h3>
-          <p>
-            在画布上手绘直线、圆弧、椭圆、多边形或矩形时，运笔结束保持笔尖停留在屏幕约 0.5 秒不动，笔迹即自动吸附对齐为完美几何形状：
-          </p>
-          <ul class="bullet-list">
-            <li><strong>顶部胶囊编辑栏：</strong>吸附成功后屏幕顶部弹出操作栏，支持一键在正圆/椭圆或正方形/矩形之间自由切换</li>
-            <li><strong>节点微调：</strong>可通过拖拽各顶点控制手柄微调几何大小、角度与比例</li>
-            <li><strong>提交与放弃：</strong>点击胶囊栏右侧确认图标应用成型，点击叉号即可撤回放弃</li>
-          </ul>
-
-          <h3 class="doc-h3">长按取色与防遮挡偏移</h3>
+          <h3 class="doc-h3">长按取色与触控隔离</h3>
           <ul class="bullet-list">
             <li><strong>悬浮动态取色环：</strong>内环显示当前画笔原色，外环显示触点下方最新采样色，便于对比明度与冷暖差异</li>
-            <li><strong>防遮挡垂直偏移：</strong>取色圆环自动向上偏移显示在手指上方，解决指尖遮挡视线问题</li>
-            <li><strong>仅手写笔模式：</strong>开启后画布仅接收主动手写笔输入，手指仅用于缩放漫游，手掌自然贴靠不误触</li>
+            <li><strong>防遮挡垂直偏移：</strong>取色圆环自动向上偏移显示在手指或笔尖上方，解决指尖遮挡视线问题</li>
+            <li><strong>仅手写笔模式：</strong>开启后画布仅接收主动手写笔绘制输入，手指仅用于缩放漫游，手掌自然贴靠不误触</li>
+            <li><strong>长按空格抓手平移：</strong>外接键盘长按 Space 键临时切换抓手平移（Hold-to-Pan），拖拽平移画布，松手自动恢复原有工具</li>
           </ul>
 
           <h3 class="doc-h3">外接实体键盘快捷键全集</h3>
-          <p>连接蓝牙或平板外接键盘时，支持完整桌面级快捷键映射：</p>
+          <p>连接蓝牙或平板外接键盘时，支持完整桌面级快捷键指令：</p>
           <div class="table-container">
             <table class="doc-table">
               <thead>
@@ -581,29 +600,39 @@ onUnmounted(() => {
                   <td><code>PageUp</code> / <code>X</code></td>
                 </tr>
                 <tr>
+                  <td>工具快切</td>
+                  <td>当前工具与橡皮快速切换</td>
+                  <td><code>PageDown</code></td>
+                </tr>
+                <tr>
                   <td>画布漫游</td>
-                  <td>平移画布 / 翻转画布 / 旋转</td>
-                  <td><code>Space（长按）</code> / <code>H</code> / <code>R</code></td>
+                  <td>平移画布（长按） / 水平翻转 / 旋转</td>
+                  <td><code>Space</code> / <code>H</code> / <code>R</code></td>
                 </tr>
                 <tr>
-                  <td>历史与选区</td>
-                  <td>撤销 / 重做 / 取消选区</td>
-                  <td><code>Ctrl + Z</code> / <code>Ctrl + Shift + Z</code> / <code>Ctrl + D</code></td>
+                  <td>视口缩放</td>
+                  <td>放大画布 / 缩小画布</td>
+                  <td><code>Ctrl + =</code> / <code>Ctrl + -</code></td>
                 </tr>
                 <tr>
-                  <td>常用工具</td>
+                  <td>历史与工程</td>
+                  <td>保存 / 撤销 / 重做 / 取消选区</td>
+                  <td><code>Ctrl + S</code> / <code>Ctrl + Z</code> / <code>Ctrl + Shift + Z</code> / <code>Ctrl + D</code></td>
+                </tr>
+                <tr>
+                  <td>选区与吸管</td>
                   <td>矩形选区 / 套索 / 魔棒 / 吸管</td>
                   <td><code>M</code> / <code>L</code> / <code>W</code> / <code>I</code></td>
                 </tr>
                 <tr>
-                  <td>图形变换</td>
-                  <td>油漆桶 / 渐变 / 自由变换 / 移动</td>
-                  <td><code>G</code> / <code>Shift + G</code> / <code>Ctrl + T</code> / <code>V</code></td>
+                  <td>填充与变换</td>
+                  <td>油漆桶 / 渐变 / 裁剪 / 自由变换 / 移动</td>
+                  <td><code>G</code> / <code>Shift + G</code> / <code>C</code> / <code>Ctrl + T</code> / <code>V</code></td>
                 </tr>
                 <tr>
                   <td>图层管理</td>
-                  <td>新建图层 / 复制 / 向下合并</td>
-                  <td><code>Ctrl + Shift + N</code> / <code>Ctrl + J</code> / <code>Ctrl + E</code></td>
+                  <td>新建图层 / 复制 / 向下合并 / 显隐 / 删除</td>
+                  <td><code>Ctrl + Shift + N</code> / <code>Ctrl + J</code> / <code>Ctrl + E</code> / <code>Ctrl + H</code> / <code>Delete</code></td>
                 </tr>
                 <tr>
                   <td>色彩滤镜</td>
@@ -739,16 +768,28 @@ onUnmounted(() => {
         <section id="layer-system" class="doc-section">
           <h2>
             <a href="#layer-system" class="anchor">#</a>
-            图层体系与混合模式
+            图层体系与描边系统
           </h2>
           <p>
-            ReveriePaint 具备完整的图层堆栈架构，支持以下原生图层形式：
+            ReveriePaint 具备完整的专业级图层堆栈架构，支持以下原生图层形式：
           </p>
           <ul class="bullet-list">
             <li><strong>绘画图层（Paint Layer）：</strong>标准栅格位图层，承载水彩、油画、勾线等笔刷渲染像素</li>
+            <li><strong>描边图层（Stroke Layer）：</strong>全新原生描边系统，基于 Felzenszwalb-Huttenlocher EDT 2D 欧几里得距离变换的高性能形态学管线，支持外描边、内描边与居中描边，动态调节粗细与颜色，运笔与抬笔保持 100% 像素级样式一致，可随时一键栅格化</li>
             <li><strong>图层组（Group Layer）：</strong>容器层，用于组织多个相关图层，具备独立的合成通道与混合隔离模式</li>
             <li><strong>滤镜图层（Filter Layer）：</strong>非破坏性动态滤镜，实时对下方内容应用模糊、调色或特效，可随时双击调整参数或栅格化</li>
             <li><strong>填充图层（Fill Layer）：</strong>纯色或图案平铺背景图层</li>
+          </ul>
+
+          <h3 class="doc-h3">全新描边图层系统（Stroke Layer）</h3>
+          <p>
+            专为动漫勾线描边、文字贴纸与二次元插画外轮廓打造的实时距离场管线：
+          </p>
+          <ul class="bullet-list">
+            <li><strong>图层面板直接创建：</strong>点击图层面板「+」下拉菜单即可一键新建描边图层，图层列表项带有专有指示标签</li>
+            <li><strong>线性亚像素抗锯齿：</strong>采用线性 EDT 距离变换管线，彻底摒弃传统 PSD 描边重投影开销，消除落笔抬笔样式突变</li>
+            <li><strong>位置模式自由切换：</strong>在图层详情面板中支持外描边（Outer）、居中描边（Center）与内描边（Inner）三种贴合形式</li>
+            <li><strong>实时动态调参：</strong>支持实时调节描边粗细（Size）、色彩与不透明度，支持单步入撤销栈与二次确认栅格化</li>
           </ul>
 
           <h3 class="doc-h3">进阶图层操作</h3>
@@ -890,6 +931,7 @@ onUnmounted(() => {
           <ul class="bullet-list">
             <li><strong>系统分享导入（首选）：</strong>在 QQ、微信、网盘或文件管理器中直接点击笔刷文件（<code>.kpp</code> / <code>.bundle</code>），选择「用其他应用打开」或「分享」，点选 <strong>ReveriePaint</strong> 即可秒级导入</li>
             <li><strong>支持格式：</strong>Krita 原生 <code>.kpp</code> 预设、<code>.bundle</code> 资源包以及 MyPaint <code>.myb</code> 引擎笔刷</li>
+            <li><strong>整组与自定义笔尖打包导出：</strong>支持将整组笔刷或包含自定义笔尖图的单笔刷完整打包导出为标准 <code>.bundle</code> 文件，内嵌分类标签与 manifest 元数据，方便跨设备分发</li>
             <li><strong>PS ABR 技巧：</strong>将 <code>.abr</code> 中的笔尖图案导出为透明背景 <code>.png</code> 后，在笔刷工坊中点击「导入自定义」即可直接收录使用</li>
           </ul>
           <figure class="clean-figure" style="max-width: 520px;" @click="openLightbox(imgBrushQq, 'QQ 接收文件打开方式')">
@@ -933,12 +975,11 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <h3 class="doc-h3">四档防抖稳定器</h3>
+          <h3 class="doc-h3">笔画防抖与平滑流线</h3>
           <ul class="bullet-list">
-            <li><strong>无平滑（None）：</strong>100% 忠实记录原生采样坐标，极速无延迟，适合草图速写</li>
-            <li><strong>基本平滑（Basic）：</strong>轻量滑动平均插值算法，消除手部细微生理抖动</li>
-            <li><strong>加权平滑（Weighted）：</strong>按笔画距离动态计算阻尼，勾线圆润流畅</li>
-            <li><strong>延迟稳定器（Stabilizer）：</strong>拉绳稳定模型，笔尖后方牵引弹性绳，彻底消除一切抖褶</li>
+            <li><strong>全局防抖平滑滑块（Stroke Stabilizer）：</strong>在视图设置中提供 0%~100% 连续阻尼调节，高阻尼下可彻底消除手部微小生理抖动</li>
+            <li><strong>笔刷工坊流线（Streamline）：</strong>单笔刷独立的流线平滑度参数，自动对采样轨迹进行自适应三次样条平滑</li>
+            <li><strong>运笔延迟消除：</strong>优化笔尖资源单次解析与元数据缓存，首笔落墨即刻响应，消除冗余解析导致的起笔延迟</li>
           </ul>
         </section>
 
@@ -946,14 +987,25 @@ onUnmounted(() => {
         <section id="color-tools" class="doc-section">
           <h2>
             <a href="#color-tools" class="anchor">#</a>
-            色彩面板与参考视窗
+            色彩面板与 3D 光影球
           </h2>
           <ul class="bullet-list">
             <li><strong>悬浮取色面板：</strong>可拖拽至屏幕任意位置，点击左上角图钉图标置顶常驻，边画边取色</li>
             <li><strong>外环双击极轴吸附：</strong>双击色轮外环可在纯红（0°）、纯黄（60°）、纯绿（120°）、纯青（180°）、纯蓝（240°）、纯洋红（300°）之间瞬时精准定位</li>
             <li><strong>内置多色彩立体模型：</strong>正方形（HSV）、三角形（Triangle）、圆形（Circle）三种内嵌选色形态随心切换</li>
-            <li><strong>五合一取色模式：</strong>HSV 色轮、饱和度方块、和谐配色环、预设色卡与 RGB 滑块一键切换</li>
-            <li><strong>浮动参考图视窗：</strong>支持独立加载外部高清参考图，窗口内支持双指独立平移缩放，点击即可直接取色</li>
+            <li><strong>六合一取色模式：</strong>HSV 色轮、饱和度方块、RGB/HSB 滑块、预设色卡、色彩和谐环与 3D 光影球一键切换</li>
+          </ul>
+
+          <h3 class="doc-h3">3D 光影球调色系统（Shading Sphere）</h3>
+          <p>
+            专为插画光影与二分/厚涂打造的 3D 立体照明调色模型，采用三次 Hermite 曲面插值与 Sigmoid S 型对比度调和光影模型：
+          </p>
+          <ul class="bullet-list">
+            <li><strong>三大光影锚点：</strong>分别设定固有色（Base/Local）、主光源受光色（Key Light）与环境反光/阴影色（Shadow/Ambient）</li>
+            <li><strong>冷暖色温光影推导：</strong>系统根据色温互补规律自动计算受光与背光暗部的色相推移，长按色块即可一键重置推导</li>
+            <li><strong>120 FPS 准星取色：</strong>球体表面任意拖拽十字准星，流畅拾取明暗交界线与环境反光过渡带的精确渐变色</li>
+            <li><strong>明暗过渡柔和度滑块：</strong>调节球体受光面到背光面的渐变边缘虚实对比</li>
+            <li><strong>一键存入色卡：</strong>轻触即可将光影三联色组直接保存至当前活动调色板</li>
           </ul>
 
           <h3 class="doc-h3">色彩和谐算法在插画中的应用</h3>
@@ -964,25 +1016,89 @@ onUnmounted(() => {
             <li><strong>三色组（Triadic）：</strong>色轮 120 度等边三角形分布，适合动漫画风的生动多色表达</li>
           </ul>
 
-          <h3 class="doc-h3">全量工具清单一览</h3>
+          <h3 class="doc-h3">多图悬浮参考视窗（Reference Window）</h3>
+          <ul class="bullet-list">
+            <li><strong>支持多达 50 张参考图：</strong>相册多选一次性载入，相册网格自动置顶已选图片，顶部指示条快速翻看切换</li>
+            <li><strong>独立双指漫游与取色：</strong>窗口内支持双指独立平移缩放，轻触画面即可直接将色彩采样至当前画笔</li>
+            <li><strong>水平与垂直翻转：</strong>提供快捷镜像翻转按钮，方便构图比对与透视检查</li>
+            <li><strong>黑白灰度模式：</strong>一键切换去色灰阶显示，便于快速检查画面素描明度关系</li>
+          </ul>
+        </section>
+
+        <section id="shapes-guides" class="doc-section">
+          <h2>
+            <a href="#shapes-guides" class="anchor">#</a>
+            几何形状与绘图辅助
+          </h2>
+          <p>
+            ReveriePaint 提供强大的矢量化几何图元绘制工具与多种透视对称辅助体系：
+          </p>
+
+          <h3 class="doc-h3">9 种几何图元工具</h3>
           <div class="tool-list-clean">
             <div class="tool-row">
-              <span class="tool-head">基础绘画</span>
-              <span>画笔、橡皮擦、混合涂抹、油漆桶填充、渐变工具</span>
+              <span class="tool-head">基础几何</span>
+              <span>直线（Line）、矩形（Rect）、圆角矩形（Rounded Rect）、椭圆（Ellipse）</span>
             </div>
             <div class="tool-row">
-              <span class="tool-head">选区工具</span>
-              <span>自由套索、矩形选择、椭圆选择、多边形选择、魔棒连续选择、相似色选择</span>
+              <span class="tool-head">多边形与星形</span>
+              <span>正多边形（Regular Polygon · 3~12 边可调）、星形（Star · 3~16 角数与内外径比例可调）</span>
             </div>
             <div class="tool-row">
-              <span class="tool-head">几何矢量</span>
-              <span>直线、矩形、椭圆、多边形、多段线、贝塞尔矢量路径</span>
-            </div>
-            <div class="tool-row">
-              <span class="tool-head">变换与辅助</span>
-              <span>移动、画布裁剪、文本工具、测量尺、透视参考网格、悬浮参考视窗</span>
+              <span class="tool-head">自由路径</span>
+              <span>多段折线（Polyline）、闭合多边形（Polygon）、贝塞尔曲线（Bezier · 支持进出控制手柄调节曲率）</span>
             </div>
           </div>
+          <ul class="bullet-list">
+            <li><strong>样式填充模式：</strong>支持仅描边（Stroke）、仅填充（Fill）以及描边与填充（Stroke & Fill）</li>
+            <li><strong>交互手柄精细调整：</strong>绘制后激活包围盒手柄，支持整体平移、旋转手柄、圆角矩形专有圆角拖拽手柄、正圆与正方形等比约束</li>
+            <li><strong>确认提交与放弃：</strong>在浮动属性栏点击确认图标将图形栅格化写入图层，点击放弃即撤销草稿</li>
+          </ul>
+
+          <h3 class="doc-h3">绘图参考线与透视尺</h3>
+          <ul class="bullet-list">
+            <li><strong>2D 正交网格：</strong>均匀像素坐标网格，可调节格子间距尺寸与参考线透明度</li>
+            <li><strong>等距轴测网格（Isometric）：</strong>2.5D 轴测透视网格，适用于像素场景、微缩模型与游戏地图原画</li>
+            <li><strong>透视参考（Perspective）：</strong>支持 1 点透视、2 点透视与 3 点透视，画面灭点（Vanishing Points）支持自由拖拽重新定位</li>
+            <li><strong>辅助吸附（Drawing Assist）：</strong>开启后运笔笔画自动贴合对齐参考线方向，下笔笔直顺滑</li>
+          </ul>
+
+          <h3 class="doc-h3">对称绘画系统（Symmetry）</h3>
+          <ul class="bullet-list">
+            <li><strong>4 种对称模式：</strong>垂直对称（左右镜像）、水平对称（上下镜像）、四分象限对称、径向 8 瓣对称（曼陀罗花纹）</li>
+            <li><strong>120Hz 实时压感同步：</strong>热路径零分配与零 JNI 锁开销，保证镜像分支笔画粗细与压感严格同步响应</li>
+            <li><strong>防误触加固：</strong>移除高敏感全屏拖拽，仅中心圆柄可拖动定位，垂直与水平限制单轴移动，避免作画误拖镜像轴</li>
+            <li><strong>一键居中复位：</strong>辅助面板提供「重置居中」快捷按钮，瞬时恢复轴线居中对齐</li>
+          </ul>
+        </section>
+
+        <section id="selection-transform" class="doc-section">
+          <h2>
+            <a href="#selection-transform" class="anchor">#</a>
+            选区运算与液化变换
+          </h2>
+          <p>
+            选区面板提供自由套索、几何矩形/椭圆、多边形以及魔棒连续选择，并支持完整存储选区与布尔运算：
+          </p>
+          <ul class="bullet-list">
+            <li><strong>存储选区（Stored Selections）：</strong>支持将当前活动选区保存在独立槽位，随工程文件持久化，支持随时载入</li>
+            <li><strong>布尔运算：</strong>支持新建选区、添加模式（+）、减去模式（-）、相交模式（∩）</li>
+            <li><strong>边缘处理与遮罩：</strong>支持一键反选、羽化、像素级扩展与收缩，支持自定义选区遮罩色彩与不透明度</li>
+            <li><strong>提取命令：</strong>支持「剪切到新图层」、「复制到新图层」与直接清空选区内容</li>
+            <li><strong>自由变换（Transform）：</strong>支持八控制手柄自由拉伸、锁定等比缩放、自由旋转、水平/垂直翻转与透视/网格扭曲</li>
+          </ul>
+
+          <h3 class="doc-h3">专业级液化形变工具（Liquify）</h3>
+          <p>
+            ReveriePaint 搭载全新重构的高性能液化变形引擎，提供 5 种推拉扭曲模式与高精度抗锯齿网格：
+          </p>
+          <ul class="bullet-list">
+            <li><strong>5 种形变模式：</strong>推移（Push · 顺应运笔推挤像素）、膨胀（Bloat · 中心放大）、收缩（Pucker · 聚拢变小）、顺时针旋转（Rotate CW）与逆时针旋转（Rotate CCW）</li>
+            <li><strong>沿路径自适应补点：</strong>消费多点触摸高频采样，沿拖动路径按笔刷尺寸自适应细分插值补点，彻底消除快速推拉时的笔迹断线与断口</li>
+            <li><strong>严格约束活动选区：</strong>液化回写像素严格受当前选区限制，选区外区域完全不受形变拉扯影响</li>
+            <li><strong>尊重图层透明度锁定：</strong>开启 Alpha 锁定的图层仅对颜色通道进行形变位移，严格保持原有透明度轮廓不外扩</li>
+            <li><strong>网格精度自适应：</strong>形变网格单元尺寸根据画笔大小动态细分，彻底消除中小笔刷推拉时的锯齿边缘</li>
+          </ul>
         </section>
 
         <section id="filters-suite" class="doc-section">
@@ -1034,22 +1150,6 @@ onUnmounted(() => {
           </ul>
         </section>
 
-        <section id="selection-transform" class="doc-section">
-          <h2>
-            <a href="#selection-transform" class="anchor">#</a>
-            选区运算与空间变换
-          </h2>
-          <p>
-            选区面板提供自由套索、几何矩形/椭圆、多边形以及魔棒连续选择，并支持完整布尔运算：
-          </p>
-          <ul class="bullet-list">
-            <li><strong>布尔运算：</strong>支持新建选区、添加模式（+）、减去模式（-）、相交模式（∩）</li>
-            <li><strong>边缘处理：</strong>支持一键反向选择、选区边缘羽化柔化以及像素级扩展与收缩</li>
-            <li><strong>提取命令：</strong>支持「剪切到新图层」、「复制到新图层」与直接清空选区内容</li>
-            <li><strong>自由变换：</strong>支持八控制手柄自由拉伸、锁定等比缩放、自由旋转与镜像对称翻转，配合高质量双三次插值重采样减少失真</li>
-          </ul>
-        </section>
-
         <section id="animation-workflow" class="doc-section">
           <h2>
             <a href="#animation-workflow" class="anchor">#</a>
@@ -1059,10 +1159,21 @@ onUnmounted(() => {
             展开动画时间轴后，画作即刻进入逐帧原画工作流：
           </p>
           <ul class="bullet-list">
-            <li><strong>时间轴控制：</strong>自由插入空白关键帧或复制现有帧，调节单帧驻留时间适配一拍一、一拍二节奏</li>
-            <li><strong>洋葱皮透光台：</strong>前续帧默认为朱红色标，后续帧默认为青绿色标，附带透明度阶梯衰减与仅显示关键帧模式</li>
-            <li><strong>预渲染缓存引擎：</strong>内置动态 RAM 预渲染机制，提前合成显存纹理，保证 60fps 丝滑播放不卡顿</li>
-            <li><strong>动效导出：</strong>支持一键输出为 GIF 动图、MP4 高清动画视频或连续 PNG 序列帧</li>
+            <li><strong>时间轴控制：</strong>自由插入空白关键帧或复制现有帧，调节单帧驻留时间适配一拍一、一拍二节奏，支持多帧框选与连续点选批量操作</li>
+            <li><strong>边缘曝光手柄拉伸：</strong>帧块右侧引入曝光长度直接拖拽拉伸手柄，支持弹性连续形变调节曝光时长</li>
+            <li><strong>推挤重排（Ripple Reorder）：</strong>长按关键帧支持全局实时推挤换位，附带弹性阻尼避让动效</li>
+            <li><strong>极速翻帧比对（Flip Peek）：</strong>长按上一帧按钮 110ms 即可直接调度渲染进入快速比对，抬手即时恢复</li>
+          </ul>
+
+          <h3 class="doc-h3">透光台临时位移对比（Shift & Trace）</h3>
+          <p>
+            引入专业动画行业标准 Shift & Trace 临时对位能力，解决复杂动画运动轨迹校对难题：
+          </p>
+          <ul class="bullet-list">
+            <li><strong>手笔职责分流：</strong>手写笔落笔 100% 保持在当前活动帧绘制，双指手势（捏合/旋转/平移）自由微调参考帧位移对位</li>
+            <li><strong>洋葱皮透光台：</strong>前续帧默认为朱红色标，后续帧默认为青绿色标，支持线性（Linear）、指数平滑（Smooth）与恒定不透明度（Constant）三档衰减曲线</li>
+            <li><strong>仅关键帧透光过滤：</strong>自动跳过一拍多重复保持帧，仅透光穿透真实关键帧</li>
+            <li><strong>多格式动效导出：</strong>支持一键输出为 GIF 动图（带 LZW 动态调色板优化）、MP4 高清动画视频（MediaCodec 硬件编码）或连续 PNG 序列帧 Zip 压缩包，支持音频波形联动</li>
           </ul>
         </section>
 
@@ -1077,7 +1188,7 @@ onUnmounted(() => {
           </p>
           <ul class="bullet-list">
             <li><strong>manifest.json：</strong>记录画布分辨率、色彩空间、图层组织层级树与混合模式元数据</li>
-            <li><strong>无损分块位图：</strong>图层像素采用无损压缩分块存储，大幅降低读写功耗与存盘耗时</li>
+            <li><strong>多核并行分块写盘：</strong>图层像素采用多核并行 PNG 编码与分块写盘管线，消除 ZIP 二次压缩开销，超大工程存盘速度提升约 4 倍</li>
             <li><strong>timelapse.bin：</strong>内嵌笔画事件流二进制记录，无损保留作画过程全轨迹</li>
           </ul>
 
