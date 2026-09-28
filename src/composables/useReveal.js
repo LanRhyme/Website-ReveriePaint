@@ -1,6 +1,6 @@
 /**
- * 全局入场动画：任何带 .reveal 的元素进入视口后加上 .is-in。
- * 只在客户端挂载一次，卸载时断开 observer。
+ * 全局入场动画：任何带 .reveal 的元素进入视口后加上 .is-in
+ * 只在客户端挂载一次，卸载时断开 observer
  */
 let observer = null
 

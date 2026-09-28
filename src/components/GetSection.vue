@@ -43,7 +43,7 @@ const meta = [
 const ways = [
   {
     title: '获取安装包',
-    body: 'ReveriePaint 完全免费开源，可直接访问 GitHub Releases 获取官方正式构建包，或通过第三方镜像通道下载。',
+    body: 'ReveriePaint 完全免费开源，可直接访问 GitHub Releases 获取官方正式构建包，或通过第三方镜像通道下载',
     links: [
       { text: 'GitHub Releases 下载', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: true },
       { text: '官方使用文档', href: '/docs/', primary: false },
@@ -53,7 +53,7 @@ const ways = [
   },
   {
     title: '交流群',
-    body: '欢迎加入 ReveriePaint 创作者交流群，交流平板手绘体验、反馈功能建议与获取最新构建。',
+    body: '欢迎加入 ReveriePaint 创作者交流群，交流平板手绘体验、反馈功能建议与获取最新构建',
     isQQ: true,
     links: [
       { text: '跳转加群', href: 'https://qm.qq.com/q/729283213', primary: false }
@@ -62,7 +62,7 @@ const ways = [
   },
   {
     title: '源码与共建',
-    body: '基于 Kotlin + Jetpack Compose 响应式架构与 C++ Krita 内核。欢迎提交 Issue 反馈与 PR 贡献代码。',
+    body: '基于 Kotlin + Jetpack Compose 响应式架构与 C++ Krita 内核，欢迎提交 Issue 反馈与 PR 贡献代码',
     links: [
       { text: '浏览 GitHub 仓库', href: 'https://github.com/LanRhyme/ReveriePaint', primary: false },
       { text: '提交 Issue 反馈', href: 'https://github.com/LanRhyme/ReveriePaint/issues', primary: false }
