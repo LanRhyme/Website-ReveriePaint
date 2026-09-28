@@ -43,11 +43,10 @@ const meta = [
 const ways = [
   {
     title: '获取安装包',
-    body: '国内设备推荐使用 Mirror酱 免翻高速通道直接下载，亦可访问 GitHub Releases 获取官方构建包。',
+    body: 'ReveriePaint 完全免费开源，可直接访问 GitHub Releases 获取官方正式构建包或查阅使用指南。',
     links: [
-      { text: 'Mirror酱 高速下载', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android', primary: true },
-      { text: '官方使用文档', href: '/docs/', primary: false },
-      { text: 'GitHub Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: false }
+      { text: 'GitHub Releases 下载', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: true },
+      { text: '官方使用文档', href: '/docs/', primary: false }
     ],
     primary: true
   },

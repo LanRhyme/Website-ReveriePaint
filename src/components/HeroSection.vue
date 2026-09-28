@@ -178,7 +178,7 @@ onUnmounted(() => {
         <div class="hero-actions">
           <a
             class="btn btn-primary"
-            href="https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android"
+            href="https://github.com/LanRhyme/ReveriePaint/releases"
             target="_blank"
             rel="noopener"
             @mousemove="onBtnMouseMove"

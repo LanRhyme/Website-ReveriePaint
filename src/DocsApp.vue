@@ -209,7 +209,7 @@ onUnmounted(() => {
 
         <nav class="header-nav" aria-label="文档外链导航">
           <a href="/" class="header-link">官网首页</a>
-          <a href="https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android" target="_blank" rel="noopener" class="header-link">Mirror酱</a>
+          <a href="https://github.com/LanRhyme/ReveriePaint/releases" target="_blank" rel="noopener" class="header-link">Releases</a>
           <a href="https://github.com/LanRhyme/ReveriePaint" target="_blank" rel="noopener" class="header-link">GitHub</a>
           <button
             type="button"
@@ -303,26 +303,21 @@ onUnmounted(() => {
             <a href="#install" class="anchor">#</a>
             下载最新版本的 APK 安装包
           </h2>
-          <p>建议通过官方通道获取最新安装包：</p>
+          <p>建议通过官方通道获取最新构建安装包：</p>
 
           <div class="link-pills">
-            <a
-              href="https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android"
-              target="_blank"
-              rel="noopener"
-              class="download-pill primary"
-            >
-              Mirror酱 高速下载（国内免梯推荐） →
-            </a>
             <a
               href="https://github.com/LanRhyme/ReveriePaint/releases"
               target="_blank"
               rel="noopener"
-              class="download-pill"
+              class="download-pill primary"
             >
-              GitHub Releases 官方发布 →
+              GitHub Releases 官方发布页下载 →
             </a>
           </div>
+          <p class="sub-hint">
+            注：若直接访问 GitHub Releases 较慢，亦可在「创作者交流群」（群号 <code>729283213</code>）的群文件中直接获取最新 APK 安装包。
+          </p>
 
           <figure class="clean-figure" @click="openLightbox(imgInstallRepo, 'GitHub 仓库主页 Releases 入口')">
             <img :src="imgInstallRepo" alt="GitHub 仓库主页 Releases 入口" loading="lazy" />
@@ -607,8 +602,9 @@ onUnmounted(() => {
           <p>© {{ new Date().getFullYear() }} LanRhyme · 基于 GPL-3.0 协议开源</p>
           <div class="doc-footer-links">
             <a href="/">返回官网首页</a>
+            <a href="https://github.com/LanRhyme/ReveriePaint/releases" target="_blank" rel="noopener">Releases</a>
             <a href="https://github.com/LanRhyme/ReveriePaint" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android" target="_blank" rel="noopener">Mirror酱</a>
+            <a href="https://qm.qq.com/q/729283213" target="_blank" rel="noopener">QQ 交流群</a>
           </div>
         </footer>
       </main>
