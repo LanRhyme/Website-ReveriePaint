@@ -43,10 +43,11 @@ const meta = [
 const ways = [
   {
     title: '获取安装包',
-    body: 'ReveriePaint 完全免费开源，可直接访问 GitHub Releases 获取官方正式构建包或查阅使用指南。',
+    body: 'ReveriePaint 完全免费开源，可直接访问 GitHub Releases 获取官方正式构建包，或通过第三方镜像通道下载。',
     links: [
       { text: 'GitHub Releases 下载', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: true },
-      { text: '官方使用文档', href: '/docs/', primary: false }
+      { text: '官方使用文档', href: '/docs/', primary: false },
+      { text: 'Mirror酱下载通道', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android', primary: false }
     ],
     primary: true
   },

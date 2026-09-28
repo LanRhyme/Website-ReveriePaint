@@ -5,6 +5,7 @@ const links = [
   { label: '使用文档', href: '/docs/' },
   { label: 'GitHub', href: 'https://github.com/LanRhyme/ReveriePaint' },
   { label: 'Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases' },
+  { label: 'Mirror酱下载', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android' },
   { label: 'QQ群 729283213', href: 'https://qm.qq.com/q/729283213' },
   { label: 'Issues 反馈', href: 'https://github.com/LanRhyme/ReveriePaint/issues' },
   { label: 'GPL-3.0 协议', href: 'https://www.gnu.org/licenses/gpl-3.0.html' }

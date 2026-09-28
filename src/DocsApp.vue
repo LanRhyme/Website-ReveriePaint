@@ -20,7 +20,7 @@ const navSections = [
     items: [
       { id: 'intro-install', label: '软件架构与安装授权' },
       { id: 'canvas-ui', label: '画布总览与工具定制' },
-      { id: 'gestures-touch', label: '触控手势与防误触' }
+      { id: 'gestures-touch', label: '触控手势与智能快形' }
     ]
   },
   {
@@ -297,9 +297,9 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <h3 class="doc-h3">获取 APK 安装包与系统授权</h3>
+          <h3 class="doc-h3">获取 APK 安装包通道</h3>
           <p>
-            ReveriePaint 遵循 GPL-3.0 协议开源，所有安装包均发布于 GitHub Releases，确保文件纯净安全：
+            ReveriePaint 遵循 GPL-3.0 协议开源，官方优先推荐通过 GitHub Releases 获取正版构建，国内免翻环境亦可通过第三方 Mirror酱 或 QQ 群文件下载：
           </p>
           <figure class="clean-figure" @click="openLightbox(imgInstallRepo, 'GitHub Releases 下载入口')">
             <img :src="imgInstallRepo" alt="GitHub Releases 下载入口" loading="lazy" />
@@ -316,11 +316,19 @@ onUnmounted(() => {
               rel="noopener"
               class="download-pill primary"
             >
-              前往 GitHub Releases 下载最新 APK →
+              GitHub Releases 官方发布页（主要渠道） →
+            </a>
+            <a
+              href="https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android"
+              target="_blank"
+              rel="noopener"
+              class="download-pill"
+            >
+              Mirror酱镜像下载（第三方免翻通道） →
             </a>
           </div>
           <div class="note-box">
-            <p><strong>备选渠道：</strong>若网络访问受限，可在官方创作者交流群（群号 <code>729283213</code>）群文件中直接获取最新 APK 安装包</p>
+            <p><strong>备选渠道：</strong>若外部网络访问受限，可在官方创作者交流群（群号 <code>729283213</code>）群文件中直接获取最新 APK 安装包</p>
           </div>
           <ul class="bullet-list">
             <li>在系统浏览器或文件管理器中点击下载的 APK 文件，允许「安装未知来源应用」</li>
@@ -356,12 +364,19 @@ onUnmounted(() => {
             <img :src="imgUiSettings" alt="主题设置界面" loading="lazy" />
             <figcaption>设置 ＞ 偏好与硬件 ＞ 主题设置，可调整界面尺寸与侧边滑块板长短</figcaption>
           </figure>
+
+          <h3 class="doc-h3">画布视图辅助设置</h3>
+          <ul class="bullet-list">
+            <li><strong>像素网格（Pixel Grid）：</strong>超微距放大画布超过 1600% 时自动显现单像素网格分界线，精准绘制像素画</li>
+            <li><strong>放大插值平滑（Magnification Interpolation）：</strong>开启时放大视口采用双线性平滑滤波，关闭时呈现清晰马赛克锐利边缘</li>
+            <li><strong>快捷侧滑块（Quick Sliders）：</strong>常驻左侧控制笔刷尺寸与不透明度，可配置单滑块或双滑块展开</li>
+          </ul>
         </section>
 
         <section id="gestures-touch" class="doc-section">
           <h2>
             <a href="#gestures-touch" class="anchor">#</a>
-            触控手势与防误触
+            触控手势与智能快形
           </h2>
           <p>
             画布内置全手势识别引擎，精准区分单指拾色、双指漫游与多指快捷回退：
@@ -405,12 +420,88 @@ onUnmounted(() => {
             </table>
           </div>
 
+          <h3 class="doc-h3">智能快形绘制（QuickShape）</h3>
+          <p>
+            在画布上手绘直线、圆弧、椭圆、多边形或矩形时，运笔结束保持笔尖停留在屏幕约 0.5 秒不动，笔迹即自动吸附对齐为完美几何形状：
+          </p>
+          <ul class="bullet-list">
+            <li><strong>顶部胶囊编辑栏：</strong>吸附成功后屏幕顶部弹出操作栏，支持一键在正圆/椭圆或正方形/矩形之间自由切换</li>
+            <li><strong>节点微调：</strong>可通过拖拽各顶点控制手柄微调几何大小、角度与比例</li>
+            <li><strong>提交与放弃：</strong>点击胶囊栏右侧确认图标应用成型，点击叉号即可撤回放弃</li>
+          </ul>
+
           <h3 class="doc-h3">长按取色与防遮挡偏移</h3>
           <ul class="bullet-list">
             <li><strong>悬浮动态取色环：</strong>内环显示当前画笔原色，外环显示触点下方最新采样色，便于对比明度与冷暖差异</li>
             <li><strong>防遮挡垂直偏移：</strong>取色圆环自动向上偏移显示在手指上方，解决指尖遮挡视线问题</li>
             <li><strong>仅手写笔模式：</strong>开启后画布仅接收主动手写笔输入，手指仅用于缩放漫游，手掌自然贴靠不误触</li>
           </ul>
+
+          <h3 class="doc-h3">外接实体键盘快捷键全集</h3>
+          <p>连接蓝牙或平板外接键盘时，支持完整桌面级快捷键映射：</p>
+          <div class="table-container">
+            <table class="doc-table">
+              <thead>
+                <tr>
+                  <th style="width: 25%;">分类</th>
+                  <th style="width: 35%;">功能</th>
+                  <th>快捷键组合</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>绘画工具</td>
+                  <td>画笔 / 橡皮 / 涂抹</td>
+                  <td><code>B</code> / <code>E</code> / <code>S</code></td>
+                </tr>
+                <tr>
+                  <td>笔刷调整</td>
+                  <td>增大 / 缩小尺寸</td>
+                  <td><code>]</code> / <code>[</code></td>
+                </tr>
+                <tr>
+                  <td>浓度控制</td>
+                  <td>增大 / 缩小不透明度</td>
+                  <td><code>Ctrl + ]</code> / <code>Ctrl + [</code></td>
+                </tr>
+                <tr>
+                  <td>颜色操作</td>
+                  <td>调色面板 / 交换主副颜色</td>
+                  <td><code>PageUp</code> / <code>X</code></td>
+                </tr>
+                <tr>
+                  <td>画布漫游</td>
+                  <td>平移画布 / 翻转画布 / 旋转</td>
+                  <td><code>Space（长按）</code> / <code>H</code> / <code>R</code></td>
+                </tr>
+                <tr>
+                  <td>历史与选区</td>
+                  <td>撤销 / 重做 / 取消选区</td>
+                  <td><code>Ctrl + Z</code> / <code>Ctrl + Shift + Z</code> / <code>Ctrl + D</code></td>
+                </tr>
+                <tr>
+                  <td>常用工具</td>
+                  <td>矩形选区 / 套索 / 魔棒 / 吸管</td>
+                  <td><code>M</code> / <code>L</code> / <code>W</code> / <code>I</code></td>
+                </tr>
+                <tr>
+                  <td>图形变换</td>
+                  <td>油漆桶 / 渐变 / 自由变换 / 移动</td>
+                  <td><code>G</code> / <code>Shift + G</code> / <code>Ctrl + T</code> / <code>V</code></td>
+                </tr>
+                <tr>
+                  <td>图层管理</td>
+                  <td>新建图层 / 复制 / 向下合并</td>
+                  <td><code>Ctrl + Shift + N</code> / <code>Ctrl + J</code> / <code>Ctrl + E</code></td>
+                </tr>
+                <tr>
+                  <td>色彩滤镜</td>
+                  <td>色相饱和度 / 色彩曲线</td>
+                  <td><code>Ctrl + U</code> / <code>Ctrl + M</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <!-- 02 图层与核心机制 -->
@@ -520,6 +611,11 @@ onUnmounted(() => {
                   <td>随时可以隐藏、删除、调整各层不透明度与混合模式</td>
                 </tr>
                 <tr>
+                  <td><strong>多层剪切</strong></td>
+                  <td>不支持，仅限单层</td>
+                  <td>支持在同一图层组内任意堆叠数十个继承透明层</td>
+                </tr>
+                <tr>
                   <td><strong>适用场景</strong></td>
                   <td>快速给单条线稿换色、简单色块微调</td>
                   <td>赛璐璐阴影、二分光影、复杂材质贴图与多重高光</td>
@@ -561,15 +657,15 @@ onUnmounted(() => {
             </div>
             <div class="tool-row">
               <span class="tool-head">变暗压暗</span>
-              <span>正片叠底（Multiply）、变暗（Darken）、颜色加深（Color Burn）、线性加深（Linear Burn）</span>
+              <span>正片叠底（Multiply · 阴影首选）、变暗（Darken）、颜色加深（Color Burn）、线性加深（Linear Burn）</span>
             </div>
             <div class="tool-row">
               <span class="tool-head">变亮提亮</span>
-              <span>滤色（Screen）、变亮（Lighten）、颜色减淡（Color Dodge）、添加 / 线性减淡（Add）</span>
+              <span>滤色（Screen · 空气感泛光）、变亮（Lighten）、颜色减淡（Color Dodge · 魔法高光发光）、添加 / 线性减淡（Add）</span>
             </div>
             <div class="tool-row">
               <span class="tool-head">对比增强</span>
-              <span>叠加（Overlay）、柔光（Soft Light）、强光（Hard Light）、亮光（Vivid Light）、线性光（Linear Light）、点光（Pin Light）</span>
+              <span>叠加（Overlay · 增强明暗质感）、柔光（Soft Light · 氛围调色）、强光（Hard Light）、亮光（Vivid Light）、线性光（Linear Light）、点光（Pin Light）</span>
             </div>
             <div class="tool-row">
               <span class="tool-head">差值排除</span>
@@ -577,7 +673,7 @@ onUnmounted(() => {
             </div>
             <div class="tool-row">
               <span class="tool-head">色彩构成</span>
-              <span>色相（Hue）、饱和度（Saturation）、颜色（Color）、明度（Luminosity）</span>
+              <span>色相（Hue）、饱和度（Saturation）、颜色（Color · 黑白灰上色）、明度（Luminosity）</span>
             </div>
           </div>
 
@@ -621,12 +717,12 @@ onUnmounted(() => {
                 <tr>
                   <td><strong>OPPO / OnePlus</strong><br>OPPO Pencil / Stylo 2</td>
                   <td>OCS 硬件套件 · 笔身线性马达微震反馈</td>
-                  <td>笔身双击快捷切换工具、压感平滑校准、落笔触觉机械震动</td>
+                  <td>笔身双击快捷切换工具、压感平滑校准、落笔触觉机械震动强度调节</td>
                 </tr>
                 <tr>
                   <td><strong>三星 S-Pen</strong><br>Galaxy Tab S 系列</td>
                   <td>Wacom EMR 电磁压感 · 悬浮感应 Air Actions</td>
-                  <td>侧键单击切换取色/橡皮擦、悬浮光标预览笔刷尺寸</td>
+                  <td>侧键单击切换取色/橡皮擦、悬浮光标预览笔刷尺寸与外形</td>
                 </tr>
                 <tr>
                   <td><strong>通用手写笔</strong><br>USI / 小米灵感笔 / 微软 MPP</td>
@@ -743,8 +839,18 @@ onUnmounted(() => {
           </h2>
           <ul class="bullet-list">
             <li><strong>悬浮取色面板：</strong>可拖拽至屏幕任意位置，点击左上角图钉图标置顶常驻，边画边取色</li>
+            <li><strong>外环双击极轴吸附：</strong>双击色轮外环可在纯红（0°）、纯黄（60°）、纯绿（120°）、纯青（180°）、纯蓝（240°）、纯洋红（300°）之间瞬时精准定位</li>
+            <li><strong>内置多色彩立体模型：</strong>正方形（HSV）、三角形（Triangle）、圆形（Circle）三种内嵌选色形态随心切换</li>
             <li><strong>五合一取色模式：</strong>HSV 色轮、饱和度方块、和谐配色环、预设色卡与 RGB 滑块一键切换</li>
             <li><strong>浮动参考图视窗：</strong>支持独立加载外部高清参考图，窗口内支持双指独立平移缩放，点击即可直接取色</li>
+          </ul>
+
+          <h3 class="doc-h3">色彩和谐算法在插画中的应用</h3>
+          <ul class="bullet-list">
+            <li><strong>互补色（Complementary）：</strong>色环 180 度正相对立颜色，制造最强烈的视觉冲击感与张力</li>
+            <li><strong>分裂互补色（Split-Complementary）：</strong>由互补色两翼展开的次级对比色，既丰富又比直接互补更为柔和雅致</li>
+            <li><strong>类似色（Analogous）：</strong>色环相邻 30-60 度同色调搭配，营造自然统一的光影氛围感</li>
+            <li><strong>三色组（Triadic）：</strong>色轮 120 度等边三角形分布，适合动漫画风的生动多色表达</li>
           </ul>
 
           <h3 class="doc-h3">全量工具清单一览</h3>
@@ -809,10 +915,11 @@ onUnmounted(() => {
             </table>
           </div>
 
-          <h3 class="doc-h3">高频核心通道滤镜</h3>
+          <h3 class="doc-h3">高频核心通道滤镜实战</h3>
           <ul class="bullet-list">
             <li><strong>亮度转 Alpha（Luminance to Alpha）：</strong>纸上手绘草稿拍照导入后，一键将白纸完全转为透明，保留纯净的黑色铅笔线条，免去繁琐抠图</li>
             <li><strong>渐变映射（Gradient Map）：</strong>黑白灰阶二分素描一键上色神器，通过自定义色带将图像由暗到明的灰度精准映射为丰富色彩</li>
+            <li><strong>泛光辉光（Bloom）：</strong>为画面高亮区域赋予日系插画特有的空气漫反射柔和发光感</li>
           </ul>
         </section>
 
@@ -940,6 +1047,7 @@ onUnmounted(() => {
           <div class="doc-footer-links">
             <a href="/">返回官网首页</a>
             <a href="https://github.com/LanRhyme/ReveriePaint/releases" target="_blank" rel="noopener">Releases</a>
+            <a href="https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android" target="_blank" rel="noopener">Mirror酱</a>
             <a href="https://github.com/LanRhyme/ReveriePaint" target="_blank" rel="noopener">GitHub</a>
             <a href="https://qm.qq.com/q/729283213" target="_blank" rel="noopener">QQ 交流群</a>
           </div>
