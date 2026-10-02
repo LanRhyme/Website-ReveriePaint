@@ -1,17 +1,21 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { getLenis } from '../composables/useLenis.js'
 import { gsap } from '../composables/useGsap.js'
+import { useI18n, SUPPORTED_LANGS } from '../composables/useI18n.js'
+import LanguageSwitcher from './LanguageSwitcher.vue'
+
+const { t, currentLang, setLang } = useI18n()
 
 const isScrolled = ref(false)
 const menuOpen = ref(false)
 
-const NAV = [
-  { id: 'features', label: '核心特性' },
-  { id: 'toolkit', label: '色彩工坊' },
-  { id: 'origin', label: '设计理念' },
-  { id: 'get', label: '获取应用' }
-]
+const navItems = computed(() => [
+  { id: 'features', label: t('header.nav.features') },
+  { id: 'toolkit', label: t('header.nav.toolkit') },
+  { id: 'origin', label: t('header.nav.origin') },
+  { id: 'get', label: t('header.nav.get') }
+])
 
 function onScroll() {
   isScrolled.value = window.scrollY > 24
@@ -67,16 +71,18 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         </span>
         <span class="brand-text">
           <b>ReveriePaint</b>
-          <i>Android 原生数字绘画</i>
+          <i>{{ t('header.tagline') }}</i>
         </span>
       </a>
 
       <nav class="nav" aria-label="主导航">
-        <button v-for="item in NAV" :key="item.id" class="nav-link" type="button" @click="goTo(item.id)">
+        <button v-for="item in navItems" :key="item.id" class="nav-link" type="button" @click="goTo(item.id)">
           {{ item.label }}
         </button>
-        <a href="/docs/" class="nav-link">使用文档</a>
+        <a href="/docs/" class="nav-link">{{ t('header.nav.docs') }}</a>
       </nav>
+
+      <LanguageSwitcher class="desktop-only" />
 
       <a
         class="cta"
@@ -86,7 +92,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         @mousemove="onCtaMouseMove"
         @mouseleave="onCtaMouseLeave"
       >
-        <span>下载</span>
+        <span>{{ t('header.download') }}</span>
         <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
           <path d="M4 12 L12 4 M6 4 h6 v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
@@ -97,7 +103,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         class="menu-toggle"
         type="button"
         :aria-expanded="menuOpen"
-        aria-label="导航菜单"
+        :aria-label="t('header.menu')"
         @click="menuOpen = !menuOpen"
       >
         <span class="menu-line" :class="{ 'is-open': menuOpen }"></span>
@@ -110,7 +116,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
       <div v-if="menuOpen" class="mobile-drawer" @click.self="menuOpen = false">
         <nav class="mobile-nav" aria-label="移动端导航菜单">
           <button
-            v-for="item in NAV"
+            v-for="item in navItems"
             :key="item.id"
             class="mobile-nav-link"
             type="button"
@@ -126,12 +132,37 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
             href="/docs/"
             @click="menuOpen = false"
           >
-            <span>使用文档</span>
+            <span>{{ t('header.nav.docs') }}</span>
             <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
               <path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </a>
+
           <div class="mobile-nav-divider"></div>
+
+          <div class="mobile-lang-row">
+            <span class="mobile-lang-label">
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm4.9 6.25h-2.1a10.6 10.6 0 0 0-.8-3.4A5.76 5.76 0 0 1 12.9 7.25zm-4.9-4.7a9.2 9.2 0 0 1 1.3 4.7H6.7a9.2 9.2 0 0 1 1.3-4.7zm-2 1.3a10.6 10.6 0 0 0-.8 3.4H3.1a5.76 5.76 0 0 1 2.9-3.4zM3.1 8.75h2.1a10.6 10.6 0 0 0 .8 3.4 5.76 5.76 0 0 1-2.9-3.4zm4.9 4.7a9.2 9.2 0 0 1-1.3-4.7h2.6a9.2 9.2 0 0 1-1.3 4.7zm2-.8a10.6 10.6 0 0 0 .8-3.4h2.1a5.76 5.76 0 0 1-2.9 3.4z" fill="currentColor"/>
+              </svg>
+              <span>{{ t('header.langTitle') }}</span>
+            </span>
+            <div class="mobile-lang-pills">
+              <button
+                v-for="l in SUPPORTED_LANGS"
+                :key="l.id"
+                type="button"
+                class="mobile-lang-pill"
+                :class="{ active: currentLang === l.id }"
+                @click="setLang(l.id)"
+              >
+                {{ l.short }}
+              </button>
+            </div>
+          </div>
+
+          <div class="mobile-nav-divider"></div>
+
           <a
             class="mobile-nav-cta"
             href="https://github.com/LanRhyme/ReveriePaint/releases"
@@ -139,7 +170,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
             rel="noopener"
             @click="menuOpen = false"
           >
-            <span>前往 Releases 下载 APK</span>
+            <span>{{ t('header.mobileDownload') }}</span>
             <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
               <path d="M4 12 L12 4 M6 4 h6 v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
@@ -376,10 +407,79 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   }
 }
 
+/* ── 语言切换 ───────────────────────────── */
+.lang-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-mid);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-silk);
+}
+.lang-switch-btn:hover {
+  color: var(--ink);
+  border-color: var(--ink-ghost);
+  background: rgba(20, 22, 26, 0.04);
+}
+.desktop-only {
+  display: inline-flex;
+}
+
+.mobile-lang-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(20, 22, 26, 0.03);
+  border-radius: 10px;
+}
+.mobile-lang-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink-mid);
+}
+.mobile-lang-pills {
+  display: flex;
+  gap: 4px;
+  background: rgba(20, 22, 26, 0.06);
+  padding: 3px;
+  border-radius: 8px;
+}
+.mobile-lang-pill {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ink-mid);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mobile-lang-pill.active {
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
 @media (max-width: 768px) {
   .nav,
-  .brand-text i {
-    display: none;
+  .brand-text i,
+  .desktop-only {
+    display: none !important;
   }
   .menu-toggle {
     display: flex;

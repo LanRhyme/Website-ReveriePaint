@@ -1,7 +1,9 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { gsap } from '../composables/useGsap.js'
+import { useI18n } from '../composables/useI18n.js'
 
+const { t } = useI18n()
 const copied = ref(false)
 const getRef = ref(null)
 let ctx = null
@@ -33,43 +35,20 @@ function onMagneticMouseLeave(e) {
   gsap.to(e.currentTarget, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' })
 }
 
-const meta = [
-  { k: '系统要求', v: 'Android 7.0+（API 24）' },
-  { k: '芯片架构', v: '仅 64 位 arm64-v8a' },
-  { k: '开源协议', v: 'GPL-3.0 开放源码' },
-  { k: '交流社群', v: 'QQ 群 729283213' }
-]
+const meta = computed(() => t('get.meta') || [])
 
-const ways = [
-  {
-    title: '获取安装包',
-    body: 'ReveriePaint 完全免费开源，可直接访问 GitHub Releases 获取官方正式构建包，或通过第三方镜像通道下载',
-    links: [
-      { text: 'GitHub Releases 下载', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: true },
-      { text: '官方使用文档', href: '/docs/', primary: false },
-      { text: 'Mirror酱下载通道', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android', primary: false }
-    ],
-    primary: true
-  },
-  {
-    title: '交流群',
-    body: '欢迎加入 ReveriePaint 创作者交流群，交流平板手绘体验、反馈功能建议与获取最新构建',
-    isQQ: true,
-    links: [
-      { text: '跳转加群', href: 'https://qm.qq.com/q/729283213', primary: false }
-    ],
-    primary: false
-  },
-  {
-    title: '源码与共建',
-    body: '基于 Kotlin + Jetpack Compose 响应式架构与 C++ Krita 内核，欢迎提交 Issue 反馈与 PR 贡献代码',
-    links: [
-      { text: '浏览 GitHub 仓库', href: 'https://github.com/LanRhyme/ReveriePaint', primary: false },
-      { text: '提交 Issue 反馈', href: 'https://github.com/LanRhyme/ReveriePaint/issues', primary: false }
-    ],
-    primary: false
-  }
-]
+const ways = computed(() => {
+  const list = t('get.ways') || []
+  return list.map((w, idx) => ({
+    ...w,
+    primary: idx === 0,
+    isQQ: idx === 1,
+    links: (w.links || []).map((l, lIdx) => ({
+      ...l,
+      primary: idx === 0 && lIdx === 0
+    }))
+  }))
+})
 
 onMounted(() => {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -103,8 +82,8 @@ onUnmounted(() => {
   <section id="get" ref="getRef" class="get">
     <div class="shell">
       <header class="sec-head reveal">
-        <p class="eyebrow">获取应用</p>
-        <h2 class="h-section">自由创作，现已就绪</h2>
+        <p class="eyebrow">{{ t('get.eyebrow') }}</p>
+        <h2 class="h-section">{{ t('get.title') }}</h2>
       </header>
 
       <dl class="meta reveal">
@@ -133,7 +112,7 @@ onUnmounted(() => {
               @mousemove="onMagneticMouseMove"
               @mouseleave="onMagneticMouseLeave"
             >
-              {{ copied ? '已复制群号 729283213' : '复制群号: 729283213' }}
+              {{ copied ? t('get.copiedQQ') : t('get.copyQQ') }}
               <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
                 <rect x="5" y="5" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3" />
                 <path d="M3 11 V3 h8" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />

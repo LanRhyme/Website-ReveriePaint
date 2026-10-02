@@ -1,5 +1,9 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from './composables/useI18n.js'
+import LanguageSwitcher from './components/LanguageSwitcher.vue'
+
+const { t } = useI18n()
 
 // 配图引用
 import imgInstallRepo from './assets/docs/doc-install-repo.webp'
@@ -258,7 +262,7 @@ onUnmounted(() => {
             <span class="brand-text">ReveriePaint</span>
           </a>
           <span class="brand-divider">/</span>
-          <span class="brand-doc-tag">文档手册</span>
+          <span class="brand-doc-tag">{{ t('docsNav.brandTag') }}</span>
         </div>
 
         <div class="header-search">
@@ -270,7 +274,7 @@ onUnmounted(() => {
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="搜索章节或关键字（Ctrl+K）"
+              :placeholder="t('docsNav.searchPlaceholder')"
               class="search-input"
             />
             <button
@@ -285,7 +289,8 @@ onUnmounted(() => {
         </div>
 
         <div class="header-nav">
-          <a href="/" class="header-link desktop-only">官网首页</a>
+          <LanguageSwitcher compact />
+          <a href="/" class="header-link desktop-only">{{ t('docsNav.home') }}</a>
           <a
             href="https://github.com/LanRhyme/ReveriePaint"
             target="_blank"
@@ -299,7 +304,7 @@ onUnmounted(() => {
             class="header-copy-btn desktop-only"
             @click="copyText('qqHeader', '729283213')"
           >
-            {{ copiedMap['qqHeader'] ? '群号已复制' : 'QQ 群 729283213' }}
+            {{ copiedMap['qqHeader'] ? t('docsNav.copiedGroup') : t('docsNav.qqGroup') }}
           </button>
           <button
             type="button"
@@ -307,7 +312,7 @@ onUnmounted(() => {
             aria-label="目录"
             @click="toggleMobileMenu"
           >
-            {{ mobileMenuOpen ? '收起' : '目录' }}
+            {{ mobileMenuOpen ? t('docsNav.collapse') : t('docsNav.toc') }}
           </button>
         </div>
       </div>
@@ -322,7 +327,7 @@ onUnmounted(() => {
           <span class="subbar-item">{{ currentItemTitle }}</span>
         </div>
         <div :class="['mobile-subbar-btn', { 'is-open': mobileMenuOpen }]">
-          <span>{{ mobileMenuOpen ? '收起' : '目录' }}</span>
+          <span>{{ mobileMenuOpen ? t('docsNav.collapse') : t('docsNav.toc') }}</span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M6 9l6 6 6-6"/>
           </svg>

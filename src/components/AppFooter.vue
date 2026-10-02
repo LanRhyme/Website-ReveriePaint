@@ -1,15 +1,15 @@
 <script setup>
+import { computed } from 'vue'
+import { useI18n } from '../composables/useI18n.js'
+
+const { t } = useI18n()
 const year = new Date().getFullYear()
 
-const links = [
-  { label: '使用文档', href: '/docs/' },
-  { label: 'GitHub', href: 'https://github.com/LanRhyme/ReveriePaint' },
-  { label: 'Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases' },
-  { label: 'Mirror酱下载', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android' },
-  { label: 'QQ群 729283213', href: 'https://qm.qq.com/q/729283213' },
-  { label: 'Issues 反馈', href: 'https://github.com/LanRhyme/ReveriePaint/issues' },
-  { label: 'GPL-3.0 协议', href: 'https://www.gnu.org/licenses/gpl-3.0.html' }
-]
+const links = computed(() => t('footer.links') || [])
+const copyright = computed(() => {
+  const tmpl = t('footer.copyright') || '© {year} LanRhyme'
+  return tmpl.replace('{year}', year)
+})
 </script>
 
 <template>
@@ -24,7 +24,7 @@ const links = [
           </svg>
           <div>
             <b>ReveriePaint</b>
-            <span>Android 原生数字绘画</span>
+            <span>{{ t('footer.tagline') }}</span>
           </div>
         </div>
 
@@ -40,8 +40,8 @@ const links = [
       </div>
 
       <div class="foot-base">
-        <p>© {{ year }} LanRhyme · 基于 GPL-3.0 协议开源</p>
-        <p class="foot-meta">Krita 为其各自所有者的商标，本项目与 KDE 无隶属关系</p>
+        <p>{{ copyright }}</p>
+        <p class="foot-meta">{{ t('footer.disclaimer') }}</p>
       </div>
     </div>
   </footer>

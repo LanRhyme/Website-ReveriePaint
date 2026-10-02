@@ -1,8 +1,11 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap, ScrollTrigger } from '../composables/useGsap.js'
+import { useI18n } from '../composables/useI18n.js'
 import heroCanvas from '../assets/shots/hero-canvas.webp'
 import heroCanvasSm from '../assets/shots/hero-canvas-sm.webp'
+
+const { t, isEn } = useI18n()
 
 const ready = ref(false)
 const heroRef = ref(null)
@@ -163,16 +166,16 @@ onUnmounted(() => {
       <div class="hero-copy">
         <p class="eyebrow hero-eyebrow">
           <span class="dot" aria-hidden="true"></span>
-          Android 平板专业创作 · GPL-3.0 开源 · QQ群 729283213
+          {{ t('hero.eyebrow') }}
         </p>
 
         <h1 class="hero-title">
-          把桌面级图像内核，<br />
-          <em>装进安卓平板</em>
+          {{ t('hero.titleLine1') }}<br />
+          <em>{{ t('hero.titleLine2') }}</em>
         </h1>
 
         <p class="hero-sub">
-          融合 <b>Krita C++ 原生图像处理内核</b>与现代化触控交互，具备 240+ 官方笔刷预设、动态稀疏瓦片图层、多协议压感手写笔专属调校与全流程事件流延时回放，让专业创作在移动端彻底摆脱妥协
+          {{ t('hero.sub') }}
         </p>
 
         <div class="hero-actions">
@@ -184,7 +187,7 @@ onUnmounted(() => {
             @mousemove="onBtnMouseMove"
             @mouseleave="onBtnMouseLeave"
           >
-            下载 APK
+            {{ t('hero.downloadApk') }}
           </a>
           <a
             class="btn btn-secondary btn-docs"
@@ -195,7 +198,7 @@ onUnmounted(() => {
             <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
               <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v10.766c-.917-.35-2.107-.691-3.287-.811-1.094-.11-2.278-.037-3.213.493V2.687z" fill="currentColor"/>
             </svg>
-            <span>使用文档</span>
+            <span>{{ t('hero.docs') }}</span>
           </a>
           <a
             class="btn btn-ghost"
@@ -205,26 +208,26 @@ onUnmounted(() => {
             @mousemove="onBtnMouseMove"
             @mouseleave="onBtnMouseLeave"
           >
-            GitHub 源码
+            {{ t('hero.source') }}
           </a>
         </div>
 
         <dl class="hero-facts">
           <div>
             <dt>{{ brushCount }}+</dt>
-            <dd>官方物理笔刷</dd>
+            <dd>{{ t('hero.statBrushes') }}</dd>
           </div>
           <div>
-            <dt>{{ blendCount }} 种</dt>
-            <dd>图层混合模式</dd>
+            <dt>{{ blendCount }}{{ t('hero.unitKinds') }}</dt>
+            <dd>{{ t('hero.statBlend') }}</dd>
           </div>
           <div>
-            <dt>{{ filterCount }} 种</dt>
-            <dd>无损实时滤镜</dd>
+            <dt>{{ filterCount }}{{ t('hero.unitKinds') }}</dt>
+            <dd>{{ t('hero.statFilters') }}</dd>
           </div>
           <div>
             <dt>GPL-3.0</dt>
-            <dd>永久免费开源</dd>
+            <dd>{{ t('hero.statLicense') }}</dd>
           </div>
         </dl>
       </div>
@@ -238,13 +241,13 @@ onUnmounted(() => {
               :src="heroCanvas"
               :srcset="`${heroCanvasSm} 1000w, ${heroCanvas} 2000w`"
               sizes="(max-width: 960px) 90vw, 760px"
-              alt="ReveriePaint 画布上绘制的飞龙与猫的线稿"
+              :alt="t('hero.deviceAlt')"
               fetchpriority="high"
               decoding="async"
             />
           </div>
         </div>
-        <p class="device-note">实机界面展示 · Android 平板专业创作体验</p>
+        <p class="device-note">{{ t('hero.deviceNote') }}</p>
       </div>
     </div>
   </section>

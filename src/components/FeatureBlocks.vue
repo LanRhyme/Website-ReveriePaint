@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { gsap, ScrollTrigger } from '../composables/useGsap.js'
+import { useI18n } from '../composables/useI18n.js'
 import brushBench from '../assets/shots/ui-brush-bench.webp'
 import penSettings from '../assets/shots/ui-pen-settings.webp'
 import filters from '../assets/shots/ui-filters.webp'
@@ -9,63 +10,31 @@ import toolbar from '../assets/shots/ui-toolbar.webp'
 import lasso from '../assets/shots/work-lasso.webp'
 import reference from '../assets/shots/work-reference.webp'
 
-/**
- * 交错图文：每段聚焦一个「为什么它更好画」的理由
- * flip = true 时图在右、文在左，形成节奏变化
- */
-const blocks = [
-  {
-    id: 'bench',
-    kicker: '笔刷工坊',
-    title: '深植 Krita 原生内核，自由掌控每一道笔触',
-    body: '直接复用 Krita 核心笔刷渲染引擎，提供真实的物理笔触与颜料混合模拟，笔尖形状印记、色彩涂抹混合、动态阻尼与压感曲线全开，支持保存为个人专属笔刷预设',
-    points: ['复用 Krita 官方图像与物理颜料模拟内核', '圆形、方形与自定义笔尖贴图导入', '完整保留压感动态曲线与参数微调'],
-    img: brushBench,
-    alt: '笔刷工作台，左侧为参数分类，右侧为笔尖贴图选择、边缘羽化、抗锯齿与随机翻转设置',
-    flip: false
-  },
-  {
-    id: 'pen',
-    kicker: '手写笔适配',
-    title: '硬件级压感调校，深度适配多品牌手写笔',
-    body: '针对多品牌手写笔以及标准 Android 触控笔协议提供全方位底层调校，内置自定义压力过渡曲线与悬空光标预览，彻底告别断触与延迟',
-    points: [
-      '华为 M-Pencil 星闪 16K 压感与侧键手势',
-      'OPPO / 一加笔身触控滑动与真实纸感微震',
-      '三星 S Pen 与通用 Android 协议深度支持',
-      '多控制点自定义压力曲线与实时试笔区'
-    ],
-    img: penSettings,
-    alt: '手写笔设置页，包含多品牌手写笔专属适配与自定义压力曲线微调',
-    flip: true
-  },
-  {
-    id: 'lasso',
-    kicker: '精准选区',
-    title: '逐点可控的多段折线套索',
-    body: '专为复杂插画构图打造的折线选区系统，节点落位精准，支持单点独立撤销与无缝闭合，协同加选、减选、反选与实时边缘羽化，让局部精修和构图微调精确到每一个像素',
-    points: ['逐点精确落位与独立单点回溯撤销', '支持加选、减选、反选与实时羽化', '自由手绘与折线节点无缝混合'],
-    img: lasso,
-    alt: '多段折线套索正在画布上框选区域，下方悬浮工具条提供闭合、撤销与羽化操作',
-    flip: false
-  },
-  {
-    id: 'reference',
-    kicker: '悬浮参考',
-    title: '双模式悬浮参考窗，全局构图尽在掌控',
-    body: '画布上方自由悬浮、平移与缩放，不仅支持载入高分辨率外部参考图，更支持将当前主画布实时镜像投影，随时比对整体构图、翻转检查比例与局部明暗',
-    points: ['外部参考图片与主画布镜像双模式', '任意拖曳、双指缩放与独立锁定', '零遮挡主工作区，保持沉浸心流'],
-    img: reference,
-    alt: '画布界面，悬浮参考窗口显示参考图像，主画布正在绘制人物线稿',
-    flip: true
-  }
+const { t } = useI18n()
+
+const blockMeta = [
+  { id: 'bench', img: brushBench, flip: false },
+  { id: 'pen', img: penSettings, flip: true },
+  { id: 'lasso', img: lasso, flip: false },
+  { id: 'reference', img: reference, flip: true }
 ]
 
-const pills = [
-  { img: filters, title: '35 种实时滤镜', desc: '色彩调整、模糊平滑、边缘增强、通道映射、艺术效果与空间扭曲，实时渲染预览' },
-  { img: blend, title: '25 种混合模式', desc: '正片叠底、滤色、叠加、柔光、强光、颜色减淡等完整支持，图层效果直观可视' },
-  { img: toolbar, title: '自由定制工具栏', desc: '按个人绘画习惯随心布置 28 个常用工具位，画布界面干净纯粹' }
-]
+const blocks = computed(() => {
+  const list = t('features.blocks') || []
+  return blockMeta.map((meta, idx) => ({
+    ...meta,
+    ...(list[idx] || {})
+  }))
+})
+
+const pillImgs = [filters, blend, toolbar]
+const pills = computed(() => {
+  const list = t('features.pills') || []
+  return list.map((item, idx) => ({
+    ...item,
+    img: pillImgs[idx]
+  }))
+})
 
 const sectionRef = ref(null)
 let ctx = null
@@ -196,11 +165,11 @@ onUnmounted(() => {
   <section id="features" ref="sectionRef" class="features">
     <div class="shell">
       <header class="sec-head reveal">
-        <p class="eyebrow">核心特性</p>
+        <p class="eyebrow">{{ t('features.eyebrow') }}</p>
         <h2 class="h-section">
-          不妥协的桌面级创作工作流
+          {{ t('features.title') }}
         </h2>
-        <p class="lede sec-sub">摒弃移动端绘画软件常见的阉割与简化，把核心参数控制权完整交还给画师</p>
+        <p class="lede sec-sub">{{ t('features.sub') }}</p>
       </header>
 
       <!-- ── 交错图文 ───────────────────────── -->

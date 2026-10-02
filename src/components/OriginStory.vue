@@ -1,24 +1,11 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { gsap } from '../composables/useGsap.js'
+import { useI18n } from '../composables/useI18n.js'
 
-const pillars = [
-  {
-    num: '01',
-    title: '拒绝功能阉割',
-    desc: '不以移动端为借口简化核心参数，完整保留桌面级图层混合、物理颜料计算与深度压感微调，让专业画师在平板上同样拥有无妥协的创作上限'
-  },
-  {
-    num: '02',
-    title: '沉浸心流状态',
-    desc: '零商业广告、零内购弹窗、完全离线可用，毫秒级自动保活与草稿恢复，界面与辅助工具静默退至画布之后，让注意力全然聚焦于画作本身'
-  },
-  {
-    num: '03',
-    title: '纯粹开源基石',
-    desc: '基于 GPL-3.0 协议全量开源，自研 .revp 独立工程与笔迹事件流开放归档，代码属于全球创作者社区，永不设限、永不捆绑'
-  }
-]
+const { t } = useI18n()
+
+const pillars = computed(() => t('origin.pillars') || [])
 
 const originRef = ref(null)
 let ctx = null
@@ -57,9 +44,9 @@ onUnmounted(() => {
   <section id="origin" ref="originRef" class="origin">
     <div class="shell">
       <header class="sec-head reveal">
-        <p class="eyebrow">设计理念</p>
-        <h2 class="h-section">纯粹、专注、不妥协的创作体验</h2>
-        <p class="sec-sub lede">为真正热爱画画的人而打造，让工具成为双手的自然延伸</p>
+        <p class="eyebrow">{{ t('origin.eyebrow') }}</p>
+        <h2 class="h-section">{{ t('origin.title') }}</h2>
+        <p class="sec-sub lede">{{ t('origin.sub') }}</p>
       </header>
 
       <div class="pillars">
@@ -81,7 +68,7 @@ onUnmounted(() => {
       <div class="origin-note reveal">
         <div class="note-rule" aria-hidden="true"></div>
         <p class="quote-serif">
-          让复杂的技术在画布背后无声运转，把最纯粹的掌控感交还给创作者
+          {{ t('origin.quote') }}
         </p>
       </div>
     </div>
