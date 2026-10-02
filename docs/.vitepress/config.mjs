@@ -70,7 +70,8 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: '工程安全、WebDAV 与延时摄影', link: '/guide/project' },
-            { text: '问题反馈与创作者群', link: '/guide/community' }
+            { text: '问题反馈与创作者群', link: '/guide/community' },
+            { text: '参与文档贡献指南', link: '/guide/contributing' }
           ]
         }
       ]

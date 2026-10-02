@@ -1,11 +1,19 @@
 import DefaultTheme from 'vitepress/theme'
-import { onMounted, watch, nextTick } from 'vue'
+import { h, onMounted, watch, nextTick } from 'vue'
 import { useRoute } from 'vitepress'
 import mediumZoom from 'medium-zoom'
+import DocContribute from './DocContribute.vue'
+import AsideActions from './AsideActions.vue'
 import './style.css'
 
 export default {
   extends: DefaultTheme,
+  Layout() {
+    return h(DefaultTheme.Layout, null, {
+      'doc-after': () => h(DocContribute),
+      'aside-outline-after': () => h(AsideActions)
+    })
+  },
   setup() {
     const route = useRoute()
     const initZoom = () => {
