@@ -3,7 +3,8 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from './composables/useI18n.js'
 import LanguageSwitcher from './components/LanguageSwitcher.vue'
 
-const { t } = useI18n()
+const { t, currentLang } = useI18n()
+const dismissNotice = ref(false)
 
 // 配图引用
 import imgInstallRepo from './assets/docs/doc-install-repo.webp'
@@ -384,6 +385,33 @@ onUnmounted(() => {
 
       <!-- 右侧主体内容流 -->
       <main class="docs-main">
+        <!-- 非简中语言进入文档提示框 -->
+        <div v-if="currentLang !== 'zh-CN' && !dismissNotice" class="doc-lang-notice">
+          <div class="notice-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
+          <div class="notice-content">
+            <h4 class="notice-title">{{ t('docsNotice.title') }}</h4>
+            <p class="notice-desc">{{ t('docsNotice.text') }}</p>
+          </div>
+          <button
+            type="button"
+            class="notice-dismiss"
+            :title="t('docsNotice.dismiss')"
+            :aria-label="t('docsNotice.dismiss')"
+            @click="dismissNotice = true"
+          >
+            <span>{{ t('docsNotice.dismiss') }}</span>
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M3.5 3.5 L12.5 12.5 M12.5 3.5 L3.5 12.5" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+
         <!-- 篇首标题 -->
         <header class="doc-lead-header">
           <p class="doc-badge">官方技术手册 · 完整特性指南</p>
@@ -1623,6 +1651,78 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 48px;
+}
+
+/* ── 多语言文档提示框 ───────────────────────── */
+.doc-lang-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  background: var(--paper-warm, #f7f6f2);
+  border: 1px solid var(--accent, #5a6e8a);
+  border-left-width: 4px;
+  border-radius: 12px;
+  margin-bottom: -16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.notice-icon {
+  flex-shrink: 0;
+  color: var(--accent, #5a6e8a);
+  margin-top: 2px;
+}
+
+.notice-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notice-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink, #1a202c);
+  margin-bottom: 4px;
+}
+
+.notice-desc {
+  font-size: 0.84375rem;
+  line-height: 1.65;
+  color: var(--ink-mid, #4a5568);
+}
+
+.notice-dismiss {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-faint, rgba(0, 0, 0, 0.08));
+  background: var(--paper, #fff);
+  color: var(--ink-mid, #4a5568);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 2px;
+}
+
+.notice-dismiss:hover {
+  background: var(--accent-faint, rgba(90, 110, 138, 0.12));
+  color: var(--accent, #5a6e8a);
+  border-color: var(--accent, #5a6e8a);
+}
+
+@media (max-width: 640px) {
+  .doc-lang-notice {
+    flex-direction: column;
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .notice-dismiss {
+    align-self: flex-end;
+  }
 }
 
 .doc-lead-header {

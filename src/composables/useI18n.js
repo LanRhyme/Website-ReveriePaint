@@ -275,6 +275,11 @@ export const messages = {
       collapse: '收起',
       copiedGroup: '群号已复制',
       qqGroup: 'QQ 群 729283213'
+    },
+    docsNotice: {
+      title: '语言提示',
+      text: '文档手册目前以简体中文为主，多语言翻译正在进行中',
+      dismiss: '知道了'
     }
   },
   'zh-TW': {
@@ -518,6 +523,11 @@ export const messages = {
       collapse: '收起',
       copiedGroup: '群號已複製',
       qqGroup: 'QQ 群 729283213'
+    },
+    docsNotice: {
+      title: '語言提示',
+      text: '詳細手冊正文目前主要以簡體中文編寫，繁體在地化與術語對照正在整理中。建議可搭配瀏覽器內建翻譯工具閱讀',
+      dismiss: '知道了'
     }
   },
   'en': {
@@ -761,6 +771,11 @@ export const messages = {
       collapse: 'Collapse',
       copiedGroup: 'Copied Group ID',
       qqGroup: 'QQ Group 729283213'
+    },
+    docsNotice: {
+      title: 'Language Notice',
+      text: 'The full user manual is currently authored in Simplified Chinese. Complete multi-language translations are actively in progress. In the meantime, we recommend using your browser\'s built-in translation tool',
+      dismiss: 'Dismiss'
     }
   },
   'ja': {
@@ -1004,6 +1019,11 @@ export const messages = {
       collapse: '閉じる',
       copiedGroup: 'コピーしました',
       qqGroup: 'QQ グループ 729283213'
+    },
+    docsNotice: {
+      title: '言語についてのご案内',
+      text: '詳細ドキュメントの本文は現在、簡体字中国語で記載されています。完全な多言語翻訳は順次準備を進めております。必要に応じてブラウザの自動翻訳機能をご利用ください',
+      dismiss: '閉じる'
     }
   }
 }
