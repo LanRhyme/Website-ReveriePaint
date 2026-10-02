@@ -6,3 +6,6 @@ dist
 .tmp_video
 .workbuddy
 .Trash*
+.vitepress/cache
+.vitepress/dist
+**/cache

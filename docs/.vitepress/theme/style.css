@@ -1,0 +1,21 @@
+:root {
+  --vp-c-brand-1: #697d60;
+  --vp-c-brand-2: #8fa382;
+  --vp-c-brand-3: #aabda0;
+  --vp-c-brand-soft: rgba(143, 163, 130, 0.14);
+  --vp-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+.dark {
+  --vp-c-brand-1: #9bb08e;
+  --vp-c-brand-2: #8fa382;
+  --vp-c-brand-3: #6f8265;
+  --vp-c-brand-soft: rgba(143, 163, 130, 0.18);
+}
+
+.vp-doc img {
+  border-radius: 8px;
+  border: 1px solid var(--vp-c-divider);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  margin: 1.2rem auto;
+}
