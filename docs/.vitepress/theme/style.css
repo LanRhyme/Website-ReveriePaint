@@ -1,80 +1,79 @@
 @charset "UTF-8";
 
-/* ── 莫兰迪调色盘与全局设计变量 ────────────────────────── */
+/* ── 现代高品质莫兰迪设计系统变量 ────────────────────────── */
 :root {
-  --vp-c-bg: #f5f2ec;
-  --vp-c-bg-alt: #efeae1;
-  --vp-c-bg-elv: #fdfcfa;
-  --vp-c-bg-soft: rgba(20, 22, 26, 0.035);
+  --vp-c-bg: #fcfbf9;
+  --vp-c-bg-alt: #f6f5f1;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: rgba(0, 0, 0, 0.032);
 
-  --vp-c-brand-1: #697d60;
-  --vp-c-brand-2: #8fa382;
-  --vp-c-brand-3: #aabda0;
-  --vp-c-brand-soft: rgba(143, 163, 130, 0.14);
+  --vp-c-brand-1: #4e6b44;
+  --vp-c-brand-2: #65855a;
+  --vp-c-brand-3: #8ea885;
+  --vp-c-brand-soft: rgba(101, 133, 90, 0.12);
 
-  --vp-c-text-1: #14161a;
-  --vp-c-text-2: #3a3f47;
-  --vp-c-text-3: #757c87;
+  --vp-c-text-1: #1a1e24;
+  --vp-c-text-2: #484f59;
+  --vp-c-text-3: #798290;
 
-  --vp-c-border: rgba(20, 22, 26, 0.09);
-  --vp-c-divider: rgba(20, 22, 26, 0.075);
-  --vp-c-gutter: rgba(20, 22, 26, 0.05);
+  --vp-c-border: rgba(0, 0, 0, 0.08);
+  --vp-c-divider: rgba(0, 0, 0, 0.06);
+  --vp-c-gutter: rgba(0, 0, 0, 0.04);
 
-  --vp-font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --vp-font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   --vp-font-family-mono: "Space Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-  --font-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", STSong, ui-serif, serif;
 
-  --vp-shadow-1: 0 1px 3px rgba(20, 22, 26, 0.04), 0 2px 8px rgba(20, 22, 26, 0.03);
-  --vp-shadow-2: 0 4px 16px rgba(20, 22, 26, 0.06), 0 1px 3px rgba(20, 22, 26, 0.03);
-  --vp-shadow-3: 0 8px 30px rgba(20, 22, 26, 0.08), 0 2px 6px rgba(20, 22, 26, 0.04);
+  --vp-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+  --vp-shadow-2: 0 3px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  --vp-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .dark {
-  --vp-c-bg: #15171a;
-  --vp-c-bg-alt: #1c1f24;
-  --vp-c-bg-elv: #24282f;
-  --vp-c-bg-soft: rgba(255, 255, 255, 0.045);
+  --vp-c-bg: #131518;
+  --vp-c-bg-alt: #181b20;
+  --vp-c-bg-elv: #1f2228;
+  --vp-c-bg-soft: rgba(255, 255, 255, 0.04);
 
-  --vp-c-brand-1: #a2b895;
-  --vp-c-brand-2: #8fa382;
-  --vp-c-brand-3: #738668;
-  --vp-c-brand-soft: rgba(143, 163, 130, 0.2);
+  --vp-c-brand-1: #98b68d;
+  --vp-c-brand-2: #7fa174;
+  --vp-c-brand-3: #618257;
+  --vp-c-brand-soft: rgba(127, 161, 116, 0.18);
 
-  --vp-c-text-1: #e8e9ea;
-  --vp-c-text-2: #a5abb5;
-  --vp-c-text-3: #717781;
+  --vp-c-text-1: #e9ecf0;
+  --vp-c-text-2: #9ea5b1;
+  --vp-c-text-3: #6c7380;
 
-  --vp-c-border: rgba(255, 255, 255, 0.085);
-  --vp-c-divider: rgba(255, 255, 255, 0.07);
-  --vp-c-gutter: rgba(255, 255, 255, 0.04);
+  --vp-c-border: rgba(255, 255, 255, 0.08);
+  --vp-c-divider: rgba(255, 255, 255, 0.06);
+  --vp-c-gutter: rgba(255, 255, 255, 0.035);
 
-  --vp-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --vp-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.35);
-  --vp-shadow-3: 0 8px 30px rgba(0, 0, 0, 0.5);
+  --vp-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --vp-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --vp-shadow-3: 0 8px 28px rgba(0, 0, 0, 0.5);
 }
 
-/* ── 顶栏与背景毛玻璃 ──────────────────────────────────── */
+/* ── 顶栏与侧边栏高质感模糊 ────────────────────────────── */
 .VPNav {
   background-color: var(--vp-c-bg) !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--vp-c-divider);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--vp-c-divider) !important;
 }
 
 .VPSidebar {
   background-color: var(--vp-c-bg-alt) !important;
-  border-right: 1px solid var(--vp-c-divider);
+  border-right: 1px solid var(--vp-c-divider) !important;
 }
 
 /* ── 页面切换与平滑入场动画 ────────────────────────────── */
 .vp-doc {
-  animation: docPageFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: docPageFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes docPageFadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -82,49 +81,45 @@
   }
 }
 
-/* ── 标题与衬线艺术排版 ────────────────────────────────── */
-.vp-doc h1,
-.vp-doc h2,
-.vp-doc h3,
-.vp-doc h4 {
-  font-family: var(--font-serif);
-  font-feature-settings: "cv02", "cv03", "cv04", "kern";
-  letter-spacing: -0.015em;
-  font-weight: 600;
-  text-wrap: balance;
-}
-
+/* ── 现代排版层次（清晰技术质感） ───────────────────────── */
 .vp-doc h1 {
-  font-size: 2.25rem;
-  line-height: 1.25;
-  margin-top: 0.5rem;
-  margin-bottom: 1.5rem;
+  font-size: 2.1rem;
+  line-height: 1.3;
+  font-weight: 650;
+  letter-spacing: -0.022em;
+  margin-top: 0.6rem;
+  margin-bottom: 1.2rem;
   padding-bottom: 0.6rem;
-  border-bottom: 2px solid var(--vp-c-brand-soft);
+  border-bottom: 1px solid var(--vp-c-divider);
   color: var(--vp-c-text-1);
 }
 
 .vp-doc h2 {
-  font-size: 1.55rem;
+  font-size: 1.45rem;
   line-height: 1.35;
-  margin-top: 2.4rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.45rem;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  margin-top: 2.2rem;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.35rem;
   border-bottom: 1px solid var(--vp-c-divider);
   color: var(--vp-c-text-1);
 }
 
 .vp-doc h3 {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   line-height: 1.4;
-  margin-top: 1.8rem;
-  margin-bottom: 0.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 1.6rem;
+  margin-bottom: 0.65rem;
   color: var(--vp-c-text-1);
 }
 
 .vp-doc p,
 .vp-doc li {
-  line-height: 1.75;
+  font-size: 0.94rem;
+  line-height: 1.72;
   color: var(--vp-c-text-2);
 }
 
@@ -133,11 +128,11 @@
   font-weight: 600;
 }
 
-/* ── 表格样式美化与微动效 ──────────────────────────────── */
+/* ── 表格设计：卡片化与精细对齐 ────────────────────────── */
 .vp-doc table {
   display: table;
   width: 100%;
-  margin: 1.4rem 0;
+  margin: 1.2rem 0;
   border-collapse: separate;
   border-spacing: 0;
   border: 1px solid var(--vp-c-border);
@@ -151,11 +146,11 @@
   background-color: var(--vp-c-bg-alt);
   color: var(--vp-c-text-1);
   font-weight: 600;
-  font-size: 0.88rem;
-  text-align: left;
-  padding: 10px 16px;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  padding: 10px 14px;
   border-bottom: 1px solid var(--vp-c-border);
-  border-right: 1px solid var(--vp-c-border);
+  border-right: 1px solid var(--vp-c-divider);
 }
 
 .vp-doc th:last-child {
@@ -163,8 +158,8 @@
 }
 
 .vp-doc td {
-  padding: 11px 16px;
-  font-size: 0.9rem;
+  padding: 10px 14px;
+  font-size: 0.88rem;
   border-bottom: 1px solid var(--vp-c-divider);
   border-right: 1px solid var(--vp-c-divider);
   transition: background-color 0.15s ease;
@@ -184,35 +179,36 @@
 
 /* ── 图片卡片与平滑缩放提示 ────────────────────────────── */
 .vp-doc img {
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid var(--vp-c-border);
-  box-shadow: var(--vp-shadow-2);
-  margin: 1.4rem auto;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--vp-shadow-1);
+  margin: 1.2rem auto;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: zoom-in;
 }
 
 .vp-doc img:hover {
   transform: translateY(-2px);
-  box-shadow: var(--vp-shadow-3);
+  box-shadow: var(--vp-shadow-2);
 }
 
 /* ── 行内代码与快捷键标记 ──────────────────────────────── */
 .vp-doc code {
   font-family: var(--vp-font-family-mono);
-  font-size: 0.86em;
-  padding: 2px 6px;
+  font-size: 0.85em;
+  padding: 2px 5px;
   border-radius: 4px;
   background-color: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-border);
   color: var(--vp-c-brand-1);
 }
 
-/* ── 莫兰迪提示框容器（Tip / Info / Warning） ──────────── */
+/* ── 提示块容器（Tip / Info / Warning） ─────────────────── */
 .custom-block {
-  border-radius: 10px !important;
-  border-width: 1px 1px 1px 4px !important;
+  border-radius: 8px !important;
+  border-width: 1px 1px 1px 3px !important;
   box-shadow: var(--vp-shadow-1);
+  margin: 1.2rem 0 !important;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -222,20 +218,20 @@
 
 .custom-block.tip {
   border-color: var(--vp-c-brand-2) !important;
-  background-color: rgba(143, 163, 130, 0.12) !important;
+  background-color: var(--vp-c-brand-soft) !important;
 }
 
 .custom-block.info {
-  border-color: #7b9095 !important;
-  background-color: rgba(123, 144, 149, 0.12) !important;
+  border-color: #6b8592 !important;
+  background-color: rgba(107, 133, 146, 0.1) !important;
 }
 
 .custom-block.warning {
-  border-color: #c89f81 !important;
-  background-color: rgba(200, 159, 129, 0.12) !important;
+  border-color: #be8e6e !important;
+  background-color: rgba(190, 142, 110, 0.1) !important;
 }
 
-/* ── 侧边栏导航高亮与交互 ──────────────────────────────── */
+/* ── 侧边栏导航条目 ────────────────────────────────────── */
 .VPSidebarItem.is-active > .item {
   background-color: var(--vp-c-brand-soft) !important;
   border-radius: 6px;
@@ -256,57 +252,7 @@
   background-color: var(--vp-c-bg-soft);
 }
 
-/* ── 首页 Hero 与特性卡片动效强化 ──────────────────────── */
-.VPHomeHero .name {
-  font-family: var(--font-serif);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.VPHomeHero .tagline {
-  color: var(--vp-c-text-2);
-}
-
-.VPFeature {
-  border-radius: 12px !important;
-  border: 1px solid var(--vp-c-border) !important;
-  background-color: var(--vp-c-bg-elv) !important;
-  box-shadow: var(--vp-shadow-1);
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.VPFeature:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--vp-shadow-3);
-  border-color: var(--vp-c-brand-3) !important;
-}
-
-.VPButton.brand {
-  border-radius: 8px;
-  background-color: var(--vp-c-brand-1) !important;
-  border-color: var(--vp-c-brand-1) !important;
-  box-shadow: var(--vp-shadow-1);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.VPButton.brand:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--vp-shadow-2);
-}
-
-.VPButton.alt {
-  border-radius: 8px;
-  border-color: var(--vp-c-border) !important;
-  background-color: var(--vp-c-bg-elv) !important;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.VPButton.alt:hover {
-  transform: translateY(-2px);
-  border-color: var(--vp-c-brand-2) !important;
-}
-
-/* ── 图片全屏灯箱缩放层 ────────────────────────────────── */
+/* ── 灯箱缩放层遮罩 ────────────────────────────────────── */
 .medium-zoom-overlay {
   z-index: 100;
   backdrop-filter: blur(12px);
@@ -315,6 +261,6 @@
 
 .medium-zoom-image--opened {
   z-index: 101;
-  border-radius: 8px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  border-radius: 6px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
 }

@@ -1,23 +1,35 @@
----
-layout: home
+# ReveriePaint 官方使用指南与技术手册
 
-hero:
-  name: "ReveriePaint"
-  text: "官方使用文档与技术指南"
-  tagline: "基于 Krita 核心渲染架构的 Android 原生数字绘画系统"
-  actions:
-    - theme: brand
-      text: 开始阅读指南
-      link: /guide/intro
-    - theme: alt
-      text: 返回官网首页
-      link: https://reveriepaint.lanrhyme.top
+欢迎查阅 ReveriePaint 官方技术手册，本文档涵盖从新手入门、触控手势、图层进阶到手写笔工坊与工程安全的全量特性指南
 
-features:
-  - title: 原生高跟手架构
-    details: C++ 核心引擎与 JNI 高性能渲染管线，零延迟实时笔画拟合与双缓冲画布调度
-  - title: 丰富工具与滤镜
-    details: 包含 35 种 GPU 加速滤镜、流动蚂蚁线自由选区、五模液化形变与多点透视辅助
-  - title: 开放格式与云同步
-    details: 兼容 Krita .kpp / .bundle 与 Photoshop ABR 笔刷，支持 WebDAV 一键全自动云端备份
----
+::: tip 快速指引
+本文档基于最新正式版构建编写，所有功能均已在 Android 7.0+（ARM64）主流平板与手机设备上经过完整真机验证，随时可使用顶栏搜索或快捷键 `Ctrl + K` / `⌘K` 全文检索功能
+:::
+
+## 核心章节大纲
+
+文档划分为五大模块，画师可依序阅读或点击下方直达对应进阶章节：
+
+| 章节板块 | 涵盖核心内容 | 重点指引 |
+| :--- | :--- | :--- |
+| **01 入门与手势** | 系统基准、安装授权、工作区定制与快捷操作 | [触控手势全集](/guide/gestures) · [界面与悬浮条定制](/guide/interface) |
+| **02 图层机制** | 图层树嵌套、混合模式、单图层孤立与剪贴蒙版 | [继承不透明度实战](/guide/inherit-alpha) · [Alpha 锁定](/guide/isolate-alpha) |
+| **03 手写笔工坊** | Wacom 与品牌主动笔、压感曲线、纸感声学与 ABR 导入 | [笔刷工坊与 ABR 导入](/guide/brush-studio) · [压感与声学](/guide/stylus) |
+| **04 创作与进阶** | 3D 光影参考球、透视锁线、流动蚂蚁线选区、液化与逐帧动画 | [流动选区与液化](/guide/selection-transform) · [透视与对称](/guide/shapes-guides) |
+| **05 工程与社群** | 原生 .revp 架构、崩溃快照恢复、WebDAV 云同步与问题反馈 | [WebDAV 与快照恢复](/guide/project) · [参与文档贡献](/guide/contributing) |
+
+## 系统架构与硬件基准
+
+ReveriePaint 采用 C++ 底层图形内核深度绑定 Android 原生 JNI 渲染管线，实现毫秒级触控响应与双缓冲零延迟画布呈现：
+
+- **系统基准**：Android 7.0 及以上版本（API 24+），推荐 64 位 ARM64 处理器
+- **手写笔支持**：原生适配 Wacom EMR 无源电磁笔（三星 S-Pen 等）、各大品牌主动式电容笔以及外接 USB/蓝牙数位板
+- **图层与内存**：无硬编码图层上限限制，依据设备物理可用运行内存动态评估最大安全画布分辨率与图层深度
+- **格式互通**：完全兼容 Krita `.kpp` / `.bundle` 资源包，支持直接载入 Photoshop `.abr` 笔刷与导出分层 `.psd`
+
+## 高频常用功能直达
+
+- **三指编辑浮动菜单**：在画布任意位置三指同时向下滑动，即可即时呼出剪切、拷贝、复制、清空与向下合并快捷条
+- **单指长按悬浮吸色**：在画布单指长按呼出双环取色盘，微小位移防抖滤波，快速滑动平滑切换抓手平移
+- **画布视图锁定**：在顶栏可独立开启「缩放锁」或「旋转锁」，杜绝双指漫游作画时画布产生误倾斜
+- **防崩溃应急恢复**：若遭遇意外中断退出，重启画廊主界面将自动检测未保存快照并提供一键草稿恢复

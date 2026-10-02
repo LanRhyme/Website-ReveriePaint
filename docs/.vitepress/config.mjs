@@ -22,12 +22,19 @@ export default defineConfig({
     siteTitle: 'ReveriePaint',
     nav: [
       { text: '官网首页', link: 'https://reveriepaint.lanrhyme.top' },
-      { text: '使用文档', link: '/guide/intro' },
+      { text: '使用文档', link: '/' },
       { text: 'Mirror酱', link: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android' },
       { text: 'GitHub', link: 'https://github.com/LanRhyme/ReveriePaint' }
     ],
     sidebar: {
       '/': [
+        {
+          text: '概览与速查',
+          collapsed: false,
+          items: [
+            { text: '手册导言与架构概览', link: '/' }
+          ]
+        },
         {
           text: '01 入门与手势',
           collapsed: false,
