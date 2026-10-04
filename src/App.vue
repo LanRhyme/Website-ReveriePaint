@@ -8,7 +8,6 @@ import OriginStory from './components/OriginStory.vue'
 import GetSection from './components/GetSection.vue'
 import AppFooter from './components/AppFooter.vue'
 import FluidCanvas from './components/FluidCanvas.vue'
-import PageTransitionCurtain from './components/PageTransitionCurtain.vue'
 import { initReveal } from './composables/useReveal.js'
 import { initGsapScroll } from './composables/useGsap.js'
 
@@ -19,7 +18,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <PageTransitionCurtain />
   <FluidCanvas />
   <AppHeader />
 

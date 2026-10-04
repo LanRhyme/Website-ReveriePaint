@@ -3,7 +3,6 @@ import { ref, computed, onMounted } from 'vue'
 import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue'
 import FluidCanvas from './components/FluidCanvas.vue'
-import PageTransitionCurtain from './components/PageTransitionCurtain.vue'
 import { useI18n } from './composables/useI18n.js'
 import { isFineHoverPointer } from './composables/useGsap.js'
 import { initReveal } from './composables/useReveal.js'
@@ -142,7 +141,6 @@ onMounted(() => {
 
 <template>
   <div class="download-page">
-    <PageTransitionCurtain />
     <FluidCanvas />
     <AppHeader />
 
