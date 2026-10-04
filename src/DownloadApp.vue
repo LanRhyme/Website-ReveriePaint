@@ -143,7 +143,6 @@ onMounted(() => {
 <template>
   <div class="download-page">
     <PageTransitionCurtain />
-    <div class="grain-tex" aria-hidden="true"></div>
     <FluidCanvas />
     <AppHeader />
 
@@ -579,7 +578,7 @@ onMounted(() => {
   font-size: 0.875rem;
   font-weight: 600;
   padding: 3px 10px;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(20, 22, 26, 0.07);
   border-radius: 6px;
   color: var(--ink);
 }
@@ -602,7 +601,7 @@ onMounted(() => {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 12px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(20, 22, 26, 0.03);
   padding: 16px 20px;
   border-radius: 12px;
   border: 1px solid var(--line-faint);
@@ -624,7 +623,7 @@ onMounted(() => {
 
 /* 节点切换 */
 .proxy-switch-box {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(20, 22, 26, 0.02);
   border: 1px solid var(--line);
   padding: 18px 22px;
   border-radius: 14px;
@@ -687,7 +686,7 @@ onMounted(() => {
   font-size: 0.6875rem;
   padding: 2px 6px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.06);
 }
 .proxy-pill.active .p-badge {
   background: rgba(255, 255, 255, 0.2);
@@ -761,7 +760,7 @@ onMounted(() => {
 .btn-dl-copy {
   appearance: none;
   border: 1px solid var(--line-strong);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(20, 22, 26, 0.04);
   color: var(--ink);
   padding: 14px 20px;
   border-radius: 14px;
@@ -778,7 +777,7 @@ onMounted(() => {
 }
 @media (hover: hover) and (pointer: fine) {
   .btn-dl-copy:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(20, 22, 26, 0.08);
     border-color: var(--ink);
   }
 }
@@ -789,7 +788,7 @@ onMounted(() => {
   gap: 8px;
   font-size: 0.75rem;
   color: var(--ink-soft-2);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(20, 22, 26, 0.03);
   padding: 8px 14px;
   border-radius: 8px;
   overflow: hidden;
@@ -842,7 +841,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   color: var(--ink);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(20, 22, 26, 0.05);
 }
 .ch-info h3 {
   font-size: 1rem;
@@ -865,7 +864,7 @@ onMounted(() => {
   color: var(--ink);
   padding: 9px 16px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(20, 22, 26, 0.05);
   border: 1px solid var(--line);
   cursor: pointer;
   transition: all 0.2s;
@@ -873,7 +872,7 @@ onMounted(() => {
 }
 @media (hover: hover) and (pointer: fine) {
   .ch-btn:hover {
-    background: rgba(255, 255, 255, 0.09);
+    background: rgba(20, 22, 26, 0.09);
     border-color: var(--ink);
   }
 }

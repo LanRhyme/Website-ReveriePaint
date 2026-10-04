@@ -1,33 +1,31 @@
 :root {
-  /* ── 核心背景色调 (Lusion Deep Studio Pitch Black) ── */
-  --paper: #060709;
-  --paper-warm: #0a0c10;
-  --paper-deep: #0f1217;
-  --card: #0d0f14;
-  --card-hover: #14171f;
+  /* ── 画布纸感底 ───────────────────────────── */
+  --paper: #f5f2ec;
+  --paper-warm: #efeae1;
+  --paper-deep: #e6e0d5;
+  --card: #fdfcfa;
 
-  /* ── 文字与线条 (高对比度纯白与微光灰阶) ── */
-  --ink: #f5f6f8;
-  --ink-soft: #c8cbd2;
-  --ink-mid: #858c97;
-  --ink-soft-2: #5f6572;
-  --ink-ghost: #2b303a;
+  /* ── 墨色（渐层文字与结构线） ──────────────── */
+  --ink: #14161a;
+  --ink-soft: #2b2f36;
+  --ink-mid: #5d646e;
+  --ink-soft-2: #8d949e;
+  --ink-ghost: #b8bcc2;
 
-  /* ── 界面深灰与容器架构 ── */
-  --ui-900: #08090c;
-  --ui-800: #0f1217;
-  --ui-700: #181c24;
-  --ui-600: #242934;
+  /* ── 界面深灰（对齐 app 自身的暗色 UI） ────── */
+  --ui-900: #17191c;
+  --ui-800: #1e2126;
+  --ui-700: #262a2f;
+  --ui-600: #32373d;
   --ui-line: rgba(255, 255, 255, 0.08);
-  --ui-text: #f5f6f8;
-  --ui-text-dim: #858c97;
+  --ui-text: #e8e9ea;
+  --ui-text-dim: #9aa0a7;
 
-  /* ── 强调色（精工科技蓝与莫兰迪流体调和） ── */
+  /* ── 界面强调色（截图里出现的那个蓝） ──────── */
   --accent: #5b7fc7;
-  --accent-deep: #7a9df0;
-  --accent-glow: rgba(91, 127, 199, 0.25);
+  --accent-deep: #46689f;
 
-  /* ── 莫兰迪自然点缀 ── */
+  /* ── 莫兰迪点缀 ───────────────────────────── */
   --moss: #9da98e;
   --bean: #c3a39e;
   --haze: #8fa3b4;
@@ -35,13 +33,12 @@
   --mauve: #a79bb6;
   --clay: #b08a75;
 
-  /* ── 精密网格线与十字准星 ── */
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.16);
-  --line-faint: rgba(255, 255, 255, 0.04);
-  --cross-color: rgba(255, 255, 255, 0.25);
+  /* ── 边框 ─────────────────────────────────── */
+  --line: rgba(20, 22, 26, 0.1);
+  --line-strong: rgba(20, 22, 26, 0.18);
+  --line-faint: rgba(20, 22, 26, 0.055);
 
-  /* ── 字体 ── */
+  /* ── 字体 ─────────────────────────────────── */
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans CN", sans-serif;
   --font-serif: "Noto Serif SC", "Source Han Serif SC", "Source Han Serif CN", "Songti SC",
@@ -50,16 +47,16 @@
     monospace;
   --font-features: "cv02", "cv03", "cv04", "cv11", "kern";
 
-  /* ── 缓动函数 (Lusion Cine Curve) ── */
+  /* ── 缓动 ─────────────────────────────────── */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-silk: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* ── 阴影 ── */
-  --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-m: 0 4px 16px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.3);
-  --shadow-l: 0 8px 30px rgba(0, 0, 0, 0.6), 0 28px 70px rgba(0, 0, 0, 0.5);
+  /* ── 阴影 ─────────────────────────────────── */
+  --shadow-s: 0 1px 2px rgba(20, 22, 26, 0.05), 0 2px 8px rgba(20, 22, 26, 0.04);
+  --shadow-m: 0 2px 6px rgba(20, 22, 26, 0.06), 0 12px 32px rgba(20, 22, 26, 0.07);
+  --shadow-l: 0 4px 14px rgba(20, 22, 26, 0.08), 0 28px 70px rgba(20, 22, 26, 0.12);
 
-  /* ── 版心 ── */
-  --shell: 1400px;
-  --gutter: clamp(20px, 5vw, 72px);
+  /* ── 版心 ─────────────────────────────────── */
+  --shell: 1360px;
+  --gutter: clamp(20px, 5vw, 64px);
 }

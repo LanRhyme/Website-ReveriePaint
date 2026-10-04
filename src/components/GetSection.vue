@@ -125,10 +125,6 @@ onUnmounted(() => {
           data-cursor="GET"
           :style="{ transitionDelay: `${i * 70}ms` }"
         >
-          <div class="card-cross cross-tl">+</div>
-          <div class="card-cross cross-tr">+</div>
-          <div class="card-cross cross-bl">+</div>
-          <div class="card-cross cross-br">+</div>
           <h3>{{ w.title }}</h3>
           <p>{{ w.body }}</p>
           <div class="way-actions">
@@ -180,19 +176,12 @@ onUnmounted(() => {
   padding: clamp(72px, 11vh, 128px) 0 clamp(64px, 9vh, 104px);
 }
 
-.get {
-  padding: clamp(72px, 11vh, 128px) 0 clamp(64px, 9vh, 104px);
-  background: transparent;
-  color: #ffffff;
-}
-
 .sec-head {
   max-width: 60ch;
   margin-bottom: clamp(34px, 5vh, 48px);
 }
 .sec-head .h-section {
   margin-top: 14px;
-  color: #ffffff;
 }
 
 /* ── 规格条 ─────────────────────────────────── */
@@ -200,14 +189,14 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--line-faint);
+  border: 1px solid var(--line-faint);
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: clamp(34px, 5vh, 48px);
 }
 .meta-item {
-  background: #0d0f14;
+  background: var(--card);
   padding: 18px 20px;
   display: flex;
   flex-direction: column;
@@ -215,15 +204,13 @@ onUnmounted(() => {
 }
 .meta-item dt {
   font-size: 0.75rem;
-  font-family: var(--font-mono);
-  color: rgba(255, 255, 255, 0.45);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  color: var(--ink-soft-2);
+  letter-spacing: 0.02em;
 }
 .meta-item dd {
   font-size: 0.9375rem;
-  font-weight: 600;
-  color: #ffffff;
+  font-weight: 500;
+  color: var(--ink);
 }
 
 /* ── 三个入口 ───────────────────────────────── */
@@ -233,46 +220,32 @@ onUnmounted(() => {
   gap: clamp(16px, 2.2vw, 22px);
 }
 .way {
-  position: relative;
   display: flex;
   flex-direction: column;
   gap: 14px;
   padding: clamp(28px, 3.4vw, 40px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  background: #0d0f14;
+  border: 1px solid var(--line-faint);
+  border-radius: 20px;
+  background: rgba(253, 252, 250, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s, border-color 0.4s;
 }
-
-.card-cross {
-  position: absolute;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.3);
-  user-select: none;
-  line-height: 1;
-}
-.cross-tl { top: -6px; left: -6px; }
-.cross-tr { top: -6px; right: -6px; }
-.cross-bl { bottom: -6px; left: -6px; }
-.cross-br { bottom: -6px; right: -6px; }
-
 @media (hover: hover) and (pointer: fine) {
   .way:hover {
     transform: translateY(-6px);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), 0 0 25px rgba(91, 127, 199, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 20px 45px rgba(20, 22, 26, 0.08);
+    border-color: var(--line-strong);
   }
 }
 .way h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #ffffff;
+  font-size: 1.0625rem;
+  font-weight: 500;
 }
 .way p {
   font-size: 0.90625rem;
   line-height: 1.8;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--ink-mid);
   flex: 1;
 }
 .way-actions {
@@ -288,13 +261,13 @@ onUnmounted(() => {
   gap: 6px;
   font-size: 0.84375rem;
   font-weight: 500;
-  color: #ffffff;
-  padding: 8px 16px;
+  color: var(--ink);
+  padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(20, 22, 26, 0.05);
+  border: 1px solid var(--line);
   will-change: transform;
-  transition: all 0.25s ease;
+  transition: background 0.25s, border-color 0.25s;
 }
 button.way-cta {
   font-family: inherit;
@@ -304,26 +277,28 @@ button.way-cta {
   transition: transform 0.3s var(--ease-out-expo);
 }
 
-/* 首个入口高亮强调 */
+/* 首个入口用深色强调 */
 .way.primary {
-  background: #10131a;
-  border-color: rgba(91, 127, 199, 0.3);
+  background: var(--ui-900);
+  border-color: var(--ui-600);
+  color: var(--ui-text);
+}
+.way.primary h3 {
+  color: #fff;
+}
+.way.primary p {
+  color: var(--ui-text-dim);
+}
+.way.primary .way-cta {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 .way.primary .way-cta.cta-solid {
-  background: #ffffff;
-  color: #060709;
-  border-color: #ffffff;
+  background: #fff;
+  color: var(--ui-900);
+  border-color: #fff;
   font-weight: 600;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .way-cta:hover {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: rgba(255, 255, 255, 0.35);
-  }
-  .way-cta:hover svg {
-    transform: translate(2px, -2px);
-  }
 }
 
 @media (hover: hover) and (pointer: fine) {

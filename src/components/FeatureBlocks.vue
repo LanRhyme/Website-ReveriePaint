@@ -170,11 +170,8 @@ onUnmounted(() => {
   <section id="features" ref="sectionRef" class="features">
     <div class="shell">
       <header class="sec-head reveal">
-        <div class="head-meta">
-          <span class="meta-dot"></span>
-          <p class="eyebrow">{{ t('features.eyebrow') }}</p>
-        </div>
-        <h2 class="h-section lusion-sec-title">
+        <p class="eyebrow">{{ t('features.eyebrow') }}</p>
+        <h2 class="h-section">
           <span class="line-mask"><span class="line-inner">{{ t('features.title') }}</span></span>
         </h2>
         <p class="lede sec-sub">{{ t('features.sub') }}</p>
@@ -189,21 +186,16 @@ onUnmounted(() => {
           :class="{ 'is-flip': b.flip }"
         >
           <div
-            class="block-media-wrap"
+            class="block-media"
+            data-cursor="STUDIO"
             @mousemove="onMediaMouseMove"
             @mouseleave="onMediaMouseLeave"
           >
-            <div class="card-cross cross-tl">+</div>
-            <div class="card-cross cross-tr">+</div>
-            <div class="card-cross cross-bl">+</div>
-            <div class="card-cross cross-br">+</div>
-            <div class="block-media" data-cursor="STUDIO">
-              <img :src="b.img" :alt="b.alt" loading="lazy" decoding="async" />
-            </div>
+            <img :src="b.img" :alt="b.alt" loading="lazy" decoding="async" />
           </div>
 
           <div class="block-copy">
-            <p class="eyebrow kicker-tag">{{ b.kicker }}</p>
+            <p class="eyebrow">{{ b.kicker }}</p>
             <h3 class="block-title">
               <span class="line-mask"><span class="line-inner">{{ b.title }}</span></span>
             </h3>
@@ -245,43 +237,8 @@ onUnmounted(() => {
   margin-top: 14px;
   line-height: 1.3;
 }
-.features {
-  padding: clamp(80px, 14vh, 140px) 0;
-  position: relative;
-  background: transparent;
-  color: #ffffff;
-}
-
-.sec-head {
-  max-width: 58ch;
-  margin-bottom: clamp(64px, 10vh, 100px);
-}
-
-.head-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.meta-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #5b7fc7;
-}
-
-.lusion-sec-title {
-  color: #ffffff;
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-}
-
 .sec-sub {
   margin-top: 18px;
-  color: rgba(255, 255, 255, 0.65);
 }
 
 /* ══ 交错图文 ═══════════════════════════════ */
@@ -298,38 +255,21 @@ onUnmounted(() => {
   gap: clamp(48px, 6vw, 96px);
 }
 
-.block-media-wrap {
-  position: relative;
-}
-
-.card-cross {
-  position: absolute;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.35);
-  user-select: none;
-  line-height: 1;
-}
-.cross-tl { top: -6px; left: -6px; }
-.cross-tr { top: -6px; right: -6px; }
-.cross-bl { bottom: -6px; left: -6px; }
-.cross-br { bottom: -6px; right: -6px; }
-
 /* 巨幕级展示一侧 */
 .block-media {
   position: relative;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  background: #0d0f14;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.7);
+  background: var(--ui-900);
+  border: 1px solid rgba(20, 22, 26, 0.08);
+  box-shadow: 0 20px 50px rgba(20, 22, 26, 0.12), 0 1px 3px rgba(20, 22, 26, 0.06);
   transform-style: preserve-3d;
   will-change: transform;
   transition: box-shadow 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
 }
 @media (hover: hover) and (pointer: fine) {
   .block-media:hover {
-    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.9), 0 0 30px rgba(91, 127, 199, 0.15);
+    box-shadow: 0 32px 72px rgba(20, 22, 26, 0.18), 0 2px 6px rgba(20, 22, 26, 0.08);
   }
 }
 .block-media img {
@@ -349,23 +289,19 @@ onUnmounted(() => {
 .block-copy {
   max-width: 44ch;
 }
-.kicker-tag {
-  color: #5b7fc7;
-  font-weight: 500;
-}
 .block-title {
   margin-top: 14px;
-  font-size: clamp(1.6rem, 2.8vw, 2.3rem);
-  font-weight: 600;
-  line-height: 1.25;
+  font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+  font-weight: 500;
+  line-height: 1.28;
   letter-spacing: -0.026em;
-  color: #ffffff;
+  color: var(--ink);
 }
 .block-body {
   margin-top: 18px;
   font-size: clamp(0.9375rem, 1.1vw, 1.05rem);
   line-height: 1.92;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--ink-mid);
 }
 .block-points {
   margin-top: 20px;
@@ -379,7 +315,7 @@ onUnmounted(() => {
   padding-left: 18px;
   font-size: 0.875rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--ink-soft);
 }
 .block-points li::before {
   content: '';
@@ -388,11 +324,11 @@ onUnmounted(() => {
   top: 0.58em;
   width: 6px;
   height: 1px;
-  background: rgba(255, 255, 255, 0.35);
+  background: var(--ink-ghost);
 }
 
 /* 交替方向：图移到右列 */
-.block.is-flip .block-media-wrap {
+.block.is-flip .block-media {
   order: 2;
 }
 .block.is-flip .block-copy {
@@ -403,19 +339,19 @@ onUnmounted(() => {
 .pills {
   margin-top: clamp(64px, 10vh, 116px);
   padding-top: clamp(44px, 7vh, 68px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--line-faint);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(20px, 3vw, 34px);
 }
 
 .pill-shot {
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
-  background: #0d0f14;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--ui-800);
+  border: 1px solid rgba(20, 22, 26, 0.12);
   margin-bottom: 18px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--shadow-s);
   aspect-ratio: 16 / 10.2;
 }
 .pill-shot img {
@@ -435,13 +371,12 @@ onUnmounted(() => {
   font-size: 1.0625rem;
   font-weight: 500;
   letter-spacing: -0.012em;
-  color: #ffffff;
 }
 .pill-copy p {
   margin-top: 8px;
   font-size: 0.875rem;
   line-height: 1.78;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--ink-mid);
 }
 
 /* ══ 响应式 ═════════════════════════════════ */

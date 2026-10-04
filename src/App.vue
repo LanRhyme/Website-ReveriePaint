@@ -20,7 +20,6 @@ onMounted(() => {
 
 <template>
   <PageTransitionCurtain />
-  <div class="grain-tex" aria-hidden="true"></div>
   <FluidCanvas />
   <AppHeader />
 

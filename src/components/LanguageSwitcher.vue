@@ -90,11 +90,11 @@ onUnmounted(() => {
   align-items: center;
   gap: 6px;
   height: 34px;
-  padding: 0 12px;
+  padding: 0 11px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--line-faint, rgba(0, 0, 0, 0.08));
+  background: var(--paper-warm, rgba(245, 242, 236, 0.8));
+  color: var(--ink-mid, #4a5568);
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
@@ -104,9 +104,9 @@ onUnmounted(() => {
 }
 
 .lang-trigger:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.25);
+  background: var(--paper, #fff);
+  color: var(--ink, #1a202c);
+  border-color: var(--line, rgba(0, 0, 0, 0.15));
 }
 
 .lang-icon {
@@ -128,11 +128,11 @@ onUnmounted(() => {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  min-width: 140px;
-  background: #0d0f14;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  min-width: 136px;
+  background: var(--paper, #fff);
+  border: 1px solid var(--line, rgba(0, 0, 0, 0.12));
   border-radius: 12px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.12), 0 6px 12px -4px rgba(0, 0, 0, 0.06);
   padding: 6px;
   display: flex;
   flex-direction: column;
@@ -167,25 +167,25 @@ onUnmounted(() => {
   background: transparent;
   border-radius: 8px;
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--ink-mid, #4a5568);
   cursor: pointer;
   text-align: left;
   transition: all 0.15s ease;
 }
 
 .lang-option:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  background: var(--paper-warm, #f7f6f2);
+  color: var(--ink, #1a202c);
 }
 
 .lang-option.active {
-  background: rgba(91, 127, 199, 0.2);
-  color: #8da6df;
+  background: var(--accent-faint, rgba(90, 110, 138, 0.12));
+  color: var(--accent, #5a6e8a);
   font-weight: 600;
 }
 
 .check-icon {
-  color: #8da6df;
+  color: var(--accent, #5a6e8a);
 }
 
 .is-compact .lang-trigger {
