@@ -2,14 +2,12 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap, ScrollTrigger, isFineHoverPointer } from '../composables/useGsap.js'
 import { useI18n } from '../composables/useI18n.js'
-import ThreeFluidSculpture from './ThreeFluidSculpture.vue'
 import heroCanvas from '../assets/shots/hero-canvas.webp'
 import heroCanvasSm from '../assets/shots/hero-canvas-sm.webp'
 
 const { t, isEn } = useI18n()
 
 const ready = ref(false)
-const activeHeroView = ref('3d')
 const heroRef = ref(null)
 const deviceRef = ref(null)
 const shineRef = ref(null)
@@ -236,56 +234,22 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- 舞台区：悬浮硬件设备与微交互 -->
+      <!-- 舞台区：悬浮硬件设备与应用原生界面 -->
       <div class="hero-device lusion-stage-device">
-        <div class="hero-view-toggle">
-          <button
-            type="button"
-            class="toggle-pill"
-            :class="{ active: activeHeroView === '3d' }"
-            data-cursor="SCULPT"
-            @click="activeHeroView = '3d'"
-          >
-            <span>3D Fluid Sculpt</span>
-          </button>
-          <button
-            type="button"
-            class="toggle-pill"
-            :class="{ active: activeHeroView === 'canvas' }"
-            data-cursor="UI"
-            @click="activeHeroView = 'canvas'"
-          >
-            <span>App Canvas</span>
-          </button>
-        </div>
-
-        <div ref="deviceRef" class="device" data-cursor="INTERACT">
+        <div ref="deviceRef" class="device" data-cursor="CANVAS">
           <div class="device-screen">
             <div ref="shineRef" class="device-shine" aria-hidden="true"></div>
-
-            <transition name="fade-view">
-              <div v-show="activeHeroView === '3d'" class="view-3d-wrap">
-                <ThreeFluidSculpture />
-                <div class="sculpture-hint">
-                  <span>{{ isEn ? 'Click & Drag to deform 3D ink drop' : '按住鼠标拖拽拉伸 3D 彩墨流体雕塑' }}</span>
-                </div>
-              </div>
-            </transition>
-
-            <transition name="fade-view">
-              <img
-                v-show="activeHeroView === 'canvas'"
-                :src="heroCanvas"
-                :srcset="`${heroCanvasSm} 1000w, ${heroCanvas} 2000w`"
-                sizes="(max-width: 960px) 90vw, 980px"
-                :alt="t('hero.deviceAlt')"
-                fetchpriority="high"
-                decoding="async"
-              />
-            </transition>
+            <img
+              :src="heroCanvas"
+              :srcset="`${heroCanvasSm} 1000w, ${heroCanvas} 2000w`"
+              sizes="(max-width: 960px) 90vw, 980px"
+              :alt="t('hero.deviceAlt')"
+              fetchpriority="high"
+              decoding="async"
+            />
           </div>
         </div>
-        <p class="device-note">{{ activeHeroView === '3d' ? (isEn ? 'Real-time WebGL Physical Vertex Simulation' : 'Three.js 实时物理级顶点流体变形与 PBR 渲染') : t('hero.deviceNote') }}</p>
+        <p class="device-note">{{ t('hero.deviceNote') }}</p>
       </div>
 
       <!-- 底部指标浮带 -->
@@ -534,78 +498,6 @@ onUnmounted(() => {
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
-}
-
-/* ── 3D 流体雕塑容器与视图切换器 ──────────────── */
-.hero-view-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-.toggle-pill {
-  appearance: none;
-  border: 1px solid var(--line-faint);
-  background: rgba(253, 252, 250, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 4px 12px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-family: inherit;
-  font-weight: 500;
-  color: var(--ink-soft);
-  cursor: pointer;
-  transition: all 0.25s var(--ease-out-expo);
-}
-.toggle-pill:hover {
-  border-color: var(--ink-ghost);
-  color: var(--ink);
-}
-.toggle-pill.active {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
-  box-shadow: 0 2px 8px rgba(20, 22, 26, 0.16);
-}
-
-.view-3d-wrap {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 50% 50%, #f6f5f1 0%, #e2dfd7 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.sculpture-hint {
-  position: absolute;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.72rem;
-  color: var(--ink-ghost);
-  letter-spacing: 0.04em;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  padding: 3px 12px;
-  border-radius: 999px;
-  pointer-events: none;
-  border: 1px solid rgba(20, 22, 26, 0.06);
-  z-index: 2;
-  white-space: nowrap;
-}
-
-.fade-view-enter-active,
-.fade-view-leave-active {
-  transition: opacity 0.35s ease;
-}
-.fade-view-enter-from,
-.fade-view-leave-to {
-  opacity: 0;
 }
 
 .device-note {

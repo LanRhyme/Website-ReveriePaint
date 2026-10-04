@@ -293,7 +293,7 @@ onUnmounted(() => {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 1; /* 位于背景之上，内容之下 */
+  z-index: 0; /* 严格位于背景层，位于所有页面卡片、按钮与文字下方 */
   will-change: transform;
 }
 </style>

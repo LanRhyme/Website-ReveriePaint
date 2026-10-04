@@ -26,6 +26,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+main {
+  position: relative;
+  z-index: 5; /* 确保所有文本、按钮与主内容位于背景 3D/2D 画布的前景 */
+}
+
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
   font-weight: 500;
