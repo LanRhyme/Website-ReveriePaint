@@ -108,15 +108,17 @@ onUnmounted(() => {
   flex-direction: column;
   transition: transform 0.45s var(--ease-out-expo), box-shadow 0.45s, border-color 0.4s;
 }
-.pillar-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-m);
-  border-color: var(--line);
-}
-.pillar-card:hover .card-bar {
-  width: 48px;
-  opacity: 0.8;
-  background: var(--ink);
+@media (hover: hover) and (pointer: fine) {
+  .pillar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-m);
+    border-color: var(--line);
+  }
+  .pillar-card:hover .card-bar {
+    width: 48px;
+    opacity: 0.8;
+    background: var(--ink);
+  }
 }
 
 .card-top {

@@ -27,5 +27,14 @@ export function initGsapScroll() {
   initialized = true
 }
 
+export function isFineHoverPointer(e) {
+  if (typeof window === 'undefined') return false
+  if (e) {
+    if (e.pointerType && e.pointerType !== 'mouse') return false
+    if ('sourceCapabilities' in e && e.sourceCapabilities?.firesTouchEvents) return false
+  }
+  return window.matchMedia('(hover: hover) and (pointer: fine)').matches
+}
+
 export { gsap, ScrollTrigger }
 

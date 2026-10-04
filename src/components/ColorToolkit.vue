@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { gsap } from '../composables/useGsap.js'
+import { gsap, isFineHoverPointer } from '../composables/useGsap.js'
 import { useI18n } from '../composables/useI18n.js'
 import wheel from '../assets/shots/ui-wheel.webp'
 import harmony from '../assets/shots/harmony.webp'
@@ -45,6 +45,7 @@ function scrollToColor(index) {
 }
 
 function onCardMouseMove(e) {
+  if (!isFineHoverPointer(e)) return
   const card = e.currentTarget
   const rect = card.getBoundingClientRect()
   const x = (e.clientX - rect.left) / rect.width - 0.5
@@ -59,6 +60,10 @@ function onCardMouseMove(e) {
 }
 
 function onCardMouseLeave(e) {
+  if (!isFineHoverPointer(e)) {
+    if (e?.currentTarget) gsap.set(e.currentTarget, { rotationY: 0, rotationX: 0 })
+    return
+  }
   gsap.to(e.currentTarget, {
     rotationY: 0,
     rotationX: 0,
@@ -184,9 +189,6 @@ onUnmounted(() => {
   will-change: transform;
   transition: box-shadow 0.4s var(--ease-out-expo);
 }
-.c-item:hover .c-shot {
-  box-shadow: var(--shadow-l);
-}
 .c-shot img {
   width: 100%;
   height: 100%;
@@ -194,8 +196,14 @@ onUnmounted(() => {
   object-position: top center;
   transition: transform 0.8s var(--ease-out-expo);
 }
-.c-item:hover .c-shot img {
-  transform: scale(1.03);
+
+@media (hover: hover) and (pointer: fine) {
+  .c-item:hover .c-shot {
+    box-shadow: var(--shadow-l);
+  }
+  .c-item:hover .c-shot img {
+    transform: scale(1.03);
+  }
 }
 
 .c-item figcaption {
@@ -243,9 +251,12 @@ onUnmounted(() => {
   gap: 10px;
   transition: background 0.35s ease, transform 0.35s var(--ease-out-expo);
 }
-.rest-item:hover {
-  background: rgba(255, 255, 255, 0.85);
-  transform: translateY(-2px);
+
+@media (hover: hover) and (pointer: fine) {
+  .rest-item:hover {
+    background: rgba(255, 255, 255, 0.85);
+    transform: translateY(-2px);
+  }
 }
 .rest-item h4 {
   font-size: 0.9375rem;

@@ -213,21 +213,22 @@ button:focus-visible {
   .pillar-card,
   .rest-item {
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   button:active,
   .btn:active,
-  .way-cta:active,
-  .nav-link:active {
-    transform: scale(0.96) !important;
-    transition: transform 0.12s var(--ease-out-expo) !important;
+  .way-cta:active {
+    opacity: 0.82;
+    transition: opacity 0.1s ease;
   }
 
+  .nav-link:active,
   .pillar-card:active,
   .rest-item:active,
   .pill:active {
-    transform: scale(0.985) !important;
-    transition: transform 0.14s var(--ease-out-expo) !important;
+    opacity: 0.85;
+    transition: opacity 0.1s ease;
   }
 }
 

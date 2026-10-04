@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { gsap, ScrollTrigger } from '../composables/useGsap.js'
+import { gsap, ScrollTrigger, isFineHoverPointer } from '../composables/useGsap.js'
 import { useI18n } from '../composables/useI18n.js'
 import brushBench from '../assets/shots/ui-brush-bench.webp'
 import penSettings from '../assets/shots/ui-pen-settings.webp'
@@ -40,6 +40,7 @@ const sectionRef = ref(null)
 let ctx = null
 
 function onMediaMouseMove(e) {
+  if (!isFineHoverPointer(e)) return
   const card = e.currentTarget
   const rect = card.getBoundingClientRect()
   const x = (e.clientX - rect.left) / rect.width - 0.5
@@ -54,6 +55,10 @@ function onMediaMouseMove(e) {
 }
 
 function onMediaMouseLeave(e) {
+  if (!isFineHoverPointer(e)) {
+    if (e?.currentTarget) gsap.set(e.currentTarget, { rotationY: 0, rotationX: 0 })
+    return
+  }
   gsap.to(e.currentTarget, {
     rotationY: 0,
     rotationX: 0,
@@ -259,8 +264,10 @@ onUnmounted(() => {
   will-change: transform;
   transition: box-shadow 0.4s var(--ease-out-expo);
 }
-.block-media:hover {
-  box-shadow: var(--shadow-xl);
+@media (hover: hover) and (pointer: fine) {
+  .block-media:hover {
+    box-shadow: var(--shadow-xl);
+  }
 }
 .block-media img {
   width: 100%;
@@ -345,8 +352,10 @@ onUnmounted(() => {
   object-position: top center;
   transition: transform 0.7s var(--ease-out-expo);
 }
-.pill:hover .pill-shot img {
-  transform: scale(1.03);
+@media (hover: hover) and (pointer: fine) {
+  .pill:hover .pill-shot img {
+    transform: scale(1.03);
+  }
 }
 
 .pill-copy h3 {

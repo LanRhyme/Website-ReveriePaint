@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { gsap, ScrollTrigger } from '../composables/useGsap.js'
+import { gsap, ScrollTrigger, isFineHoverPointer } from '../composables/useGsap.js'
 import { useI18n } from '../composables/useI18n.js'
 import heroCanvas from '../assets/shots/hero-canvas.webp'
 import heroCanvasSm from '../assets/shots/hero-canvas-sm.webp'
@@ -22,6 +22,7 @@ let deviceQuickToY = null
 let scrollCtx = null
 
 function onHeroMouseMove(e) {
+  if (!isFineHoverPointer(e)) return
   if (!deviceRef.value || !heroRef.value) return
   const rect = heroRef.value.getBoundingClientRect()
   const x = (e.clientX - rect.left) / rect.width - 0.5
@@ -39,7 +40,8 @@ function onHeroMouseMove(e) {
   }
 }
 
-function onHeroMouseLeave() {
+function onHeroMouseLeave(e) {
+  if (!isFineHoverPointer(e)) return
   if (deviceQuickToX && deviceQuickToY) {
     deviceQuickToX(0)
     deviceQuickToY(0)
@@ -65,6 +67,7 @@ function onOrientation(e) {
 }
 
 function onBtnMouseMove(e) {
+  if (!isFineHoverPointer(e)) return
   const btn = e.currentTarget
   const rect = btn.getBoundingClientRect()
   const dx = e.clientX - rect.left - rect.width / 2
@@ -73,6 +76,10 @@ function onBtnMouseMove(e) {
 }
 
 function onBtnMouseLeave(e) {
+  if (!isFineHoverPointer(e)) {
+    if (e?.currentTarget) gsap.set(e.currentTarget, { x: 0, y: 0 })
+    return
+  }
   gsap.to(e.currentTarget, { x: 0, y: 0, duration: 0.55, ease: 'elastic.out(1, 0.45)' })
 }
 
@@ -359,26 +366,29 @@ onUnmounted(() => {
   color: var(--paper);
   box-shadow: var(--shadow-m);
 }
-.btn-primary:hover {
-  background: var(--ink-soft);
-  box-shadow: var(--shadow-l);
-}
 .btn-secondary {
   color: var(--ink);
   background: rgba(20, 22, 26, 0.05);
   border: 1px solid var(--line-strong);
-}
-.btn-secondary:hover {
-  background: rgba(20, 22, 26, 0.09);
-  border-color: var(--ink);
 }
 .btn-ghost {
   color: var(--ink);
   border: 1px solid var(--line-strong);
   background: rgba(253, 252, 250, 0.55);
 }
-.btn-ghost:hover {
-  border-color: var(--ink);
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    background: var(--ink-soft);
+    box-shadow: var(--shadow-l);
+  }
+  .btn-secondary:hover {
+    background: rgba(20, 22, 26, 0.09);
+    border-color: var(--ink);
+  }
+  .btn-ghost:hover {
+    border-color: var(--ink);
+  }
 }
 
 .hero-facts {

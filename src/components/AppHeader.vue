@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { getLenis } from '../composables/useLenis.js'
-import { gsap } from '../composables/useGsap.js'
+import { gsap, isFineHoverPointer } from '../composables/useGsap.js'
 import { useI18n, SUPPORTED_LANGS } from '../composables/useI18n.js'
 import LanguageSwitcher from './LanguageSwitcher.vue'
 
@@ -40,6 +40,7 @@ function handleNavClick(id) {
 }
 
 function onCtaMouseMove(e) {
+  if (!isFineHoverPointer(e)) return
   const btn = e.currentTarget
   const rect = btn.getBoundingClientRect()
   const dx = e.clientX - rect.left - rect.width / 2
@@ -48,6 +49,10 @@ function onCtaMouseMove(e) {
 }
 
 function onCtaMouseLeave(e) {
+  if (!isFineHoverPointer(e)) {
+    if (e?.currentTarget) gsap.set(e.currentTarget, { x: 0, y: 0 })
+    return
+  }
   gsap.to(e.currentTarget, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' })
 }
 
@@ -252,9 +257,11 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   cursor: pointer;
   transition: color 0.25s, background 0.25s;
 }
-.nav-link:hover {
-  color: var(--ink);
-  background: rgba(20, 22, 26, 0.05);
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover {
+    color: var(--ink);
+    background: rgba(20, 22, 26, 0.05);
+  }
 }
 
 /* ── 下载按钮 ─────────────────────────── */
@@ -271,14 +278,17 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   will-change: transform;
   transition: background 0.3s;
 }
-.cta:hover {
-  background: var(--ink-soft);
-}
 .cta svg {
   transition: transform 0.3s var(--ease-out-expo);
 }
-.cta:hover svg {
-  transform: translate(2px, -2px);
+
+@media (hover: hover) and (pointer: fine) {
+  .cta:hover {
+    background: var(--ink-soft);
+  }
+  .cta:hover svg {
+    transform: translate(2px, -2px);
+  }
 }
 
 /* ── 移动端汉堡切换按钮 ─────────────────── */
@@ -298,9 +308,12 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   color: var(--ink);
   transition: background 0.25s, border-color 0.25s;
 }
-.menu-toggle:hover {
-  background: #fff;
-  border-color: var(--ink);
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-toggle:hover {
+    background: #fff;
+    border-color: var(--ink);
+  }
 }
 .menu-line {
   display: block;

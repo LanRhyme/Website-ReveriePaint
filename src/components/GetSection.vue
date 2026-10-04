@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { gsap } from '../composables/useGsap.js'
+import { gsap, isFineHoverPointer } from '../composables/useGsap.js'
 import { useI18n } from '../composables/useI18n.js'
 
 const { t } = useI18n()
@@ -24,6 +24,7 @@ function copyQQ(e) {
 }
 
 function onMagneticMouseMove(e) {
+  if (!isFineHoverPointer(e)) return
   const btn = e.currentTarget
   const rect = btn.getBoundingClientRect()
   const dx = e.clientX - rect.left - rect.width / 2
@@ -32,6 +33,10 @@ function onMagneticMouseMove(e) {
 }
 
 function onMagneticMouseLeave(e) {
+  if (!isFineHoverPointer(e)) {
+    if (e?.currentTarget) gsap.set(e.currentTarget, { x: 0, y: 0 })
+    return
+  }
   gsap.to(e.currentTarget, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' })
 }
 
@@ -203,11 +208,6 @@ onUnmounted(() => {
   background: var(--card);
   transition: transform 0.45s var(--ease-out-expo), box-shadow 0.45s, border-color 0.4s;
 }
-.way:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-m);
-  border-color: var(--line);
-}
 .way h3 {
   font-size: 1.0625rem;
   font-weight: 500;
@@ -246,13 +246,6 @@ button.way-cta {
 .way-cta svg {
   transition: transform 0.3s var(--ease-out-expo);
 }
-.way-cta:hover {
-  background: rgba(20, 22, 26, 0.09);
-  border-color: var(--ink);
-}
-.way-cta:hover svg {
-  transform: translate(2px, -2px);
-}
 
 /* 首个入口用深色强调 */
 .way.primary {
@@ -271,18 +264,33 @@ button.way-cta {
   background: rgba(255, 255, 255, 0.09);
   border-color: rgba(255, 255, 255, 0.16);
 }
-.way.primary .way-cta:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.3);
-}
 .way.primary .way-cta.cta-solid {
   background: #fff;
   color: var(--ui-900);
   border-color: #fff;
   font-weight: 600;
 }
-.way.primary .way-cta.cta-solid:hover {
-  background: #f0f1f2;
+
+@media (hover: hover) and (pointer: fine) {
+  .way:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-m);
+    border-color: var(--line);
+  }
+  .way-cta:hover {
+    background: rgba(20, 22, 26, 0.09);
+    border-color: var(--ink);
+  }
+  .way-cta:hover svg {
+    transform: translate(2px, -2px);
+  }
+  .way.primary .way-cta:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  .way.primary .way-cta.cta-solid:hover {
+    background: #f0f1f2;
+  }
 }
 
 .star-note {
