@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:docs": "vitepress dev docs --port 5174",
+    "prebuild": "node scripts/fetch-release.js",
     "build:main": "vite build",
     "build:docs": "vitepress build docs",
     "build": "vite build && vitepress build docs",

@@ -3,27 +3,94 @@ import { ref, computed, onMounted } from 'vue'
 import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue'
 import FluidCanvas from './components/FluidCanvas.vue'
+import fallbackRelease from './data/latest-release.json'
 import { useI18n } from './composables/useI18n.js'
 import { isFineHoverPointer } from './composables/useGsap.js'
 import { initReveal } from './composables/useReveal.js'
 
 const { t, isEn } = useI18n()
 
-// 默认稳定元数据（即使 GitHub API 遭遇 Rate Limit 也能 100% 毫秒级展示）
-const FALLBACK_RELEASE = {
-  version: 'v1.4.1',
-  name: 'ReveriePaint v1.4.1 正式版',
-  apkName: 'ReveriePaint-v1.4.1.apk',
-  size: '80.2 MB',
-  sizeBytes: 84130031,
-  date: '2026-10-04',
-  githubUrl: 'https://github.com/LanRhyme/ReveriePaint/releases/download/v1.4.1/ReveriePaint-v1.4.1.apk',
-  releasesPage: 'https://github.com/LanRhyme/ReveriePaint/releases',
-  mirrorChyanUrl: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android',
-  qqGroup: '729283213'
+// 解析 GitHub Release Markdown 正文为结构化分组
+function parseReleaseNotes(body) {
+  if (!body || typeof body !== 'string') return []
+
+  const lines = body.split('\n')
+  const groups = []
+  let currentGroup = null
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim()
+    if (!line) continue
+
+    // 匹配标题行，如 ### 新增特性 (Features)
+    if (line.startsWith('#')) {
+      const title = line.replace(/^#+\s*/, '')
+      let badge = 'NOTE'
+      let type = 'note'
+      const lower = title.toLowerCase()
+
+      if (lower.includes('新增') || lower.includes('feat') || lower.includes('new')) {
+        badge = 'NEW'
+        type = 'feat'
+      } else if (lower.includes('修复') || lower.includes('fix') || lower.includes('bug')) {
+        badge = 'FIX'
+        type = 'fix'
+      } else if (lower.includes('优化') || lower.includes('perf') || lower.includes('opt') || lower.includes('调整')) {
+        badge = 'OPT'
+        type = 'opt'
+      }
+
+      currentGroup = {
+        title,
+        badge,
+        type,
+        items: []
+      }
+      groups.push(currentGroup)
+      continue
+    }
+
+    // 匹配列表条目，如 - **标题**: 描述 或 • 标题: 描述
+    const itemMatch = line.match(/^[-*•]\s+(.*)$/)
+    if (itemMatch) {
+      const content = itemMatch[1].trim()
+      let itemTitle = ''
+      let itemDesc = content
+
+      // 提取 **标题**: 或普通 标题:
+      const colonMatch = content.match(/^(\*\*[^*]+\*\*|[^:：]{2,30})[:：]\s*(.*)$/)
+      if (colonMatch) {
+        itemTitle = colonMatch[1].replace(/^\*\*|\*\*$/g, '').trim()
+        itemDesc = colonMatch[2].trim()
+      }
+
+      if (!currentGroup) {
+        currentGroup = {
+          title: '更新内容',
+          badge: 'NEW',
+          type: 'feat',
+          items: []
+        }
+        groups.push(currentGroup)
+      }
+
+      currentGroup.items.push({
+        title: itemTitle,
+        desc: itemDesc || content
+      })
+    } else if (currentGroup && currentGroup.items.length > 0) {
+      const lastItem = currentGroup.items[currentGroup.items.length - 1]
+      lastItem.desc += ` ${line}`
+    }
+  }
+
+  return groups
 }
 
-const release = ref({ ...FALLBACK_RELEASE })
+const release = ref({ ...fallbackRelease })
+const changelogGroups = computed(() => {
+  return parseReleaseNotes(release.value.body || fallbackRelease.body)
+})
 const isLoading = ref(false)
 const copied = ref(false)
 const copiedQQ = ref(false)
@@ -97,13 +164,14 @@ async function fetchLatestRelease() {
         version: data.tag_name,
         name: data.name || `ReveriePaint ${data.tag_name}`,
         apkName: apkAsset.name,
-        size: apkAsset.size ? `${(apkAsset.size / (1024 * 1024)).toFixed(1)} MB` : '80.2 MB',
-        sizeBytes: apkAsset.size || 84130031,
-        date: data.published_at ? data.published_at.slice(0, 10) : '2026-10-04',
+        size: apkAsset.size ? `${(apkAsset.size / (1024 * 1024)).toFixed(1)} MB` : fallbackRelease.size,
+        sizeBytes: apkAsset.size || fallbackRelease.sizeBytes,
+        date: data.published_at ? data.published_at.slice(0, 10) : fallbackRelease.date,
         githubUrl: apkAsset.browser_download_url,
-        releasesPage: data.html_url || FALLBACK_RELEASE.releasesPage,
-        mirrorChyanUrl: FALLBACK_RELEASE.mirrorChyanUrl,
-        qqGroup: FALLBACK_RELEASE.qqGroup
+        releasesPage: data.html_url || fallbackRelease.releasesPage,
+        mirrorChyanUrl: fallbackRelease.mirrorChyanUrl,
+        qqGroup: fallbackRelease.qqGroup,
+        body: data.body || fallbackRelease.body
       }
     }
   } catch {
@@ -396,44 +464,19 @@ onMounted(() => {
           </div>
 
           <div class="changelog-card">
-            <div class="change-group">
-              <h3 class="group-title feat-title">
-                <span class="group-badge feat-badge">NEW</span>
-                <span>新增特性 (Features)</span>
+            <div
+              v-for="group in changelogGroups"
+              :key="group.title"
+              class="change-group"
+            >
+              <h3 :class="['group-title', `${group.type}-title`]">
+                <span :class="['group-badge', `${group.type}-badge`]">{{ group.badge }}</span>
+                <span>{{ group.title }}</span>
               </h3>
               <ul class="change-list">
-                <li>
-                  <b>笔刷工作台全参数高阶贝塞尔动态响应曲线编辑器</b>：对标桌面级数字绘画系统，笔刷全属性支持任意增删控制点、曲线预设、翻转与步进微调；试画板支持实时发光光点游标与输入/输出动态追踪
-                </li>
-                <li>
-                  <b>13 种 Krita 物理级传感器矩阵全面接入</b>：支持压力、速度、运笔角、俯仰倾角、方位倾角、倾角 X/Y、笔身旋转、切向压感、渐隐、距离、时间与随机噪点
-                </li>
-                <li>
-                  <b>禁用画布触控快捷开关</b>：快捷操作悬浮栏与快捷键系统新增「禁用画布触控」独立开关，开启后画布仅响应手写笔绘制，彻底杜绝手掌与手指误触线条
-                </li>
-              </ul>
-            </div>
-
-            <div class="change-group">
-              <h3 class="group-title fix-title">
-                <span class="group-badge fix-badge">FIX</span>
-                <span>缺陷修复与架构调优 (Bug Fixes & Refinements)</span>
-              </h3>
-              <ul class="change-list">
-                <li>
-                  <b>大笔刷调度与全大核芯片架构优化</b>：优化笔刷在鸿蒙系统（HarmonyOS）及搭配全大核/特定芯片架构（如小米 Pad 9 Pro 等）上的调度性能，消除大尺寸笔刷高速运笔时的卡顿
-                </li>
-                <li>
-                  <b>透明画布液化残影修复与 GPU 实时代理预览</b>：重构推抹、重建、平滑、旋转与缩放交互，彻底解决透明画布液化操作时的性能衰减与像素残影
-                </li>
-                <li>
-                  <b>双指旋转实时吸附与平滑释放</b>：双指旋转画布时实时对齐并吸附 0°、90°、180° 等标准角度，手势释放时平滑无缝过渡
-                </li>
-                <li>
-                  <b>参考窗口旋转吸色几何偏差修复</b>：修复参考图旋转状态下吸色点几何坐标换算偏移的问题，移除十字瞄准线干扰
-                </li>
-                <li>
-                  <b>作品工程复制后台异步化</b>：将主页作品复制流程移至后台异步线程执行并显示平滑处理进度，避免大尺寸高图层工程复制时阻塞主界面
+                <li v-for="(item, idx) in group.items" :key="idx">
+                  <b v-if="item.title">{{ item.title }}：</b>
+                  <span>{{ item.desc }}</span>
                 </li>
               </ul>
             </div>
@@ -922,6 +965,14 @@ onMounted(() => {
 .fix-badge {
   background: rgba(157, 169, 142, 0.2);
   color: #556b46;
+}
+.opt-badge {
+  background: rgba(200, 180, 141, 0.25);
+  color: #7d6332;
+}
+.note-badge {
+  background: rgba(141, 148, 158, 0.2);
+  color: var(--ink-mid);
 }
 .change-list {
   padding-left: 20px;
