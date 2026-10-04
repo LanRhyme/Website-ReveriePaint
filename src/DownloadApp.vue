@@ -26,39 +26,39 @@ const isLoading = ref(false)
 const copied = ref(false)
 const copiedQQ = ref(false)
 
-// 加速节点列表
+// 下载节点列表（默认官方源，并集成 gh-proxy 等加速镜像）
 const PROXY_NODES = [
+  {
+    id: 'direct',
+    name: 'GitHub 官方源',
+    badge: '默认官方',
+    prefix: '',
+    desc: 'GitHub 官方原始发布直链'
+  },
   {
     id: 'gh-proxy-com',
     name: 'gh-proxy.com',
-    badge: '首选加速',
+    badge: '国内加速',
     prefix: 'https://gh-proxy.com/',
-    desc: '国内骨干优化，免翻墙满速直连'
+    desc: 'gh-proxy 骨干镜像加速，国内免翻墙满速直连'
   },
   {
     id: 'ghproxy-net',
     name: 'ghproxy.net',
-    badge: '备用通道',
+    badge: '备用镜像',
     prefix: 'https://ghproxy.net/',
     desc: '高带宽镜像备用加速节点'
   },
   {
     id: 'gh-proxy-org',
     name: 'gh-proxy.org',
-    badge: '多线节点',
+    badge: '多线加速',
     prefix: 'https://gh-proxy.org/',
-    desc: '多线路负载均衡加速'
-  },
-  {
-    id: 'direct',
-    name: 'GitHub 官方源',
-    badge: '海外直连',
-    prefix: '',
-    desc: 'GitHub 官方原始直链'
+    desc: '多线路负载均衡加速节点'
   }
 ]
 
-const selectedNodeId = ref('gh-proxy-com')
+const selectedNodeId = ref('direct')
 
 const activeNode = computed(() => {
   return PROXY_NODES.find(n => n.id === selectedNodeId.value) || PROXY_NODES[0]
@@ -222,7 +222,7 @@ onMounted(() => {
                   </svg>
                   <span>{{ isEn ? 'Select Download Mirror Node' : '选择下载通道与加速镜像' }}</span>
                 </span>
-                <span class="switch-hint">{{ isEn ? 'Recommended: gh-proxy.com' : '国内网络推荐使用 gh-proxy 节点' }}</span>
+                <span class="switch-hint">{{ isEn ? 'Default: Official GitHub · gh-proxy mirrors available' : '默认官方源 · 支持一键切换 gh-proxy 加速镜像' }}</span>
               </div>
 
               <div class="proxy-pills">
