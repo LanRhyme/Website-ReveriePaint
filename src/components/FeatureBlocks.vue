@@ -172,7 +172,7 @@ onUnmounted(() => {
       <header class="sec-head reveal">
         <p class="eyebrow">{{ t('features.eyebrow') }}</p>
         <h2 class="h-section">
-          {{ t('features.title') }}
+          <span class="line-mask"><span class="line-inner">{{ t('features.title') }}</span></span>
         </h2>
         <p class="lede sec-sub">{{ t('features.sub') }}</p>
       </header>
@@ -187,6 +187,7 @@ onUnmounted(() => {
         >
           <div
             class="block-media"
+            data-cursor="STUDIO"
             @mousemove="onMediaMouseMove"
             @mouseleave="onMediaMouseLeave"
           >
@@ -195,7 +196,9 @@ onUnmounted(() => {
 
           <div class="block-copy">
             <p class="eyebrow">{{ b.kicker }}</p>
-            <h3 class="block-title">{{ b.title }}</h3>
+            <h3 class="block-title">
+              <span class="line-mask"><span class="line-inner">{{ b.title }}</span></span>
+            </h3>
             <p class="block-body">{{ b.body }}</p>
             <ul class="block-points">
               <li v-for="p in b.points" :key="p">{{ p }}</li>
@@ -206,7 +209,7 @@ onUnmounted(() => {
 
       <!-- ── 三张并列 ───────────────────────── -->
       <div class="pills">
-        <article v-for="p in pills" :key="p.title" class="pill">
+        <article v-for="p in pills" :key="p.title" class="pill" data-cursor="EXPLORE">
           <div class="pill-shot">
             <img :src="p.img" :alt="`${p.title} 界面`" loading="lazy" decoding="async" />
           </div>

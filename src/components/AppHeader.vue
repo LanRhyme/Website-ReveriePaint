@@ -83,7 +83,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 <template>
   <header class="site-header" :class="{ 'is-scrolled': isScrolled, 'has-menu': menuOpen }">
     <div class="shell bar">
-      <a class="brand" href="/" @click.prevent="handleBrandClick">
+      <a class="brand" href="/" data-cursor="HOME" @click.prevent="handleBrandClick">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 22 22" width="22" height="22">
             <rect x="1" y="1" width="20" height="20" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.3" />
@@ -98,10 +98,10 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
       </a>
 
       <nav class="nav" aria-label="主导航">
-        <button v-for="item in navItems" :key="item.id" class="nav-link" type="button" @click="goTo(item.id)">
+        <button v-for="item in navItems" :key="item.id" class="nav-link" type="button" data-cursor="NAV" @click="goTo(item.id)">
           {{ item.label }}
         </button>
-        <a href="/docs/" class="nav-link">{{ t('header.nav.docs') }}</a>
+        <a href="/docs/" class="nav-link" data-cursor="DOCS">{{ t('header.nav.docs') }}</a>
       </nav>
 
       <LanguageSwitcher class="desktop-only" />
@@ -109,6 +109,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
       <a
         class="cta"
         :href="isDownloadPage ? '#download-action' : '/download/'"
+        data-cursor="DOWNLOAD"
         @mousemove="onCtaMouseMove"
         @mouseleave="onCtaMouseLeave"
       >
@@ -122,6 +123,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
       <button
         class="menu-toggle"
         type="button"
+        data-cursor="MENU"
         :aria-expanded="menuOpen"
         :aria-label="t('header.menu')"
         @click="menuOpen = !menuOpen"

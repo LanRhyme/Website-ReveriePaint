@@ -2,8 +2,11 @@
 import { ref, computed, onMounted } from 'vue'
 import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue'
+import FluidCanvas from './components/FluidCanvas.vue'
+import CustomCursor from './components/CustomCursor.vue'
 import { useI18n } from './composables/useI18n.js'
 import { isFineHoverPointer } from './composables/useGsap.js'
+import { initReveal } from './composables/useReveal.js'
 
 const { t, isEn } = useI18n()
 
@@ -132,12 +135,15 @@ function copyQQ() {
 }
 
 onMounted(() => {
+  initReveal()
   fetchLatestRelease()
 })
 </script>
 
 <template>
   <div class="download-page">
+    <FluidCanvas />
+    <CustomCursor />
     <AppHeader />
 
     <main class="download-main">
@@ -151,11 +157,11 @@ onMounted(() => {
 
         <!-- 页面标题区域 -->
         <header class="download-header">
-          <div class="eyebrow">{{ isEn ? 'OFFICIAL DISTRIBUTION · HIGH SPEED' : '官方发布 · 高速通道' }}</div>
-          <h1 class="h-display download-title">
-            {{ isEn ? 'Download ReveriePaint' : '下载 ReveriePaint 最新版' }}
+          <div class="eyebrow reveal">{{ isEn ? 'OFFICIAL DISTRIBUTION · HIGH SPEED' : '官方发布 · 高速通道' }}</div>
+          <h1 class="h-display download-title line-mask">
+            <span class="line-inner">{{ isEn ? 'Download ReveriePaint' : '下载 ReveriePaint 最新版' }}</span>
           </h1>
-          <p class="lede download-sub">
+          <p class="lede download-sub reveal">
             {{ isEn
               ? 'Professional open-source digital painting tool for Android tablets & phones. Direct fast download powered by gh-proxy acceleration mirrors.'
               : '专为 Android 平板与手机打造的原生专业数字绘画工具。搭载 Krita C++ 核心图像处理内核，提供官方原源与 gh-proxy 国内极速直链下载'
@@ -164,12 +170,12 @@ onMounted(() => {
         </header>
 
         <!-- 核心下载卡片 -->
-        <section id="download-action" class="hero-dl-card">
+        <section id="download-action" class="hero-dl-card reveal">
           <div class="card-glow" aria-hidden="true"></div>
 
           <div class="card-inner">
             <div class="app-summary">
-              <div class="app-icon">
+              <div class="app-icon" data-cursor="APK">
                 <svg viewBox="0 0 44 44" width="44" height="44" aria-hidden="true">
                   <rect x="2" y="2" width="40" height="40" rx="9" fill="var(--ink)" />
                   <path d="M12.8 31.2 L22 12.8 L31.2 31.2" fill="none" stroke="var(--paper)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
@@ -232,6 +238,7 @@ onMounted(() => {
                   type="button"
                   class="proxy-pill"
                   :class="{ active: selectedNodeId === node.id }"
+                  :data-cursor="node.id === 'direct' ? 'OFFICIAL' : 'MIRROR'"
                   @click="selectedNodeId = node.id"
                 >
                   <span class="p-name">{{ node.name }}</span>
@@ -252,6 +259,7 @@ onMounted(() => {
                 :href="activeDownloadUrl"
                 target="_blank"
                 rel="noopener"
+                data-cursor="DOWNLOAD"
               >
                 <div class="btn-dl-icon">
                   <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
@@ -272,6 +280,7 @@ onMounted(() => {
               <button
                 type="button"
                 class="btn-dl-copy"
+                data-cursor="COPY"
                 @click="copyDownloadLink"
               >
                 <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
@@ -290,15 +299,17 @@ onMounted(() => {
         </section>
 
         <!-- 备用分发渠道卡片 -->
-        <section class="channels-section">
+        <section class="channels-section reveal">
           <div class="section-title-wrap">
-            <h2 class="h-section">{{ isEn ? 'Alternative Channels' : '备用与多元分流渠道' }}</h2>
+            <h2 class="h-section line-mask">
+              <span class="line-inner">{{ isEn ? 'Alternative Channels' : '备用与多元分流渠道' }}</span>
+            </h2>
             <p class="lede">{{ isEn ? 'Choose the channel that best suits your network conditions.' : '若上述通道下载受限，可通过以下途径高速获取应用包与最新构建' }}</p>
           </div>
 
           <div class="channels-grid">
             <!-- Mirror酱 -->
-            <div class="channel-card">
+            <div class="channel-card" data-cursor="MIRROR">
               <div class="ch-icon mirror-icon">
                 <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
                   <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
@@ -314,6 +325,7 @@ onMounted(() => {
                 :href="release.mirrorChyanUrl"
                 target="_blank"
                 rel="noopener"
+                data-cursor="GO"
               >
                 <span>前往 Mirror酱</span>
                 <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
@@ -323,7 +335,7 @@ onMounted(() => {
             </div>
 
             <!-- QQ群分流 -->
-            <div class="channel-card">
+            <div class="channel-card" data-cursor="COMMUNITY">
               <div class="ch-icon qq-icon">
                 <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
                   <path d="M12 3 C7 3 4 7 4 12 C4 15 5.5 17.5 7 19 L6 22 L9.5 20.5 C10.3 20.8 11.1 21 12 21 C17 21 20 17 20 12 C20 7 17 3 12 3 Z" fill="none" stroke="currentColor" stroke-width="1.7"/>
@@ -337,6 +349,7 @@ onMounted(() => {
                 <button
                   type="button"
                   class="ch-btn"
+                  data-cursor="COPY"
                   @click="copyQQ"
                 >
                   <span>{{ copiedQQ ? '已复制群号' : '复制群号 729283213' }}</span>
@@ -346,6 +359,7 @@ onMounted(() => {
                   href="https://qm.qq.com/q/729283213"
                   target="_blank"
                   rel="noopener"
+                  data-cursor="JOIN"
                 >
                   <span>一键加群</span>
                 </a>
@@ -353,7 +367,7 @@ onMounted(() => {
             </div>
 
             <!-- GitHub Releases -->
-            <div class="channel-card">
+            <div class="channel-card" data-cursor="GITHUB">
               <div class="ch-icon gh-icon">
                 <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
                   <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z" fill="currentColor"/>
@@ -368,6 +382,7 @@ onMounted(() => {
                 :href="release.releasesPage"
                 target="_blank"
                 rel="noopener"
+                data-cursor="RELEASES"
               >
                 <span>浏览 Releases ↗</span>
               </a>

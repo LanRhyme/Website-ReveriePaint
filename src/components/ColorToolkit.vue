@@ -105,7 +105,9 @@ onUnmounted(() => {
     <div class="shell">
       <header class="sec-head reveal">
         <p class="eyebrow">{{ t('toolkit.eyebrow') }}</p>
-        <h2 class="h-section">{{ t('toolkit.title') }}</h2>
+        <h2 class="h-section">
+          <span class="line-mask"><span class="line-inner">{{ t('toolkit.title') }}</span></span>
+        </h2>
         <p class="sec-sub lede">{{ t('toolkit.sub') }}</p>
       </header>
 
@@ -115,6 +117,7 @@ onUnmounted(() => {
           v-for="(c, i) in colors"
           :key="c.title"
           class="c-item reveal"
+          data-cursor="COLOR"
           :style="{ transitionDelay: `${i * 70}ms` }"
         >
           <div
@@ -148,7 +151,7 @@ onUnmounted(() => {
       <div class="rest reveal">
         <p class="eyebrow">{{ t('toolkit.specsEyebrow') }}</p>
         <div class="rest-list">
-          <div v-for="s in specs" :key="s.title" class="rest-item">
+          <div v-for="s in specs" :key="s.title" class="rest-item" data-cursor="SPEC">
             <h4>{{ s.title }}</h4>
             <p>{{ s.desc }}</p>
           </div>

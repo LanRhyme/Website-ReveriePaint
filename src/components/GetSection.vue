@@ -88,7 +88,9 @@ onUnmounted(() => {
     <div class="shell">
       <header class="sec-head reveal">
         <p class="eyebrow">{{ t('get.eyebrow') }}</p>
-        <h2 class="h-section">{{ t('get.title') }}</h2>
+        <h2 class="h-section">
+          <span class="line-mask"><span class="line-inner">{{ t('get.title') }}</span></span>
+        </h2>
       </header>
 
       <dl class="meta reveal">
@@ -104,6 +106,7 @@ onUnmounted(() => {
           :key="w.title"
           class="way reveal"
           :class="{ primary: w.primary }"
+          data-cursor="GET"
           :style="{ transitionDelay: `${i * 70}ms` }"
         >
           <h3>{{ w.title }}</h3>
@@ -113,6 +116,7 @@ onUnmounted(() => {
               v-if="w.isQQ"
               type="button"
               class="way-cta cta-copy"
+              data-cursor="COPY"
               @click="copyQQ($event)"
               @mousemove="onMagneticMouseMove"
               @mouseleave="onMagneticMouseLeave"
@@ -129,8 +133,9 @@ onUnmounted(() => {
               :href="l.href"
               class="way-cta"
               :class="{ 'cta-solid': l.primary }"
-              target="_blank"
-              rel="noopener"
+              :target="l.href.startsWith('http') ? '_blank' : undefined"
+              :rel="l.href.startsWith('http') ? 'noopener' : undefined"
+              :data-cursor="l.primary ? 'DOWNLOAD' : 'LINK'"
               @mousemove="onMagneticMouseMove"
               @mouseleave="onMagneticMouseLeave"
             >

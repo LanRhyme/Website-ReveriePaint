@@ -7,6 +7,8 @@ import ColorToolkit from './components/ColorToolkit.vue'
 import OriginStory from './components/OriginStory.vue'
 import GetSection from './components/GetSection.vue'
 import AppFooter from './components/AppFooter.vue'
+import FluidCanvas from './components/FluidCanvas.vue'
+import CustomCursor from './components/CustomCursor.vue'
 import { initReveal } from './composables/useReveal.js'
 import { initGsapScroll } from './composables/useGsap.js'
 
@@ -17,6 +19,8 @@ onMounted(() => {
 </script>
 
 <template>
+  <FluidCanvas />
+  <CustomCursor />
   <AppHeader />
 
   <main>

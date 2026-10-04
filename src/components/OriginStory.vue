@@ -45,7 +45,9 @@ onUnmounted(() => {
     <div class="shell">
       <header class="sec-head reveal">
         <p class="eyebrow">{{ t('origin.eyebrow') }}</p>
-        <h2 class="h-section">{{ t('origin.title') }}</h2>
+        <h2 class="h-section">
+          <span class="line-mask"><span class="line-inner">{{ t('origin.title') }}</span></span>
+        </h2>
         <p class="sec-sub lede">{{ t('origin.sub') }}</p>
       </header>
 
@@ -54,6 +56,7 @@ onUnmounted(() => {
           v-for="(p, i) in pillars"
           :key="p.num"
           class="pillar-card reveal"
+          data-cursor="PHILOSOPHY"
           :style="{ transitionDelay: `${i * 90}ms` }"
         >
           <div class="card-top">
@@ -67,8 +70,8 @@ onUnmounted(() => {
 
       <div class="origin-note reveal">
         <div class="note-rule" aria-hidden="true"></div>
-        <p class="quote-serif">
-          {{ t('origin.quote') }}
+        <p class="quote-serif line-mask">
+          <span class="line-inner">{{ t('origin.quote') }}</span>
         </p>
       </div>
     </div>

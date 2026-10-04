@@ -30,7 +30,7 @@ export function initReveal() {
 /** 对当前 DOM 中尚未观察的 .reveal 元素注册观察 */
 export function scanReveal(root = document) {
   if (!observer) return
-  root.querySelectorAll('.reveal:not(.is-in)').forEach((el) => {
+  root.querySelectorAll('.reveal:not(.is-in), .line-mask:not(.is-in), .kinetic-wrap:not(.is-in)').forEach((el) => {
     if (el.dataset.revealBound === '1') return
     el.dataset.revealBound = '1'
     observer.observe(el)

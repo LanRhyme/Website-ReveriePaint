@@ -190,6 +190,49 @@ button:focus-visible {
   transform: none;
 }
 
+/* ── Lusion 级动效系统：剧场级切分文本与视差 ──────── */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.line-mask-inline {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.line-inner {
+  display: block;
+  transform: translateY(115%);
+  filter: blur(8px);
+  opacity: 0;
+  transition: transform 0.9s var(--ease-out-expo),
+              filter 0.9s ease,
+              opacity 0.7s ease;
+  will-change: transform, filter, opacity;
+}
+.line-mask-inline .line-inner {
+  display: inline-block;
+}
+.is-in .line-inner,
+.ready .line-inner,
+.is-in.line-inner {
+  transform: translateY(0);
+  filter: blur(0px);
+  opacity: 1;
+}
+
+.line-delay-1 { transition-delay: 0.08s !important; }
+.line-delay-2 { transition-delay: 0.16s !important; }
+.line-delay-3 { transition-delay: 0.24s !important; }
+.line-delay-4 { transition-delay: 0.32s !important; }
+
+/* 深度视差容器基类 */
+.parallax-wrap {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
 /* 屏幕阅读器可见 */
 .sr-only {
   position: absolute;

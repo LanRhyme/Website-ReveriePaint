@@ -111,8 +111,21 @@ onMounted(() => {
       })
     }
 
-    // 针对手机与平板：首屏设备随页面滚动纵深后退折叠
+    // 滚动景深视差
     scrollCtx = gsap.matchMedia(heroRef.value)
+    scrollCtx.add('(min-width: 961px)', () => {
+      gsap.to(deviceRef.value, {
+        yPercent: 12,
+        rotationZ: -1.2,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.value,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.2
+        }
+      })
+    })
     scrollCtx.add('(max-width: 960px)', () => {
       gsap.to(deviceRef.value, {
         rotationX: 10,
@@ -177,8 +190,8 @@ onUnmounted(() => {
         </p>
 
         <h1 class="hero-title">
-          {{ t('hero.titleLine1') }}<br />
-          <em>{{ t('hero.titleLine2') }}</em>
+          <span class="line-mask"><span class="line-inner">{{ t('hero.titleLine1') }}</span></span>
+          <span class="line-mask"><em class="line-inner line-delay-1">{{ t('hero.titleLine2') }}</em></span>
         </h1>
 
         <p class="hero-sub">
@@ -189,6 +202,7 @@ onUnmounted(() => {
           <a
             class="btn btn-primary"
             href="/download/"
+            data-cursor="DOWNLOAD"
             @mousemove="onBtnMouseMove"
             @mouseleave="onBtnMouseLeave"
           >
@@ -197,6 +211,7 @@ onUnmounted(() => {
           <a
             class="btn btn-secondary btn-docs"
             href="/docs/"
+            data-cursor="DOCS"
             @mousemove="onBtnMouseMove"
             @mouseleave="onBtnMouseLeave"
           >
@@ -210,6 +225,7 @@ onUnmounted(() => {
             href="https://github.com/LanRhyme/ReveriePaint"
             target="_blank"
             rel="noopener"
+            data-cursor="GITHUB"
             @mousemove="onBtnMouseMove"
             @mouseleave="onBtnMouseLeave"
           >
@@ -239,7 +255,7 @@ onUnmounted(() => {
 
       <!-- 右：设备框 -->
       <div class="hero-device">
-        <div ref="deviceRef" class="device">
+        <div ref="deviceRef" class="device" data-cursor="CANVAS">
           <div class="device-screen">
             <div ref="shineRef" class="device-shine" aria-hidden="true"></div>
             <img
