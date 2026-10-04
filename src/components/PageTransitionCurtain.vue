@@ -31,6 +31,33 @@ function resize() {
   canvasRef.value.height = height * dpr
 }
 
+// ReveriePaint 极简几何大写字母「R」轮廓绘制
+function drawLetterR(u) {
+  u.beginPath()
+  // 主干与上环外沿
+  u.moveTo(-2, -2.5)
+  u.lineTo(0.8, -2.5)
+  u.bezierCurveTo(2.2, -2.5, 2.2, 0.1, 0.8, 0.1)
+  u.lineTo(-0.8, 0.1)
+  u.lineTo(-0.8, 2.5)
+  u.lineTo(-2, 2.5)
+  u.closePath()
+
+  // 上环内部镂空
+  u.moveTo(-0.8, -1.6)
+  u.lineTo(0.6, -1.6)
+  u.bezierCurveTo(1.2, -1.6, 1.2, -0.8, 0.6, -0.8)
+  u.lineTo(-0.8, -0.8)
+  u.closePath()
+
+  // 右下斜腿
+  u.moveTo(0.1, 0.1)
+  u.lineTo(2.0, 2.5)
+  u.lineTo(0.6, 2.5)
+  u.lineTo(-0.8, 0.5)
+  u.closePath()
+}
+
 // Lusion 1:1 TransitionOverlay Canvas 渲染核心
 function renderTransitionOverlay(state) {
   if (!ctx || !canvasRef.value) return
@@ -75,28 +102,21 @@ function renderTransitionOverlay(state) {
     u.fillStyle = '#ffffff'
     u.fillRect(-2.5, -0.5, 5 * a, 1)
   } else {
-    // 达成 100% 时：加载条变形并旋转 90 度，通过 XOR 模式镂空视窗揭示下层内容
-    u.translate(-l, 1.5 * l)
-
+    // 达成 100% 时：加载条变形过渡为品牌几何大写字母「R」，通过 XOR 模式镂空视窗揭示下层内容
     u.save()
-    u.translate(0.5, -0.5)
-    u.rotate(l * Math.PI * 0.5)
+    u.scale(Math.max(0.01, l), Math.max(0.01, l))
+    u.rotate((1 - l) * -Math.PI * 0.5)
+
     u.globalCompositeOperation = 'xor'
     u.fillStyle = '#ffffff'
-    u.fillRect(-3, 0, 3, 1)
-    u.globalCompositeOperation = 'source-over'
-    u.globalAlpha = Math.max(0, 1 - f)
-    u.fillRect(-3, 0, 3, 1)
-    u.restore()
+    drawLetterR(u)
+    u.fill('evenodd')
 
-    u.save()
-    u.translate(0.5, -0.5)
-    u.globalCompositeOperation = 'xor'
-    u.fillStyle = '#ffffff'
-    u.fillRect(0, 0, 2, 1)
     u.globalCompositeOperation = 'source-over'
     u.globalAlpha = Math.max(0, 1 - f)
-    u.fillRect(0, 0, 2, 1)
+    drawLetterR(u)
+    u.fill('evenodd')
+
     u.restore()
   }
 
