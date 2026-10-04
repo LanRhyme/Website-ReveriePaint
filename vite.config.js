@@ -18,6 +18,11 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         download: resolve(__dirname, 'download/index.html')
+      },
+      output: {
+        manualChunks: {
+          three: ['three']
+        }
       }
     }
   },
