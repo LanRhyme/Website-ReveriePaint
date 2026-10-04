@@ -77,6 +77,24 @@ onMounted(() => {
   if (reduce || !toolkitRef.value) return
 
   ctx = gsap.context(() => {
+    // 桌面端四张调色盘卡片：GSAP 阶梯飞入与滚动视差
+    const cards = toolkitRef.value.querySelectorAll('.c-item')
+    if (cards.length) {
+      gsap.from(cards, {
+        opacity: 0,
+        y: 45,
+        rotationZ: (i) => (i % 2 === 0 ? -1.5 : 1.5),
+        duration: 0.9,
+        stagger: 0.12,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: colorRowRef.value,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      })
+    }
+
     const items = toolkitRef.value.querySelectorAll('.rest-item')
     if (items.length) {
       gsap.from(items, {

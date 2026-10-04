@@ -15,6 +15,22 @@ onMounted(() => {
   if (reduce || !originRef.value) return
 
   ctx = gsap.context(() => {
+    const cards = originRef.value.querySelectorAll('.pillar-card')
+    if (cards.length) {
+      gsap.from(cards, {
+        opacity: 0,
+        y: 40,
+        duration: 0.85,
+        stagger: 0.14,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: originRef.value.querySelector('.pillars'),
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      })
+    }
+
     const rule = originRef.value.querySelector('.note-rule')
     if (rule) {
       gsap.fromTo(

@@ -75,6 +75,22 @@ onMounted(() => {
         }
       })
     }
+
+    const wayCards = getRef.value.querySelectorAll('.way')
+    if (wayCards.length) {
+      gsap.from(wayCards, {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        stagger: 0.12,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: getRef.value.querySelector('.ways'),
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      })
+    }
   }, getRef.value)
 })
 
