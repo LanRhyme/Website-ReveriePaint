@@ -242,11 +242,7 @@ onMounted(() => {
           <div class="card-inner">
             <div class="app-summary">
               <div class="app-icon" data-cursor="APK">
-                <svg viewBox="0 0 44 44" width="44" height="44" aria-hidden="true">
-                  <rect x="2" y="2" width="40" height="40" rx="9" fill="var(--ink)" />
-                  <path d="M12.8 31.2 L22 12.8 L31.2 31.2" fill="none" stroke="var(--paper)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
-                  <circle cx="22" cy="26" r="3" fill="var(--paper)" />
-                </svg>
+                <img src="/favicon.png" alt="ReveriePaint" width="48" height="48" class="app-icon-img" />
               </div>
               <div class="app-meta-text">
                 <div class="title-row">
@@ -597,6 +593,14 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.app-icon-img {
+  width: 48px;
+  height: 48px;
+  display: block;
+  object-fit: contain;
+  border-radius: 11px;
+  box-shadow: var(--shadow-s);
 }
 .app-meta-text {
   display: flex;
