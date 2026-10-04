@@ -168,19 +168,35 @@ button:focus-visible {
 /* 细分隔线 */
 .rule {
   height: 1px;
-  background: var(--line-faint);
+  background: var(--line);
   border: 0;
 }
 
-/* 铅笔排线纹理（手绘感底纹） */
-.sketch-tex {
-  position: absolute;
+/* Lusion 十字定位准星 */
+.cross-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  color: var(--cross-color);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* 电影级微胶片颗粒底纹 */
+.grain-tex {
+  position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.045;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-  mix-blend-mode: multiply;
+  z-index: 999;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
 }
 
 /* 入场动画基类：由 IntersectionObserver 添加 .is-in */

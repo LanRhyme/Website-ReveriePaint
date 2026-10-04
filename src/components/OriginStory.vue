@@ -75,6 +75,10 @@ onUnmounted(() => {
           data-cursor="PHILOSOPHY"
           :style="{ transitionDelay: `${i * 90}ms` }"
         >
+          <div class="card-cross cross-tl">+</div>
+          <div class="card-cross cross-tr">+</div>
+          <div class="card-cross cross-bl">+</div>
+          <div class="card-cross cross-br">+</div>
           <div class="card-top">
             <span class="pillar-num">{{ p.num }}</span>
             <div class="card-bar" aria-hidden="true"></div>
@@ -98,6 +102,8 @@ onUnmounted(() => {
 .origin {
   position: relative;
   padding: clamp(72px, 11vh, 128px) 0 clamp(64px, 10vh, 112px);
+  background: transparent;
+  color: #ffffff;
 }
 
 .sec-head {
@@ -106,9 +112,11 @@ onUnmounted(() => {
 }
 .sec-head .h-section {
   margin-top: 14px;
+  color: #ffffff;
 }
 .sec-sub {
   margin-top: 16px;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 /* ── 三大支柱卡片 ───────────────────────────── */
@@ -119,11 +127,10 @@ onUnmounted(() => {
 }
 
 .pillar-card {
-  background: rgba(253, 252, 250, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--line-faint);
-  border-radius: 20px;
+  position: relative;
+  background: #0d0f14;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
   padding: clamp(30px, 3.8vw, 44px);
   display: flex;
   flex-direction: column;
@@ -132,15 +139,28 @@ onUnmounted(() => {
 @media (hover: hover) and (pointer: fine) {
   .pillar-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 20px 45px rgba(20, 22, 26, 0.08);
-    border-color: var(--line-strong);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), 0 0 25px rgba(91, 127, 199, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
   }
   .pillar-card:hover .card-bar {
     width: 52px;
-    opacity: 0.9;
-    background: var(--ink);
+    opacity: 1;
+    background: #5b7fc7;
   }
 }
+
+.card-cross {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  user-select: none;
+  line-height: 1;
+}
+.cross-tl { top: -6px; left: -6px; }
+.cross-tr { top: -6px; right: -6px; }
+.cross-bl { bottom: -6px; left: -6px; }
+.cross-br { bottom: -6px; right: -6px; }
 
 .card-top {
   display: flex;
@@ -153,20 +173,20 @@ onUnmounted(() => {
   font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--ink-soft-2);
+  color: #5b7fc7;
 }
 .card-bar {
   width: 32px;
   height: 2px;
-  background: var(--line-strong);
-  opacity: 0.4;
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 0.6;
   transition: width 0.35s var(--ease-out-expo), background 0.35s, opacity 0.35s;
 }
 
 .pillar-title {
-  font-size: clamp(1.125rem, 1.8vw, 1.25rem);
-  font-weight: 500;
-  color: var(--ink);
+  font-size: clamp(1.125rem, 1.8vw, 1.35rem);
+  font-weight: 600;
+  color: #ffffff;
   letter-spacing: -0.015em;
   margin-bottom: 14px;
 }
@@ -174,7 +194,7 @@ onUnmounted(() => {
 .pillar-desc {
   font-size: 0.875rem;
   line-height: 1.82;
-  color: var(--ink-mid);
+  color: rgba(255, 255, 255, 0.65);
   flex: 1;
 }
 
@@ -189,14 +209,14 @@ onUnmounted(() => {
 .note-rule {
   width: 48px;
   height: 2px;
-  background: var(--ink);
+  background: #5b7fc7;
   transform-origin: left;
   will-change: transform;
 }
 .origin-note p {
   font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
   line-height: 1.8;
-  color: var(--ink);
+  color: #ffffff;
 }
 
 @media (max-width: 960px) {

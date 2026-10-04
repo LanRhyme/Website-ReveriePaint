@@ -2,66 +2,53 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap, ScrollTrigger, isFineHoverPointer } from '../composables/useGsap.js'
 import { useI18n } from '../composables/useI18n.js'
+import { useSound } from '../composables/useSound.js'
 import heroCanvas from '../assets/shots/hero-canvas.png'
 
-const { t, isEn } = useI18n()
+const { t } = useI18n()
+const { playHover, playClick } = useSound()
 
-const ready = ref(false)
+const isReady = ref(false)
 const heroRef = ref(null)
-const deviceRef = ref(null)
-const shineRef = ref(null)
-const washRef = ref(null)
+const stageRef = ref(null)
+const glossRef = ref(null)
 
 const brushCount = ref(0)
 const blendCount = ref(0)
 const filterCount = ref(0)
 
-let deviceQuickToX = null
-let deviceQuickToY = null
-let scrollCtx = null
+let stageQuickX = null
+let stageQuickY = null
+let scrollTriggerInstance = null
 
 function onHeroMouseMove(e) {
   if (!isFineHoverPointer(e)) return
-  if (!deviceRef.value || !heroRef.value) return
-  const rect = heroRef.value.getBoundingClientRect()
-  const x = (e.clientX - rect.left) / rect.width - 0.5
-  const y = (e.clientY - rect.top) / rect.height - 0.5
+  if (!stageRef.value || !heroRef.value) return
 
-  if (deviceQuickToX && deviceQuickToY) {
-    deviceQuickToX(x * 10)
-    deviceQuickToY(-y * 10)
+  const rect = heroRef.value.getBoundingClientRect()
+  const normX = (e.clientX - rect.left) / rect.width - 0.5
+  const normY = (e.clientY - rect.top) / rect.height - 0.5
+
+  if (stageQuickX && stageQuickY) {
+    stageQuickX(normX * 8)
+    stageQuickY(-normY * 8)
   }
 
-  if (shineRef.value) {
-    const shineX = Math.round(((e.clientX - rect.left) / rect.width) * 100)
-    const shineY = Math.round(((e.clientY - rect.top) / rect.height) * 100)
-    shineRef.value.style.background = `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255, 255, 255, 0.18) 0%, transparent 62%)`
+  if (glossRef.value) {
+    const gx = Math.round(((e.clientX - rect.left) / rect.width) * 100)
+    const gy = Math.round(((e.clientY - rect.top) / rect.height) * 100)
+    glossRef.value.style.background = `radial-gradient(circle at ${gx}% ${gy}%, rgba(255, 255, 255, 0.14) 0%, transparent 60%)`
   }
 }
 
 function onHeroMouseLeave(e) {
   if (!isFineHoverPointer(e)) return
-  if (deviceQuickToX && deviceQuickToY) {
-    deviceQuickToX(0)
-    deviceQuickToY(0)
+  if (stageQuickX && stageQuickY) {
+    stageQuickX(0)
+    stageQuickY(0)
   }
-  if (shineRef.value) {
-    shineRef.value.style.background = 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 62%)'
-  }
-}
-
-function onOrientation(e) {
-  if (e.gamma == null || e.beta == null) return
-  const tiltY = Math.max(-10, Math.min(10, e.gamma * 0.35))
-  const tiltX = Math.max(-10, Math.min(10, (e.beta - 45) * 0.35))
-  if (deviceQuickToX && deviceQuickToY) {
-    deviceQuickToX(tiltY)
-    deviceQuickToY(-tiltX)
-  }
-  if (shineRef.value) {
-    const shineX = Math.round(50 + tiltY * 3.5)
-    const shineY = Math.round(50 + tiltX * 3.5)
-    shineRef.value.style.background = `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255, 255, 255, 0.16) 0%, transparent 62%)`
+  if (glossRef.value) {
+    glossRef.value.style.background = 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 60%)'
   }
 }
 
@@ -82,102 +69,98 @@ function onBtnMouseLeave(e) {
   gsap.to(e.currentTarget, { x: 0, y: 0, duration: 0.55, ease: 'elastic.out(1, 0.45)' })
 }
 
-onMounted(() => {
-  requestAnimationFrame(() => {
-    ready.value = true
-  })
+function scrollToExplore() {
+  playClick()
+  const target = document.getElementById('features')
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
+function triggerHeroEntrance() {
+  isReady.value = true
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-  if (!reduceMotion && deviceRef.value) {
-    // 电影级多轴平滑视差与阻尼跟随 (GSAP quickTo)
-    deviceQuickToX = gsap.quickTo(deviceRef.value, 'rotationY', { duration: 0.85, ease: 'power2.out' })
-    deviceQuickToY = gsap.quickTo(deviceRef.value, 'rotationX', { duration: 0.85, ease: 'power2.out' })
-    gsap.set(deviceRef.value, { transformPerspective: 1200, transformStyle: 'preserve-3d' })
-
-    // 悬浮设备呼吸物理漂浮微动效
-    gsap.to(deviceRef.value, {
-      y: -14,
-      rotationZ: 0.6,
-      duration: 5.5,
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut'
-    })
-
-    // 移动端/平板设备陀螺仪体感倾斜
-    if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
-      window.addEventListener('deviceorientation', onOrientation, { passive: true })
-    }
-
-    if (washRef.value) {
-      gsap.to(washRef.value, {
-        scale: 1.08,
-        rotation: 3,
-        duration: 10,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut'
-      })
-    }
-
-    // GSAP 滚动驱动：大秀级镜头拉伸与透视沉浸推镜
-    scrollCtx = gsap.matchMedia(heroRef.value)
-    scrollCtx.add('(min-width: 961px)', () => {
-      gsap.to(deviceRef.value, {
-        yPercent: 18,
-        scale: 0.96,
-        rotationX: 12,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.value,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.4
-        }
-      })
-    })
-    scrollCtx.add('(max-width: 960px)', () => {
-      gsap.to(deviceRef.value, {
-        rotationX: 8,
-        scale: 0.95,
-        yPercent: 10,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.value,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.2
-        }
-      })
-    })
-  }
-
   if (reduceMotion) {
     brushCount.value = 240
     blendCount.value = 25
     filterCount.value = 35
-  } else {
-    const obj = { b: 0, l: 0, f: 0 }
-    gsap.to(obj, {
-      b: 240,
-      l: 25,
-      f: 35,
-      duration: 1.8,
-      delay: 0.35,
-      ease: 'power2.out',
-      onUpdate() {
-        brushCount.value = Math.round(obj.b)
-        blendCount.value = Math.round(obj.l)
-        filterCount.value = Math.round(obj.f)
+    return
+  }
+
+  // 标题文字切片梯级入场
+  const titleLines = heroRef.value?.querySelectorAll('.hero-line-inner')
+  if (titleLines && titleLines.length) {
+    gsap.fromTo(titleLines, 
+      { yPercent: 120, opacity: 0 },
+      { yPercent: 0, opacity: 1, duration: 1.1, stagger: 0.12, ease: 'power4.out', delay: 0.1 }
+    )
+  }
+
+  // 主舞台画布深度缩放淡入
+  if (stageRef.value) {
+    gsap.fromTo(stageRef.value,
+      { scale: 0.92, opacity: 0, y: 40 },
+      { scale: 1, opacity: 1, y: 0, duration: 1.25, ease: 'power3.out', delay: 0.2 }
+    )
+  }
+
+  // 计数器增长动画
+  const stats = { b: 0, bl: 0, f: 0 }
+  gsap.to(stats, {
+    b: 240,
+    bl: 25,
+    f: 35,
+    duration: 1.8,
+    delay: 0.3,
+    ease: 'power2.out',
+    onUpdate() {
+      brushCount.value = Math.round(stats.b)
+      blendCount.value = Math.round(stats.bl)
+      filterCount.value = Math.round(stats.f)
+    }
+  })
+}
+
+onMounted(() => {
+  // 监听 preloader 完成事件
+  window.addEventListener('lusion-ready', triggerHeroEntrance)
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  if (!reduceMotion && stageRef.value) {
+    stageQuickX = gsap.quickTo(stageRef.value, 'rotationY', { duration: 0.8, ease: 'power2.out' })
+    stageQuickY = gsap.quickTo(stageRef.value, 'rotationX', { duration: 0.8, ease: 'power2.out' })
+    gsap.set(stageRef.value, { transformPerspective: 1400, transformStyle: 'preserve-3d' })
+
+    // 滚动时舞台视差微倾斜
+    scrollTriggerInstance = ScrollTrigger.create({
+      trigger: heroRef.value,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 1.2,
+      onUpdate: (self) => {
+        if (stageRef.value) {
+          gsap.set(stageRef.value, {
+            y: self.progress * 80,
+            scale: 1 - self.progress * 0.05
+          })
+        }
       }
     })
   }
+
+  // 如果页面已经 ready（如从其它页面切回）
+  setTimeout(() => {
+    if (!isReady.value) {
+      triggerHeroEntrance()
+    }
+  }, 1800)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('deviceorientation', onOrientation)
-  scrollCtx?.revert()
+  window.removeEventListener('lusion-ready', triggerHeroEntrance)
+  scrollTriggerInstance?.kill()
 })
 </script>
 
@@ -185,436 +168,532 @@ onUnmounted(() => {
   <section
     id="top"
     ref="heroRef"
-    class="hero lusion-hero"
-    :class="{ ready }"
+    class="lusion-hero-section"
+    :class="{ 'is-ready': isReady }"
     @mousemove="onHeroMouseMove"
     @mouseleave="onHeroMouseLeave"
   >
-    <div ref="washRef" class="hero-wash" aria-hidden="true"></div>
+    <!-- 顶部四角十字定位点 -->
+    <div class="hero-grid-cross cross-tl">+</div>
+    <div class="hero-grid-cross cross-tr">+</div>
 
-    <div class="shell hero-content-center">
-      <!-- 顶部小标与巨幕标题 -->
-      <div class="hero-top-block">
-        <p class="eyebrow hero-eyebrow">
-          <span class="dot" aria-hidden="true"></span>
-          {{ t('hero.eyebrow') }}
-        </p>
-
-        <h1 class="hero-title lusion-mega-title">
-          <span class="line-mask"><span class="line-inner">{{ t('hero.titleLine1') }}</span></span>
-          <span class="line-mask"><em class="line-inner line-delay-1">{{ t('hero.titleLine2') }}</em></span>
-        </h1>
-
-        <p class="hero-sub lusion-sub">
-          {{ t('hero.sub') }}
-        </p>
-
-        <div class="hero-actions lusion-actions">
-          <a
-            class="btn btn-primary"
-            href="/download/"
-            data-cursor="DOWNLOAD"
-            @mousemove="onBtnMouseMove"
-            @mouseleave="onBtnMouseLeave"
-          >
-            {{ t('hero.downloadApk') }}
-          </a>
-          <a
-            class="btn btn-secondary btn-docs"
-            href="/docs/"
-            data-cursor="DOCS"
-            @mousemove="onBtnMouseMove"
-            @mouseleave="onBtnMouseLeave"
-          >
-            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
-              <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v10.766c-.917-.35-2.107-.691-3.287-.811-1.094-.11-2.278-.037-3.213.493V2.687z" fill="currentColor"/>
-            </svg>
-            <span>{{ t('hero.docs') }}</span>
-          </a>
-          <a
-            class="btn btn-ghost"
-            href="https://github.com/LanRhyme/ReveriePaint"
-            target="_blank"
-            rel="noopener"
-            data-cursor="GITHUB"
-            @mousemove="onBtnMouseMove"
-            @mouseleave="onBtnMouseLeave"
-          >
-            {{ t('hero.source') }}
-          </a>
+    <div class="shell hero-shell">
+      <!-- 顶部技术元信息 -->
+      <div class="hero-eyebrow-row">
+        <div class="eyebrow-badge">
+          <span class="badge-dot"></span>
+          <span>01 // ANDROID NATIVE DIGITAL PAINTING</span>
+        </div>
+        <div class="eyebrow-stats">
+          <span>GPL-3.0 OPEN SOURCE</span>
+          <span class="stat-divider">/</span>
+          <span>QQ GROUP: 729283213</span>
         </div>
       </div>
 
-      <!-- 舞台区：悬浮硬件设备与应用原生界面 -->
-      <div class="hero-device lusion-stage-device">
-        <div ref="deviceRef" class="device" data-cursor="CANVAS">
-          <div class="device-screen">
-            <div ref="shineRef" class="device-shine" aria-hidden="true"></div>
+      <!-- 巨幕级标题 (Lusion 1:1 Staggered Typography) -->
+      <div class="hero-title-container">
+        <h1 class="hero-mega-title">
+          <div class="hero-line-mask">
+            <span class="hero-line-inner">{{ t('hero.titleLine1') }}</span>
+          </div>
+          <div class="hero-line-mask">
+            <span class="hero-line-inner line-accent">{{ t('hero.titleLine2') }}</span>
+          </div>
+        </h1>
+      </div>
+
+      <!-- 副文案 -->
+      <p class="hero-lead-text">
+        {{ t('hero.sub') }}
+      </p>
+
+      <!-- 按钮操作区 -->
+      <div class="hero-actions-row">
+        <a
+          class="lusion-cta-btn btn-primary"
+          href="/download/"
+          @mouseenter="playHover"
+          @click="playClick"
+          @mousemove="onBtnMouseMove"
+          @mouseleave="onBtnMouseLeave"
+        >
+          <span class="btn-text">{{ t('hero.downloadApk') }}</span>
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" aria-hidden="true">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M2.343 8h11.314m0 0L8.673 3.016M13.657 8l-4.984 4.984"/>
+          </svg>
+        </a>
+
+        <a
+          class="lusion-cta-btn btn-secondary"
+          href="/docs/"
+          @mouseenter="playHover"
+          @click="playClick"
+          @mousemove="onBtnMouseMove"
+          @mouseleave="onBtnMouseLeave"
+        >
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" aria-hidden="true">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" d="M2 3h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H2V3zm0 0v13"/>
+          </svg>
+          <span class="btn-text">{{ t('hero.docs') }}</span>
+        </a>
+
+        <a
+          class="lusion-cta-btn btn-ghost"
+          href="https://github.com/LanRhyme/ReveriePaint"
+          target="_blank"
+          rel="noopener"
+          @mouseenter="playHover"
+          @click="playClick"
+          @mousemove="onBtnMouseMove"
+          @mouseleave="onBtnMouseLeave"
+        >
+          <span class="btn-text">{{ t('hero.source') }}</span>
+          <span class="btn-ext">↗</span>
+        </a>
+      </div>
+
+      <!-- Lusion Studio 主舞台：原生高保真画布视窗展示 -->
+      <div class="hero-stage-wrapper">
+        <div ref="stageRef" class="stage-frame">
+          <!-- 边角精密十字准星 -->
+          <div class="stage-cross stage-cross-tl">+</div>
+          <div class="stage-cross stage-cross-tr">+</div>
+          <div class="stage-cross stage-cross-bl">+</div>
+          <div class="stage-cross stage-cross-br">+</div>
+
+          <!-- 顶部状态信息条 -->
+          <div class="stage-header-bar">
+            <div class="stage-badge">
+              <span class="stage-dot"></span>
+              <span>KRITA C++ ENGINE</span>
+            </div>
+            <div class="stage-specs desktop-only">
+              <span>60 FPS ZERO-JITTER</span>
+              <span class="spec-sep">•</span>
+              <span>LOW LATENCY STYLUS</span>
+              <span class="spec-sep">•</span>
+              <span>8K RESOLUTION</span>
+            </div>
+            <div class="stage-view-tag">STUDIO CANVAS</div>
+          </div>
+
+          <!-- 画布屏幕核心 (仅展示高分辨率原生 App Canvas 界面，去除多余平板外壳) -->
+          <div class="stage-screen">
+            <div ref="glossRef" class="stage-gloss" aria-hidden="true"></div>
             <img
               :src="heroCanvas"
               :alt="t('hero.deviceAlt')"
+              class="hero-canvas-image"
               fetchpriority="high"
               decoding="async"
             />
           </div>
+
+          <!-- 底部参数指示条 -->
+          <div class="stage-footer-bar">
+            <div class="stage-stat-item">
+              <span class="stat-number">{{ brushCount }}+</span>
+              <span class="stat-label">{{ t('hero.statBrushes') }}</span>
+            </div>
+            <div class="stage-stat-item">
+              <span class="stat-number">{{ blendCount }}</span>
+              <span class="stat-label">{{ t('hero.statBlends') }}</span>
+            </div>
+            <div class="stage-stat-item">
+              <span class="stat-number">{{ filterCount }}</span>
+              <span class="stat-label">{{ t('hero.statFilters') }}</span>
+            </div>
+            <div class="stage-stat-item">
+              <span class="stat-number">0.00ms</span>
+              <span class="stat-label">{{ t('hero.statInputLag') }}</span>
+            </div>
+          </div>
         </div>
-        <p class="device-note">{{ t('hero.deviceNote') }}</p>
       </div>
 
-      <!-- 底部指标浮带 -->
-      <dl class="hero-facts lusion-facts">
-        <div>
-          <dt>{{ brushCount }}+</dt>
-          <dd>{{ t('hero.statBrushes') }}</dd>
+      <!-- 底部探索提示 (Lusion 1:1 Scroll to Explore) -->
+      <div class="hero-scroll-container" @click="scrollToExplore">
+        <div class="scroll-crosses">
+          <span class="scroll-cross">+</span>
+          <span class="scroll-cross">+</span>
+          <span class="scroll-cross">+</span>
+          <span class="scroll-cross">+</span>
+          <span class="scroll-cross">+</span>
         </div>
-        <div>
-          <dt>{{ blendCount }}{{ t('hero.unitKinds') }}</dt>
-          <dd>{{ t('hero.statBlend') }}</dd>
+        <div class="scroll-text-row">
+          <span class="scroll-text">SCROLL TO EXPLORE</span>
+          <div class="scroll-arrow">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 2.343v11.314m0 0L3.016 8.673M8 13.657l4.984-4.984"/>
+            </svg>
+          </div>
         </div>
-        <div>
-          <dt>{{ filterCount }}{{ t('hero.unitKinds') }}</dt>
-          <dd>{{ t('hero.statFilters') }}</dd>
-        </div>
-        <div>
-          <dt>GPL-3.0</dt>
-          <dd>{{ t('hero.statLicense') }}</dd>
-        </div>
-      </dl>
+      </div>
     </div>
   </section>
 </template>
 
 <style scoped>
-.hero {
+.lusion-hero-section {
   position: relative;
-  padding: clamp(100px, 13vh, 140px) 0 clamp(64px, 8vh, 96px);
+  min-height: 100vh;
+  padding-top: clamp(6.5rem, 12vh, 9rem);
+  padding-bottom: clamp(3rem, 6vh, 5rem);
+  display: flex;
+  align-items: center;
+  background: transparent;
+  color: #ffffff;
   overflow: hidden;
 }
 
-.hero-content-center {
-  position: relative;
+/* 顶部十字准星 */
+.hero-grid-cross {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.2);
+  user-select: none;
+  pointer-events: none;
+}
+.cross-tl { top: 2rem; left: 2.5rem; }
+.cross-tr { top: 2rem; right: 2.5rem; }
+
+.hero-shell {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 1100px;
-  margin-inline: auto;
-}
-
-.hero-top-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   width: 100%;
 }
 
-/* ── 文案 ─────────────────────────────────── */
-.hero-eyebrow {
+/* 顶部小标 */
+.hero-eyebrow-row {
   display: flex;
   align-items: center;
-  gap: 9px;
-  margin-bottom: 24px;
-  opacity: 0;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1100px;
+  margin-bottom: clamp(1.5rem, 3vh, 2.5rem);
+  font-family: var(--font-mono);
+  font-size: clamp(0.6875rem, 0.8vw, 0.75rem);
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
 }
-.hero-eyebrow .dot {
+
+.eyebrow-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--moss);
-  box-shadow: 0 0 0 3px rgba(157, 169, 142, 0.2);
-}
-.ready .hero-eyebrow {
-  animation: heroRise 0.85s var(--ease-out-expo) 0.05s forwards;
+  background: #5b7fc7;
+  box-shadow: 0 0 8px #5b7fc7;
 }
 
-.lusion-mega-title {
-  font-size: clamp(2.6rem, 6.2vw, 5.2rem);
-  line-height: 1.08;
-  letter-spacing: -0.04em;
-  font-weight: 400;
-  color: var(--ink-mid);
-  opacity: 0;
-  max-width: 22ch;
-  margin-inline: auto;
+.eyebrow-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.lusion-mega-title em {
-  font-style: normal;
+
+.stat-divider {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* 巨幕标题 */
+.hero-title-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: clamp(1rem, 2vh, 1.75rem);
+}
+
+.hero-mega-title {
+  font-family: var(--font-sans);
+  font-size: clamp(2.4rem, 6vw, 5.25rem);
   font-weight: 600;
-  color: var(--ink);
-}
-.ready .lusion-mega-title {
-  animation: heroRise 1s var(--ease-out-expo) 0.14s forwards;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  color: #ffffff;
 }
 
-.lusion-sub {
-  margin-top: 24px;
-  max-width: 58ch;
-  margin-inline: auto;
-  font-size: clamp(1rem, 1.35vw, 1.15rem);
-  line-height: 1.85;
-  color: var(--ink-mid);
-  opacity: 0;
+.hero-line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
 }
-.lusion-sub b {
-  color: var(--ink);
+
+.hero-line-inner {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.line-accent {
+  color: #8da6df;
   font-weight: 500;
 }
-.ready .lusion-sub {
-  animation: heroRise 1s var(--ease-out-expo) 0.26s forwards;
+
+/* 副文案 */
+.hero-lead-text {
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 1.35vw, 1.25rem);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 820px;
+  margin-bottom: clamp(2rem, 4vh, 3rem);
+  text-wrap: pretty;
 }
 
-.lusion-actions {
-  margin-top: 36px;
+/* 按钮组 */
+.hero-actions-row {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
   gap: 14px;
-  opacity: 0;
-}
-.ready .lusion-actions {
-  animation: heroRise 1s var(--ease-out-expo) 0.36s forwards;
+  margin-bottom: clamp(3rem, 6vh, 4.5rem);
 }
 
-.lusion-stage-device {
-  width: 100%;
-  max-width: 920px;
-  margin-top: clamp(48px, 6vh, 68px);
-}
-
-.btn {
+.lusion-cta-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  padding: 13px 26px;
+  gap: 10px;
+  padding: 12px 28px;
   border-radius: 999px;
-  will-change: transform;
-  transition: background 0.3s, border-color 0.3s, box-shadow 0.35s;
-}
-.btn-primary {
-  background: var(--ink);
-  color: var(--paper);
-  box-shadow: var(--shadow-m);
-}
-.btn-secondary {
-  color: var(--ink);
-  background: rgba(20, 22, 26, 0.05);
-  border: 1px solid var(--line-strong);
-}
-.btn-ghost {
-  color: var(--ink);
-  border: 1px solid var(--line-strong);
-  background: rgba(253, 252, 250, 0.55);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .btn-primary:hover {
-    background: var(--ink-soft);
-    box-shadow: var(--shadow-l);
-  }
-  .btn-secondary:hover {
-    background: rgba(20, 22, 26, 0.09);
-    border-color: var(--ink);
-  }
-  .btn-ghost:hover {
-    border-color: var(--ink);
-  }
-}
-
-.hero-facts {
-  margin-top: clamp(40px, 5vh, 60px);
-  padding-top: 28px;
-  border-top: 1px solid var(--line-faint);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: clamp(32px, 5vw, 64px);
-  width: 100%;
-  max-width: 820px;
-  opacity: 0;
-}
-.ready .hero-facts {
-  animation: heroRise 0.9s var(--ease-out-expo) 0.46s forwards;
-}
-.hero-facts dt {
-  font-size: 1.35rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
   font-weight: 500;
-  letter-spacing: -0.02em;
-  font-feature-settings: "tnum";
-  line-height: 1.2;
-}
-.hero-facts dd {
-  margin-top: 4px;
-  font-size: 0.8rem;
-  color: var(--ink-soft-2);
-}
-
-/* ── 设备框 ───────────────────────────────── */
-.hero-device {
-  position: relative;
-  opacity: 0;
-  perspective: 1100px;
-}
-.ready .hero-device {
-  animation: heroRise 1.2s var(--ease-out-expo) 0.2s forwards;
-}
-
-.device {
-  /* 深色平板边框，圆角与内边距模拟真实设备 */
-  position: relative;
-  padding: 13px;
-  border-radius: 22px;
-  background: linear-gradient(158deg, #34383e 0%, #1c1f23 42%, #121417 100%);
-  box-shadow:
-    0 2px 3px rgba(20, 22, 26, 0.14),
-    0 18px 40px rgba(20, 22, 26, 0.2),
-    0 44px 90px rgba(20, 22, 26, 0.16);
-  transform-style: preserve-3d;
+  letter-spacing: -0.01em;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
-/* 屏幕外圈高光，做出金属收边 */
-.device::after {
-  content: '';
-  position: absolute;
-  inset: 6px;
-  border-radius: 17px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  pointer-events: none;
+
+.btn-primary {
+  background: #ffffff;
+  color: #060709;
+}
+.btn-primary:hover {
+  background: #e6e8ec;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
 }
 
-.device-screen {
-  position: relative;
-  border-radius: 11px;
-  overflow: hidden;
-  background: #eceae6;
-  aspect-ratio: 1024 / 724;
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
 }
-.device-shine {
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  padding-inline: 18px;
+}
+.btn-ghost:hover {
+  color: #ffffff;
+}
+
+.btn-ext {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+/* Lusion Studio 主舞台 */
+.hero-stage-wrapper {
+  width: 100%;
+  max-width: 1080px;
+  margin-bottom: clamp(3.5rem, 6vh, 5rem);
+  perspective: 1400px;
+}
+
+.stage-frame {
+  position: relative;
+  background: #0a0c10;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: clamp(12px, 2vw, 20px);
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8), 0 0 50px rgba(91, 127, 199, 0.12);
+  will-change: transform;
+}
+
+/* 舞台四角十字准星 */
+.stage-cross {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+  user-select: none;
+  line-height: 1;
+}
+.stage-cross-tl { top: -6px; left: -6px; }
+.stage-cross-tr { top: -6px; right: -6px; }
+.stage-cross-bl { bottom: -6px; left: -6px; }
+.stage-cross-br { bottom: -6px; right: -6px; }
+
+/* 舞台头部状态栏 */
+.stage-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+.stage-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stage-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5b7fc7;
+}
+
+.stage-specs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.spec-sep {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.stage-view-tag {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* 原生画布视窗（确保 1024x724 高画质输出，绝不糊） */
+.stage-screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1024 / 724;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stage-gloss {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 2;
-  border-radius: inherit;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 62%);
-  transition: background 0.12s ease-out;
-  mix-blend-mode: overlay;
+  mix-blend-mode: screen;
+  transition: background 0.1s ease;
 }
-.device-screen img {
+
+.hero-canvas-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  display: block;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: high-quality;
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
-.device-note {
+/* 舞台底部参数栏 */
+.stage-footer-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   margin-top: 14px;
-  text-align: right;
-  font-size: 0.75rem;
-  color: var(--ink-ghost);
-  letter-spacing: 0.03em;
 }
 
-@media (max-width: 960px) {
-  .hero {
-    padding: clamp(84px, 12vh, 120px) 0 52px;
-  }
-  .hero-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 44px;
-    max-width: 700px;
-    margin-inline: auto;
-  }
-  .hero-copy {
-    width: 100%;
-  }
-  .hero-device {
-    order: 2;
-    width: 100%;
-  }
-  .device-note {
-    text-align: center;
-  }
+.stage-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
-@media (max-width: 680px) {
-  .hero {
-    padding-top: calc(var(--nav-h, 68px) + 20px);
-    padding-bottom: 44px;
+.stat-number {
+  font-family: var(--font-mono);
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.stat-label {
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* 底部探索滚轮提示 (Lusion 1:1) */
+.hero-scroll-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  padding: 10px;
+  transition: opacity 0.25s ease;
+}
+
+.hero-scroll-container:hover {
+  opacity: 0.8;
+}
+
+.scroll-crosses {
+  display: flex;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  color: rgba(255, 255, 255, 0.2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.scroll-text-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.scroll-arrow {
+  animation: scrollDown 1.8s infinite ease-in-out;
+}
+
+@keyframes scrollDown {
+  0% { transform: translateY(-2px); opacity: 0.4; }
+  50% { transform: translateY(3px); opacity: 1; }
+  100% { transform: translateY(-2px); opacity: 0.4; }
+}
+
+@media (max-width: 768px) {
+  .hero-eyebrow-row {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
   }
-  .hero-eyebrow {
-    font-size: 0.6875rem;
-    gap: 7px;
-    margin-bottom: 18px;
-    line-height: 1.5;
-    flex-wrap: wrap;
-  }
-  .hero-title {
-    font-size: clamp(2rem, 7.8vw, 2.65rem);
-    line-height: 1.22;
-    letter-spacing: -0.025em;
-  }
-  .hero-sub {
-    margin-top: 18px;
-    font-size: 0.9375rem;
-    line-height: 1.78;
-  }
-  .hero-actions {
-    margin-top: 24px;
-    gap: 10px;
-    width: 100%;
-  }
-  .hero-actions .btn {
-    flex: 1 1 calc(50% - 6px);
-    min-width: 138px;
-    min-height: 48px;
-    padding: 12px 16px;
-    justify-content: center;
-    text-align: center;
-  }
-  .hero-actions .btn-ghost {
-    flex-basis: 100%;
-  }
-  .hero-facts {
-    margin-top: 32px;
-    padding-top: 20px;
-    display: grid;
+  .stage-footer-bar {
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px 20px;
-  }
-  .device {
-    padding: 9px;
-    border-radius: 18px;
-  }
-  .device::after {
-    inset: 4px;
-    border-radius: 14px;
-  }
-  .device-screen {
-    border-radius: 10px;
-  }
-}
-
-@media (max-width: 440px) {
-  .hero-actions .btn {
-    flex-basis: 100%;
-  }
-}
-</style>
-
-<style>
-@keyframes heroRise {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
+    gap: 16px;
   }
 }
 </style>

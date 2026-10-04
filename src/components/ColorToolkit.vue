@@ -200,17 +200,12 @@ onUnmounted(() => {
 }
 
 .c-shot {
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  background: var(--ui-900);
-  border: 1px solid rgba(20, 22, 26, 0.14);
-  box-shadow: var(--shadow-m);
+  background: #0d0f14;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
   aspect-ratio: 3 / 4.2;
-  border-radius: 18px;
-  overflow: hidden;
-  background: var(--ui-900);
-  border: 1px solid rgba(20, 22, 26, 0.08);
-  box-shadow: 0 16px 40px rgba(20, 22, 26, 0.1);
   transform-style: preserve-3d;
   will-change: transform;
   transition: box-shadow 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
@@ -225,7 +220,7 @@ onUnmounted(() => {
 
 @media (hover: hover) and (pointer: fine) {
   .c-item:hover .c-shot {
-    box-shadow: 0 24px 60px rgba(20, 22, 26, 0.16);
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.9), 0 0 25px rgba(91, 127, 199, 0.12);
   }
   .c-item:hover .c-shot img {
     transform: scale(1.035);
@@ -236,19 +231,20 @@ onUnmounted(() => {
   margin-top: 16px;
 }
 .c-item h3 {
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: -0.012em;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: #ffffff;
 }
 .c-item figcaption p {
   margin-top: 8px;
   font-size: 0.84375rem;
   line-height: 1.78;
-  color: var(--ink-mid);
+  color: rgba(255, 255, 255, 0.65);
 }
 .c-item abbr {
   text-decoration: none;
-  border-bottom: 1px dotted var(--ink-ghost);
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.3);
   cursor: help;
 }
 
@@ -256,7 +252,7 @@ onUnmounted(() => {
 .rest {
   margin-top: clamp(56px, 8.6vh, 92px);
   padding-top: clamp(38px, 5.6vh, 54px);
-  border-top: 1px solid var(--line-faint);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .rest-list {
@@ -264,13 +260,13 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
-  background: var(--line-faint);
-  border: 1px solid var(--line-faint);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   overflow: hidden;
 }
 .rest-item {
-  background: var(--card);
+  background: #0d0f14;
   padding: 24px 26px;
   display: flex;
   flex-direction: column;
@@ -280,20 +276,20 @@ onUnmounted(() => {
 
 @media (hover: hover) and (pointer: fine) {
   .rest-item:hover {
-    background: rgba(255, 255, 255, 0.85);
+    background: #151820;
     transform: translateY(-2px);
   }
 }
 .rest-item h4 {
   font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--ink);
+  font-weight: 600;
+  color: #ffffff;
   letter-spacing: -0.01em;
 }
 .rest-item p {
   font-size: 0.875rem;
   line-height: 1.78;
-  color: var(--ink-mid);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .mobile-dots {
