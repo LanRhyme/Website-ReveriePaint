@@ -17,13 +17,21 @@ const navItems = computed(() => [
   { id: 'get', label: t('header.nav.get') }
 ])
 
+const isDownloadPage = computed(() => {
+  if (typeof window === 'undefined') return false
+  return window.location.pathname.includes('/download')
+})
+
 function onScroll() {
   isScrolled.value = window.scrollY > 24
 }
 
 function goTo(id) {
   const el = id === 'top' ? document.body : document.getElementById(id)
-  if (!el) return
+  if (!el) {
+    window.location.href = `/#${id}`
+    return
+  }
   const lenis = getLenis()
   const offset = id === 'top' ? 0 : -72
   if (lenis) {
@@ -31,6 +39,15 @@ function goTo(id) {
   } else {
     const top = el.getBoundingClientRect().top + window.scrollY + offset
     window.scrollTo({ top, behavior: 'smooth' })
+  }
+}
+
+function handleBrandClick() {
+  menuOpen.value = false
+  if (typeof window !== 'undefined' && (window.location.pathname === '/' || window.location.pathname === '/index.html')) {
+    goTo('top')
+  } else {
+    window.location.href = '/'
   }
 }
 
@@ -66,7 +83,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 <template>
   <header class="site-header" :class="{ 'is-scrolled': isScrolled, 'has-menu': menuOpen }">
     <div class="shell bar">
-      <a class="brand" href="#top" @click.prevent="handleNavClick('top')">
+      <a class="brand" href="/" @click.prevent="handleBrandClick">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 22 22" width="22" height="22">
             <rect x="1" y="1" width="20" height="20" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.3" />
@@ -91,9 +108,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
       <a
         class="cta"
-        href="https://github.com/LanRhyme/ReveriePaint/releases"
-        target="_blank"
-        rel="noopener"
+        :href="isDownloadPage ? '#download-action' : '/download/'"
         @mousemove="onCtaMouseMove"
         @mouseleave="onCtaMouseLeave"
       >
@@ -170,12 +185,10 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
           <a
             class="mobile-nav-cta"
-            href="https://github.com/LanRhyme/ReveriePaint/releases"
-            target="_blank"
-            rel="noopener"
+            :href="isDownloadPage ? '#download-action' : '/download/'"
             @click="menuOpen = false"
           >
-            <span>{{ t('header.mobileDownload') }}</span>
+            <span>{{ isDownloadPage ? t('header.download') : t('header.mobileDownload') }}</span>
             <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
               <path d="M4 12 L12 4 M6 4 h6 v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>

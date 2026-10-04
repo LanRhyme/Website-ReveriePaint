@@ -229,8 +229,9 @@ export const messages = {
           title: '获取安装包',
           body: 'ReveriePaint 完全免费开源，可直接访问 GitHub Releases 获取官方正式构建包，或通过第三方镜像通道下载',
           links: [
-            { text: 'GitHub Releases 下载', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: true },
+            { text: '极速下载 APK (加速通道)', href: '/download/', primary: true },
             { text: '官方使用文档', href: '/docs/', primary: false },
+            { text: 'GitHub Releases 归档', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: false },
             { text: 'Mirror酱下载通道', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android', primary: false }
           ]
         },
@@ -256,6 +257,7 @@ export const messages = {
     footer: {
       tagline: 'Android 原生数字绘画',
       links: [
+        { label: '最新下载', href: '/download/' },
         { label: '使用文档', href: '/docs/' },
         { label: 'GitHub', href: 'https://github.com/LanRhyme/ReveriePaint' },
         { label: 'Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases' },
@@ -477,8 +479,9 @@ export const messages = {
           title: '取得安裝包',
           body: 'ReveriePaint 完全免費開源，可直接造訪 GitHub Releases 取得官方正式構建包，或透過第三方鏡像通道下載',
           links: [
-            { text: 'GitHub Releases 下載', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: true },
+            { text: '極速下載 APK (加速通道)', href: '/download/', primary: true },
             { text: '官方使用手冊', href: '/docs/', primary: false },
+            { text: 'GitHub Releases 歸檔', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: false },
             { text: 'Mirror醬下載通道', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android', primary: false }
           ]
         },
@@ -504,6 +507,7 @@ export const messages = {
     footer: {
       tagline: 'Android 原生數位繪畫',
       links: [
+        { label: '最新下載', href: '/download/' },
         { label: '使用手冊', href: '/docs/' },
         { label: 'GitHub', href: 'https://github.com/LanRhyme/ReveriePaint' },
         { label: 'Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases' },
@@ -725,8 +729,9 @@ export const messages = {
           title: 'Get Installation Package',
           body: 'ReveriePaint is completely free and open source. Download the official release directly from GitHub Releases or via third-party mirrors',
           links: [
-            { text: 'Download on GitHub Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: true },
+            { text: 'Fast Download APK (Mirrors)', href: '/download/', primary: true },
             { text: 'Documentation', href: '/docs/', primary: false },
+            { text: 'GitHub Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: false },
             { text: 'MirrorChyan Fast Channel', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android', primary: false }
           ]
         },
@@ -752,6 +757,7 @@ export const messages = {
     footer: {
       tagline: 'Native Android Digital Painting',
       links: [
+        { label: 'Download APK', href: '/download/' },
         { label: 'Documentation', href: '/docs/' },
         { label: 'GitHub', href: 'https://github.com/LanRhyme/ReveriePaint' },
         { label: 'Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases' },
@@ -973,8 +979,9 @@ export const messages = {
           title: 'インストールパッケージの入手',
           body: 'ReveriePaint は完全無料かつオープンソースです。GitHub Releases より公式ビルドを入手するか、高速ミラー配信をご利用ください',
           links: [
-            { text: 'GitHub Releases からダウンロード', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: true },
+            { text: '高速ダウンロード APK (ミラー)', href: '/download/', primary: true },
             { text: '公式ドキュメント', href: '/docs/', primary: false },
+            { text: 'GitHub Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases', primary: false },
             { text: 'MirrorChyan 高速ダウンロード', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android', primary: false }
           ]
         },
@@ -1000,6 +1007,7 @@ export const messages = {
     footer: {
       tagline: 'Android ネイティブ デジタルペイント',
       links: [
+        { label: 'ダウンロード', href: '/download/' },
         { label: 'ドキュメント', href: '/docs/' },
         { label: 'GitHub', href: 'https://github.com/LanRhyme/ReveriePaint' },
         { label: 'Releases', href: 'https://github.com/LanRhyme/ReveriePaint/releases' },

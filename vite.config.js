@@ -16,7 +16,8 @@ export default defineConfig({
     assetsInlineLimit: 0,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html')
+        main: resolve(__dirname, 'index.html'),
+        download: resolve(__dirname, 'download/index.html')
       }
     }
   },

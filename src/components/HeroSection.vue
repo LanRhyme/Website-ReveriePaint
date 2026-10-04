@@ -188,9 +188,7 @@ onUnmounted(() => {
         <div class="hero-actions">
           <a
             class="btn btn-primary"
-            href="https://github.com/LanRhyme/ReveriePaint/releases"
-            target="_blank"
-            rel="noopener"
+            href="/download/"
             @mousemove="onBtnMouseMove"
             @mouseleave="onBtnMouseLeave"
           >

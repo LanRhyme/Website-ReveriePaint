@@ -22,6 +22,7 @@ export default defineConfig({
     siteTitle: 'ReveriePaint',
     nav: [
       { text: '官网首页', link: 'https://reveriepaint.lanrhyme.top' },
+      { text: '极速下载', link: 'https://reveriepaint.lanrhyme.top/download/' },
       { text: '使用文档', link: '/' },
       { text: 'Mirror酱', link: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android' },
       { text: 'GitHub', link: 'https://github.com/LanRhyme/ReveriePaint' }
