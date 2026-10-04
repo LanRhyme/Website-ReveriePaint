@@ -90,9 +90,20 @@ onMounted(() => {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   if (!reduceMotion && deviceRef.value) {
-    deviceQuickToX = gsap.quickTo(deviceRef.value, 'rotationY', { duration: 0.7, ease: 'power2.out' })
-    deviceQuickToY = gsap.quickTo(deviceRef.value, 'rotationX', { duration: 0.7, ease: 'power2.out' })
-    gsap.set(deviceRef.value, { transformPerspective: 1100, transformStyle: 'preserve-3d' })
+    // 电影级多轴平滑视差与阻尼跟随 (GSAP quickTo)
+    deviceQuickToX = gsap.quickTo(deviceRef.value, 'rotationY', { duration: 0.85, ease: 'power2.out' })
+    deviceQuickToY = gsap.quickTo(deviceRef.value, 'rotationX', { duration: 0.85, ease: 'power2.out' })
+    gsap.set(deviceRef.value, { transformPerspective: 1200, transformStyle: 'preserve-3d' })
+
+    // 悬浮设备呼吸物理漂浮微动效
+    gsap.to(deviceRef.value, {
+      y: -14,
+      rotationZ: 0.6,
+      duration: 5.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    })
 
     // 移动端/平板设备陀螺仪体感倾斜
     if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
@@ -101,35 +112,36 @@ onMounted(() => {
 
     if (washRef.value) {
       gsap.to(washRef.value, {
-        scale: 1.06,
-        rotation: 2.5,
-        duration: 9,
+        scale: 1.08,
+        rotation: 3,
+        duration: 10,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut'
       })
     }
 
-    // 滚动景深视差
+    // GSAP 滚动驱动：大秀级镜头拉伸与透视沉浸推镜
     scrollCtx = gsap.matchMedia(heroRef.value)
     scrollCtx.add('(min-width: 961px)', () => {
       gsap.to(deviceRef.value, {
-        yPercent: 12,
-        rotationZ: -1.2,
+        yPercent: 18,
+        scale: 0.96,
+        rotationX: 12,
         ease: 'none',
         scrollTrigger: {
           trigger: heroRef.value,
           start: 'top top',
           end: 'bottom top',
-          scrub: 1.2
+          scrub: 1.4
         }
       })
     })
     scrollCtx.add('(max-width: 960px)', () => {
       gsap.to(deviceRef.value, {
-        rotationX: 10,
-        scale: 0.94,
-        yPercent: 8,
+        rotationX: 8,
+        scale: 0.95,
+        yPercent: 10,
         ease: 'none',
         scrollTrigger: {
           trigger: heroRef.value,
