@@ -72,43 +72,45 @@ function initThree() {
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1.2
 
-  // 4. Geometry - 动态流体液滴微表面
+  // 4. Geometry - 动态流体液滴微表面 (更细腻轻盈的尺寸)
   const detail = isMobile ? 36 : 72
-  const geometry = new THREE.SphereGeometry(2.1, detail, detail)
+  const geometry = new THREE.SphereGeometry(1.75, detail, detail)
   originalPositions = geometry.attributes.position.clone()
 
-  // 5. Shader Material - Lusion 级胶质与微透明清漆彩墨
+  // 5. Shader Material - 柔和半透莫兰迪水彩胶质（低侵入度，不抢眼）
   material = new THREE.MeshPhysicalMaterial({
     color: 0x8fa3b4,
-    roughness: 0.15,
-    metalness: 0.12,
-    transmission: 0.45,
-    ior: 1.48,
-    thickness: 2.2,
-    specularIntensity: 1.0,
+    roughness: 0.28,
+    metalness: 0.05,
+    transmission: 0.65,
+    ior: 1.35,
+    thickness: 1.6,
+    opacity: 0.75,
+    transparent: true,
+    specularIntensity: 0.6,
     specularColor: new THREE.Color(0xffffff),
-    clearcoat: 0.95,
-    clearcoatRoughness: 0.1,
-    reflectivity: 0.92
+    clearcoat: 0.7,
+    clearcoatRoughness: 0.2,
+    reflectivity: 0.7
   })
 
   blobMesh = new THREE.Mesh(geometry, material)
   scene.add(blobMesh)
 
-  // 6. Lights - 电影级逆光与多方位环境光
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.4)
+  // 6. Lights - 柔和环境漫射光与适度轮廓光
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.6)
   scene.add(ambientLight)
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 2.8)
-  keyLight.position.set(6, 6, 5)
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.8)
+  keyLight.position.set(5, 5, 5)
   scene.add(keyLight)
 
-  const rimLight1 = new THREE.DirectionalLight(0xc3a39e, 3.5)
-  rimLight1.position.set(-6, -4, -4)
+  const rimLight1 = new THREE.DirectionalLight(0xc3a39e, 1.8)
+  rimLight1.position.set(-5, -4, -4)
   scene.add(rimLight1)
 
-  const rimLight2 = new THREE.DirectionalLight(0x8fa3b4, 2.6)
-  rimLight2.position.set(-5, 5, 3)
+  const rimLight2 = new THREE.DirectionalLight(0x8fa3b4, 1.4)
+  rimLight2.position.set(-4, 4, 3)
   scene.add(rimLight2)
 
   // 7. Event Listeners
@@ -215,22 +217,22 @@ function animate() {
   scrollState.scrollY += (scrollState.targetScrollY - scrollState.scrollY) * 0.08
   const scrollNorm = Math.min(1, Math.max(0, scrollState.scrollY / scrollState.maxScroll))
 
-  // 核心视觉：3D 物体随页面全屏滚动在空间中穿梭位移
-  // 顶部 (Hero): 偏右上方悬浮；滚动向下时向左下穿梭，最后平滑沉入底部
-  const targetX = (1 - scrollNorm * 2.4) + pointer.x * 0.35
-  const targetY = (scrollNorm * 1.8 - 0.2) + pointer.y * 0.35
-  const targetZ = -scrollNorm * 1.2
+  // 核心视觉：3D 物体居中悬浮于视口中央背景，随滚动在中心纵深微幅漂移
+  // 首页 (Hero) 时居于屏幕中央，随滚动微幅位移
+  const targetX = pointer.x * 0.25 + Math.sin(scrollNorm * Math.PI) * 0.2
+  const targetY = (0.5 - scrollNorm * 1.0) + pointer.y * 0.2
+  const targetZ = -0.5 - scrollNorm * 1.5
 
-  blobMesh.position.x += (targetX - blobMesh.position.x) * 0.06
-  blobMesh.position.y += (targetY - blobMesh.position.y) * 0.06
-  blobMesh.position.z += (targetZ - blobMesh.position.z) * 0.06
+  blobMesh.position.x += (targetX - blobMesh.position.x) * 0.05
+  blobMesh.position.y += (targetY - blobMesh.position.y) * 0.05
+  blobMesh.position.z += (targetZ - blobMesh.position.z) * 0.05
 
   // 旋转力学
-  blobMesh.rotation.x = time * 0.15 + scrollNorm * Math.PI + pointer.y * 0.4
-  blobMesh.rotation.y = time * 0.22 + scrollNorm * Math.PI * 1.5 + pointer.x * 0.55
+  blobMesh.rotation.x = time * 0.12 + scrollNorm * Math.PI * 0.6 + pointer.y * 0.25
+  blobMesh.rotation.y = time * 0.16 + scrollNorm * Math.PI * 0.8 + pointer.x * 0.35
 
-  // 顶点形变
-  const deformIntensity = pointer.isDown ? 1.8 : 1.0
+  // 顶点形变 (更温和的呼吸)
+  const deformIntensity = pointer.isDown ? 1.2 : 0.65
   updateBlobGeometry(time, deformIntensity)
 
   // 莫兰迪色谱平滑过渡

@@ -2,8 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap, ScrollTrigger, isFineHoverPointer } from '../composables/useGsap.js'
 import { useI18n } from '../composables/useI18n.js'
-import heroCanvas from '../assets/shots/hero-canvas.webp'
-import heroCanvasSm from '../assets/shots/hero-canvas-sm.webp'
+import heroCanvas from '../assets/shots/hero-canvas.png'
 
 const { t, isEn } = useI18n()
 
@@ -241,8 +240,6 @@ onUnmounted(() => {
             <div ref="shineRef" class="device-shine" aria-hidden="true"></div>
             <img
               :src="heroCanvas"
-              :srcset="`${heroCanvasSm} 1000w, ${heroCanvas} 2000w`"
-              sizes="(max-width: 960px) 90vw, 980px"
               :alt="t('hero.deviceAlt')"
               fetchpriority="high"
               decoding="async"
@@ -479,7 +476,7 @@ onUnmounted(() => {
   border-radius: 11px;
   overflow: hidden;
   background: #eceae6;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 1024 / 724;
 }
 .device-shine {
   position: absolute;
@@ -494,7 +491,9 @@ onUnmounted(() => {
 .device-screen img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
