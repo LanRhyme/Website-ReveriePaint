@@ -103,23 +103,25 @@ onUnmounted(() => {
 }
 
 .pillar-card {
-  background: var(--card);
+  background: rgba(253, 252, 250, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--line-faint);
-  border-radius: 14px;
-  padding: clamp(26px, 3.2vw, 36px);
+  border-radius: 20px;
+  padding: clamp(30px, 3.8vw, 44px);
   display: flex;
   flex-direction: column;
-  transition: transform 0.45s var(--ease-out-expo), box-shadow 0.45s, border-color 0.4s;
+  transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s, border-color 0.4s;
 }
 @media (hover: hover) and (pointer: fine) {
   .pillar-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-m);
-    border-color: var(--line);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 45px rgba(20, 22, 26, 0.08);
+    border-color: var(--line-strong);
   }
   .pillar-card:hover .card-bar {
-    width: 48px;
-    opacity: 0.8;
+    width: 52px;
+    opacity: 0.9;
     background: var(--ink);
   }
 }

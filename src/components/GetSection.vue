@@ -206,12 +206,21 @@ onUnmounted(() => {
 .way {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: clamp(24px, 2.8vw, 32px);
+  gap: 14px;
+  padding: clamp(28px, 3.4vw, 40px);
   border: 1px solid var(--line-faint);
-  border-radius: 14px;
-  background: var(--card);
-  transition: transform 0.45s var(--ease-out-expo), box-shadow 0.45s, border-color 0.4s;
+  border-radius: 20px;
+  background: rgba(253, 252, 250, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s, border-color 0.4s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .way:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 45px rgba(20, 22, 26, 0.08);
+    border-color: var(--line-strong);
+  }
 }
 .way h3 {
   font-size: 1.0625rem;

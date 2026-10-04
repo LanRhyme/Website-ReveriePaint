@@ -188,9 +188,14 @@ onUnmounted(() => {
   border: 1px solid rgba(20, 22, 26, 0.14);
   box-shadow: var(--shadow-m);
   aspect-ratio: 3 / 4.2;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--ui-900);
+  border: 1px solid rgba(20, 22, 26, 0.08);
+  box-shadow: 0 16px 40px rgba(20, 22, 26, 0.1);
   transform-style: preserve-3d;
   will-change: transform;
-  transition: box-shadow 0.4s var(--ease-out-expo);
+  transition: box-shadow 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
 }
 .c-shot img {
   width: 100%;
@@ -202,10 +207,10 @@ onUnmounted(() => {
 
 @media (hover: hover) and (pointer: fine) {
   .c-item:hover .c-shot {
-    box-shadow: var(--shadow-l);
+    box-shadow: 0 24px 60px rgba(20, 22, 26, 0.16);
   }
   .c-item:hover .c-shot img {
-    transform: scale(1.03);
+    transform: scale(1.035);
   }
 }
 

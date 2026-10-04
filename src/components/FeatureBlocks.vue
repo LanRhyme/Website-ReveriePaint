@@ -245,31 +245,31 @@ onUnmounted(() => {
 .blocks {
   display: flex;
   flex-direction: column;
-  gap: clamp(64px, 10vh, 116px);
+  gap: clamp(96px, 14vh, 160px);
 }
 
 .block {
   display: grid;
-  grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(32px, 5vw, 72px);
+  gap: clamp(48px, 6vw, 96px);
 }
 
-/* 图片一侧 */
+/* 巨幕级展示一侧 */
 .block-media {
   position: relative;
-  border-radius: 14px;
+  border-radius: 20px;
   overflow: hidden;
   background: var(--ui-900);
-  border: 1px solid rgba(20, 22, 26, 0.14);
-  box-shadow: var(--shadow-l);
+  border: 1px solid rgba(20, 22, 26, 0.08);
+  box-shadow: 0 20px 50px rgba(20, 22, 26, 0.12), 0 1px 3px rgba(20, 22, 26, 0.06);
   transform-style: preserve-3d;
   will-change: transform;
-  transition: box-shadow 0.4s var(--ease-out-expo);
+  transition: box-shadow 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
 }
 @media (hover: hover) and (pointer: fine) {
   .block-media:hover {
-    box-shadow: var(--shadow-xl);
+    box-shadow: 0 32px 72px rgba(20, 22, 26, 0.18), 0 2px 6px rgba(20, 22, 26, 0.08);
   }
 }
 .block-media img {
@@ -277,24 +277,30 @@ onUnmounted(() => {
   height: auto;
   display: block;
   will-change: transform;
+  transition: transform 0.8s var(--ease-out-expo);
+}
+@media (hover: hover) and (pointer: fine) {
+  .block-media:hover img {
+    transform: scale(1.025);
+  }
 }
 
 /* 文案一侧 */
 .block-copy {
-  max-width: 42ch;
+  max-width: 44ch;
 }
 .block-title {
-  margin-top: 12px;
-  font-size: clamp(1.25rem, 2.1vw, 1.6875rem);
+  margin-top: 14px;
+  font-size: clamp(1.5rem, 2.5vw, 2.1rem);
   font-weight: 500;
-  line-height: 1.36;
-  letter-spacing: -0.022em;
+  line-height: 1.28;
+  letter-spacing: -0.026em;
   color: var(--ink);
 }
 .block-body {
-  margin-top: 16px;
-  font-size: 0.9375rem;
-  line-height: 1.88;
+  margin-top: 18px;
+  font-size: clamp(0.9375rem, 1.1vw, 1.05rem);
+  line-height: 1.92;
   color: var(--ink-mid);
 }
 .block-points {

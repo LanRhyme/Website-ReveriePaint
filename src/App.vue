@@ -8,6 +8,7 @@ import OriginStory from './components/OriginStory.vue'
 import GetSection from './components/GetSection.vue'
 import AppFooter from './components/AppFooter.vue'
 import FluidCanvas from './components/FluidCanvas.vue'
+import ThreeGlobalCanvas from './components/ThreeGlobalCanvas.vue'
 import CustomCursor from './components/CustomCursor.vue'
 import { initReveal } from './composables/useReveal.js'
 import { initGsapScroll } from './composables/useGsap.js'
@@ -20,6 +21,7 @@ onMounted(() => {
 
 <template>
   <FluidCanvas />
+  <ThreeGlobalCanvas />
   <CustomCursor />
   <AppHeader />
 

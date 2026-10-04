@@ -176,31 +176,31 @@ onUnmounted(() => {
   <section
     id="top"
     ref="heroRef"
-    class="hero"
+    class="hero lusion-hero"
     :class="{ ready }"
     @mousemove="onHeroMouseMove"
     @mouseleave="onHeroMouseLeave"
   >
     <div ref="washRef" class="hero-wash" aria-hidden="true"></div>
 
-    <div class="shell hero-grid">
-      <!-- 左：文案 -->
-      <div class="hero-copy">
+    <div class="shell hero-content-center">
+      <!-- 顶部小标与巨幕标题 -->
+      <div class="hero-top-block">
         <p class="eyebrow hero-eyebrow">
           <span class="dot" aria-hidden="true"></span>
           {{ t('hero.eyebrow') }}
         </p>
 
-        <h1 class="hero-title">
+        <h1 class="hero-title lusion-mega-title">
           <span class="line-mask"><span class="line-inner">{{ t('hero.titleLine1') }}</span></span>
           <span class="line-mask"><em class="line-inner line-delay-1">{{ t('hero.titleLine2') }}</em></span>
         </h1>
 
-        <p class="hero-sub">
+        <p class="hero-sub lusion-sub">
           {{ t('hero.sub') }}
         </p>
 
-        <div class="hero-actions">
+        <div class="hero-actions lusion-actions">
           <a
             class="btn btn-primary"
             href="/download/"
@@ -234,30 +234,10 @@ onUnmounted(() => {
             {{ t('hero.source') }}
           </a>
         </div>
-
-        <dl class="hero-facts">
-          <div>
-            <dt>{{ brushCount }}+</dt>
-            <dd>{{ t('hero.statBrushes') }}</dd>
-          </div>
-          <div>
-            <dt>{{ blendCount }}{{ t('hero.unitKinds') }}</dt>
-            <dd>{{ t('hero.statBlend') }}</dd>
-          </div>
-          <div>
-            <dt>{{ filterCount }}{{ t('hero.unitKinds') }}</dt>
-            <dd>{{ t('hero.statFilters') }}</dd>
-          </div>
-          <div>
-            <dt>GPL-3.0</dt>
-            <dd>{{ t('hero.statLicense') }}</dd>
-          </div>
-        </dl>
       </div>
 
-      <!-- 右：设备与 3D 物理雕塑互动区 -->
-      <div class="hero-device">
-        <!-- 3D / 界面视图切换微胶囊 -->
+      <!-- 舞台区：悬浮硬件设备与微交互 -->
+      <div class="hero-device lusion-stage-device">
         <div class="hero-view-toggle">
           <button
             type="button"
@@ -283,7 +263,6 @@ onUnmounted(() => {
           <div class="device-screen">
             <div ref="shineRef" class="device-shine" aria-hidden="true"></div>
 
-            <!-- Lusion 级 Three.js 实时 3D 彩墨物理雕塑 -->
             <transition name="fade-view">
               <div v-show="activeHeroView === '3d'" class="view-3d-wrap">
                 <ThreeFluidSculpture />
@@ -293,13 +272,12 @@ onUnmounted(() => {
               </div>
             </transition>
 
-            <!-- 原生应用界面截图 -->
             <transition name="fade-view">
               <img
                 v-show="activeHeroView === 'canvas'"
                 :src="heroCanvas"
                 :srcset="`${heroCanvasSm} 1000w, ${heroCanvas} 2000w`"
-                sizes="(max-width: 960px) 90vw, 760px"
+                sizes="(max-width: 960px) 90vw, 980px"
                 :alt="t('hero.deviceAlt')"
                 fetchpriority="high"
                 decoding="async"
@@ -309,6 +287,26 @@ onUnmounted(() => {
         </div>
         <p class="device-note">{{ activeHeroView === '3d' ? (isEn ? 'Real-time WebGL Physical Vertex Simulation' : 'Three.js 实时物理级顶点流体变形与 PBR 渲染') : t('hero.deviceNote') }}</p>
       </div>
+
+      <!-- 底部指标浮带 -->
+      <dl class="hero-facts lusion-facts">
+        <div>
+          <dt>{{ brushCount }}+</dt>
+          <dd>{{ t('hero.statBrushes') }}</dd>
+        </div>
+        <div>
+          <dt>{{ blendCount }}{{ t('hero.unitKinds') }}</dt>
+          <dd>{{ t('hero.statBlend') }}</dd>
+        </div>
+        <div>
+          <dt>{{ filterCount }}{{ t('hero.unitKinds') }}</dt>
+          <dd>{{ t('hero.statFilters') }}</dd>
+        </div>
+        <div>
+          <dt>GPL-3.0</dt>
+          <dd>{{ t('hero.statLicense') }}</dd>
+        </div>
+      </dl>
     </div>
   </section>
 </template>
@@ -316,28 +314,25 @@ onUnmounted(() => {
 <style scoped>
 .hero {
   position: relative;
-  padding: clamp(104px, 14vh, 156px) 0 clamp(56px, 8vh, 88px);
+  padding: clamp(100px, 13vh, 140px) 0 clamp(64px, 8vh, 96px);
   overflow: hidden;
 }
 
-.hero-wash {
-  position: absolute;
-  inset: -24% -12% auto -12%;
-  height: 118%;
-  pointer-events: none;
-  background:
-    radial-gradient(42% 32% at 78% 14%, rgba(143, 163, 180, 0.14) 0%, transparent 68%),
-    radial-gradient(36% 28% at 6% 4%, rgba(195, 163, 158, 0.11) 0%, transparent 66%),
-    radial-gradient(50% 38% at 44% 70%, rgba(200, 180, 141, 0.09) 0%, transparent 70%);
-  filter: blur(6px);
+.hero-content-center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 1100px;
+  margin-inline: auto;
 }
 
-.hero-grid {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+.hero-top-block {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: clamp(40px, 5vw, 76px);
+  width: 100%;
 }
 
 /* ── 文案 ─────────────────────────────────── */
@@ -359,48 +354,58 @@ onUnmounted(() => {
   animation: heroRise 0.85s var(--ease-out-expo) 0.05s forwards;
 }
 
-.hero-title {
-  font-size: clamp(1.9rem, 4.1vw, 3.15rem);
-  line-height: 1.26;
-  letter-spacing: -0.032em;
+.lusion-mega-title {
+  font-size: clamp(2.6rem, 6.2vw, 5.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
   font-weight: 400;
   color: var(--ink-mid);
   opacity: 0;
+  max-width: 22ch;
+  margin-inline: auto;
 }
-.hero-title em {
+.lusion-mega-title em {
   font-style: normal;
   font-weight: 600;
   color: var(--ink);
 }
-.ready .hero-title {
+.ready .lusion-mega-title {
   animation: heroRise 1s var(--ease-out-expo) 0.14s forwards;
 }
 
-.hero-sub {
-  margin-top: 26px;
-  max-width: 46ch;
-  font-size: clamp(0.9375rem, 1.25vw, 1.0625rem);
-  line-height: 1.92;
+.lusion-sub {
+  margin-top: 24px;
+  max-width: 58ch;
+  margin-inline: auto;
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
+  line-height: 1.85;
   color: var(--ink-mid);
   opacity: 0;
 }
-.hero-sub b {
+.lusion-sub b {
   color: var(--ink);
   font-weight: 500;
 }
-.ready .hero-sub {
+.ready .lusion-sub {
   animation: heroRise 1s var(--ease-out-expo) 0.26s forwards;
 }
 
-.hero-actions {
-  margin-top: 32px;
+.lusion-actions {
+  margin-top: 36px;
   display: flex;
   flex-wrap: wrap;
-  gap: 11px;
+  justify-content: center;
+  gap: 14px;
   opacity: 0;
 }
-.ready .hero-actions {
+.ready .lusion-actions {
   animation: heroRise 1s var(--ease-out-expo) 0.36s forwards;
+}
+
+.lusion-stage-device {
+  width: 100%;
+  max-width: 920px;
+  margin-top: clamp(48px, 6vh, 68px);
 }
 
 .btn {
@@ -445,27 +450,30 @@ onUnmounted(() => {
 }
 
 .hero-facts {
-  margin-top: 40px;
-  padding-top: 24px;
+  margin-top: clamp(40px, 5vh, 60px);
+  padding-top: 28px;
   border-top: 1px solid var(--line-faint);
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(24px, 3.4vw, 44px);
+  justify-content: center;
+  gap: clamp(32px, 5vw, 64px);
+  width: 100%;
+  max-width: 820px;
   opacity: 0;
 }
 .ready .hero-facts {
   animation: heroRise 0.9s var(--ease-out-expo) 0.46s forwards;
 }
 .hero-facts dt {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 500;
   letter-spacing: -0.02em;
   font-feature-settings: "tnum";
   line-height: 1.2;
 }
 .hero-facts dd {
-  margin-top: 3px;
-  font-size: 0.75rem;
+  margin-top: 4px;
+  font-size: 0.8rem;
   color: var(--ink-soft-2);
 }
 
