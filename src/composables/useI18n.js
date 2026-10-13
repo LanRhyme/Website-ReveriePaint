@@ -220,7 +220,7 @@ export const messages = {
       sub: '完全免费开源，不含任何商业广告与应用内购，随时随地开启专业创作',
       meta: [
         { k: '系统要求', v: 'Android 7.0+（API 24）' },
-        { k: '芯片架构', v: '仅 64 位 arm64-v8a' },
+        { k: '芯片架构', v: '64 位 (arm64-v8a) / 32 位 (armeabi-v7a)' },
         { k: '开源协议', v: 'GPL-3.0 开放源码' },
         { k: '交流社群', v: 'QQ 群 729283213' }
       ],
@@ -470,7 +470,7 @@ export const messages = {
       sub: '完全免費開源，不含任何商業廣告與應用內購，隨時隨地開啟專業創作',
       meta: [
         { k: '系統要求', v: 'Android 7.0+（API 24）' },
-        { k: '晶片架構', v: '僅 64 位元 arm64-v8a' },
+        { k: '晶片架構', v: '64 位元 (arm64-v8a) / 32 位元 (armeabi-v7a)' },
         { k: '開源協議', v: 'GPL-3.0 開放源碼' },
         { k: '交流社群', v: 'QQ 群 729283213' }
       ],
@@ -720,7 +720,7 @@ export const messages = {
       sub: 'Completely free and open-source, without ads or in-app purchases. Professional digital painting anywhere, anytime',
       meta: [
         { k: 'OS Requirement', v: 'Android 7.0+ (API 24)' },
-        { k: 'Architecture', v: '64-bit arm64-v8a only' },
+        { k: 'Architecture', v: '64-bit (arm64-v8a) & 32-bit (armeabi-v7a)' },
         { k: 'License', v: 'GPL-3.0 Open Source' },
         { k: 'Community', v: 'QQ Group 729283213' }
       ],
@@ -970,7 +970,7 @@ export const messages = {
       sub: '完全無料かつオープンソース。広告や課金は一切なし、いつでもプロレベルの創作を',
       meta: [
         { k: 'システム要件', v: 'Android 7.0+（API 24）' },
-        { k: 'アーキテクチャ', v: '64-bit arm64-v8a 専用' },
+        { k: 'アーキテクチャ', v: '64-bit (arm64-v8a) / 32-bit (armeabi-v7a)' },
         { k: 'ライセンス', v: 'GPL-3.0 オープンソース' },
         { k: 'コミュニティ', v: 'QQ グループ 729283213' }
       ],

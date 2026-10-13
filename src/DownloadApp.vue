@@ -128,6 +128,58 @@ const PROXY_NODES = [
 ]
 
 const selectedNodeId = ref('direct')
+const selectedArchId = ref('arm64-v8a')
+
+const ARCH_OPTIONS = computed(() => {
+  const archs = release.value.architectures || fallbackRelease.architectures || {}
+  return [
+    {
+      id: 'arm64-v8a',
+      name: isEn.value ? '64-bit (ARM64-v8a)' : '64 位 (ARM64-v8a)',
+      badge: isEn.value ? 'Recommended' : '主流推荐',
+      desc: isEn.value ? 'For modern 64-bit Android tablets & phones' : '适用于绝大多数现代 64 位安卓平板与手机',
+      info: archs['arm64-v8a'] || {
+        apkName: release.value.apkName,
+        size: release.value.size,
+        githubUrl: release.value.githubUrl,
+        available: true
+      }
+    },
+    {
+      id: 'armeabi-v7a',
+      name: isEn.value ? '32-bit (ARMv7)' : '32 位 (ARMv7)',
+      badge: isEn.value ? 'Legacy' : '兼容旧机',
+      desc: isEn.value ? 'For 32-bit legacy devices or specific systems' : '适用于老旧 32 位设备、特定系统或墨水屏平板',
+      info: archs['armeabi-v7a'] || {
+        apkName: release.value.apkName.replace('.apk', '-armeabi-v7a.apk'),
+        size: '~92 MB',
+        githubUrl: release.value.githubUrl.replace('.apk', '-armeabi-v7a.apk'),
+        available: false,
+        note: isEn.value ? 'Available starting next milestone release' : '下个里程碑版本起正式自动随 Release 分发'
+      }
+    }
+  ]
+})
+
+const activeArch = computed(() => {
+  return ARCH_OPTIONS.value.find(a => a.id === selectedArchId.value) || ARCH_OPTIONS.value[0]
+})
+
+const currentApkName = computed(() => {
+  return activeArch.value.info?.apkName || release.value.apkName
+})
+
+const currentSize = computed(() => {
+  return activeArch.value.info?.size || release.value.size
+})
+
+const currentRawUrl = computed(() => {
+  return activeArch.value.info?.githubUrl || release.value.githubUrl
+})
+
+const isArchAvailable = computed(() => {
+  return activeArch.value.info?.available !== false
+})
 
 const activeNode = computed(() => {
   return PROXY_NODES.find(n => n.id === selectedNodeId.value) || PROXY_NODES[0]
@@ -135,10 +187,11 @@ const activeNode = computed(() => {
 
 const activeDownloadUrl = computed(() => {
   const node = activeNode.value
+  const rawUrl = currentRawUrl.value
   if (!node.prefix) {
-    return release.value.githubUrl
+    return rawUrl
   }
-  return `${node.prefix}${release.value.githubUrl}`
+  return `${node.prefix}${rawUrl}`
 })
 
 async function fetchLatestRelease() {
@@ -157,21 +210,45 @@ async function fetchLatestRelease() {
     const data = await res.json()
     if (!data || !data.tag_name) return
 
-    const apkAsset = (data.assets || []).find(a => a.name && a.name.endsWith('.apk'))
+    const assets = data.assets || []
+    const arm64Asset = assets.find(a => a.name && (a.name.includes('arm64') || (a.name.endsWith('.apk') && !a.name.includes('armeabi') && !a.name.includes('armv7') && !a.name.includes('x86'))))
+    const armv7Asset = assets.find(a => a.name && (a.name.includes('armeabi') || a.name.includes('armv7')))
+    const mainApkAsset = arm64Asset || assets.find(a => a.name && a.name.endsWith('.apk'))
 
-    if (apkAsset) {
+    if (mainApkAsset) {
       release.value = {
         version: data.tag_name,
         name: data.name || `ReveriePaint ${data.tag_name}`,
-        apkName: apkAsset.name,
-        size: apkAsset.size ? `${(apkAsset.size / (1024 * 1024)).toFixed(1)} MB` : fallbackRelease.size,
-        sizeBytes: apkAsset.size || fallbackRelease.sizeBytes,
+        apkName: mainApkAsset.name,
+        size: mainApkAsset.size ? `${(mainApkAsset.size / (1024 * 1024)).toFixed(1)} MB` : fallbackRelease.size,
+        sizeBytes: mainApkAsset.size || fallbackRelease.sizeBytes,
         date: data.published_at ? data.published_at.slice(0, 10) : fallbackRelease.date,
-        githubUrl: apkAsset.browser_download_url,
+        githubUrl: mainApkAsset.browser_download_url,
         releasesPage: data.html_url || fallbackRelease.releasesPage,
         mirrorChyanUrl: fallbackRelease.mirrorChyanUrl,
         qqGroup: fallbackRelease.qqGroup,
-        body: data.body || fallbackRelease.body
+        body: data.body || fallbackRelease.body,
+        architectures: {
+          'arm64-v8a': {
+            name: '64 位 (ARM64-v8a)',
+            badge: '主流推荐',
+            apkName: mainApkAsset.name,
+            size: mainApkAsset.size ? `${(mainApkAsset.size / (1024 * 1024)).toFixed(1)} MB` : fallbackRelease.size,
+            sizeBytes: mainApkAsset.size || fallbackRelease.sizeBytes,
+            githubUrl: mainApkAsset.browser_download_url,
+            available: true
+          },
+          'armeabi-v7a': {
+            name: '32 位 (ARMv7)',
+            badge: '兼容旧机',
+            apkName: armv7Asset ? armv7Asset.name : `ReveriePaint-${data.tag_name}-armeabi-v7a.apk`,
+            size: armv7Asset && armv7Asset.size ? `${(armv7Asset.size / (1024 * 1024)).toFixed(1)} MB` : '~92 MB',
+            sizeBytes: armv7Asset ? armv7Asset.size : 96468992,
+            githubUrl: armv7Asset ? armv7Asset.browser_download_url : `https://github.com/LanRhyme/ReveriePaint/releases/download/${data.tag_name}/ReveriePaint-${data.tag_name}-armeabi-v7a.apk`,
+            available: !!armv7Asset,
+            note: armv7Asset ? '' : '下个里程碑版本起正式自动随 Release 分发'
+          }
+        }
       }
     }
   } catch {
@@ -251,7 +328,7 @@ onMounted(() => {
                   <span class="latest-pill">{{ isEn ? 'Latest' : '正式版' }}</span>
                 </div>
                 <div class="file-name-row">
-                  <code>{{ release.apkName }}</code>
+                  <code>{{ currentApkName }}</code>
                 </div>
               </div>
             </div>
@@ -260,7 +337,7 @@ onMounted(() => {
             <div class="specs-bar">
               <div class="spec-cell">
                 <span class="spec-label">{{ isEn ? 'Package Size' : '安装包大小' }}</span>
-                <span class="spec-val">{{ release.size }}</span>
+                <span class="spec-val">{{ currentSize }}</span>
               </div>
               <div class="spec-cell">
                 <span class="spec-label">{{ isEn ? 'Release Date' : '发布日期' }}</span>
@@ -272,11 +349,47 @@ onMounted(() => {
               </div>
               <div class="spec-cell">
                 <span class="spec-label">{{ isEn ? 'Architecture' : '适配架构' }}</span>
-                <span class="spec-val">ARM64-v8a</span>
+                <span class="spec-val">ARM64-v8a / ARMv7</span>
               </div>
               <div class="spec-cell">
                 <span class="spec-label">{{ isEn ? 'License' : '开源协议' }}</span>
                 <span class="spec-val">GPL-3.0</span>
+              </div>
+            </div>
+
+            <!-- 架构选择器 -->
+            <div class="arch-switch-box">
+              <div class="switch-header">
+                <span class="switch-title">
+                  <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                    <rect x="2" y="2" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.3" />
+                    <rect x="5" y="5" width="6" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.2" />
+                    <path d="M5 2 V0 M11 2 V0 M5 16 V14 M11 16 V14 M2 5 H0 M2 11 H0 M16 5 H14 M16 11 H14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                  </svg>
+                  <span>{{ isEn ? 'Select Chip Architecture' : '选择设备芯片架构' }}</span>
+                </span>
+                <span class="switch-hint">{{ isEn ? 'ARM64-v8a for modern devices · ARMv7 for legacy 32-bit' : '64 位主流推荐 · 32 位老旧兼容' }}</span>
+              </div>
+
+              <div class="arch-pills">
+                <button
+                  v-for="arch in ARCH_OPTIONS"
+                  :key="arch.id"
+                  type="button"
+                  class="arch-pill"
+                  :class="{ active: selectedArchId === arch.id }"
+                  :data-cursor="arch.id"
+                  @click="selectedArchId = arch.id"
+                >
+                  <span class="a-name">{{ arch.name }}</span>
+                  <span class="a-badge" :class="arch.id">{{ arch.badge }}</span>
+                </button>
+              </div>
+
+              <div class="node-tip">
+                <span class="node-tip-dot"></span>
+                <span>{{ activeArch.desc }}</span>
+                <span v-if="activeArch.info?.note" class="arch-status-note">（{{ activeArch.info.note }}）</span>
               </div>
             </div>
 
@@ -316,41 +429,74 @@ onMounted(() => {
 
             <!-- 核心行动按钮区 -->
             <div class="actions-area">
-              <a
-                class="btn-dl-main"
-                :href="activeDownloadUrl"
-                target="_blank"
-                rel="noopener"
-                data-cursor="DOWNLOAD"
-              >
-                <div class="btn-dl-icon">
-                  <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
-                    <path d="M10 3 L10 13 M6 9 L10 13 L14 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M3 15 C3 16.1 3.9 17 5 17 L15 17 C16.1 17 17 16.1 17 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <div class="btn-dl-content">
-                  <span class="btn-dl-title">
-                    {{ isEn ? 'Download APK Now' : '立即高速下载 APK' }}
-                  </span>
-                  <span class="btn-dl-sub">
-                    {{ activeNode.name }} · {{ release.size }}
-                  </span>
-                </div>
-              </a>
+              <template v-if="isArchAvailable">
+                <a
+                  class="btn-dl-main"
+                  :href="activeDownloadUrl"
+                  target="_blank"
+                  rel="noopener"
+                  data-cursor="DOWNLOAD"
+                >
+                  <div class="btn-dl-icon">
+                    <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+                      <path d="M10 3 L10 13 M6 9 L10 13 L14 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M3 15 C3 16.1 3.9 17 5 17 L15 17 C16.1 17 17 16.1 17 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="btn-dl-content">
+                    <span class="btn-dl-title">
+                      {{ isEn ? 'Download APK Now' : '立即高速下载 APK' }}
+                    </span>
+                    <span class="btn-dl-sub">
+                      {{ activeArch.name }} · {{ activeNode.name }} · {{ currentSize }}
+                    </span>
+                  </div>
+                </a>
 
-              <button
-                type="button"
-                class="btn-dl-copy"
-                data-cursor="COPY"
-                @click="copyDownloadLink"
-              >
-                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
-                  <rect x="5" y="5" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3" />
-                  <path d="M3 11 V3 h8" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
-                </svg>
-                <span>{{ copied ? (isEn ? 'Copied' : '已复制直链') : (isEn ? 'Copy Direct Link' : '复制下载直链') }}</span>
-              </button>
+                <button
+                  type="button"
+                  class="btn-dl-copy"
+                  data-cursor="COPY"
+                  @click="copyDownloadLink"
+                >
+                  <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                    <rect x="5" y="5" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M3 11 V3 h8" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                  </svg>
+                  <span>{{ copied ? (isEn ? 'Copied' : '已复制直链') : (isEn ? 'Copy Direct Link' : '复制下载直链') }}</span>
+                </button>
+              </template>
+
+              <template v-else>
+                <div class="btn-dl-disabled">
+                  <div class="btn-dl-icon">
+                    <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+                      <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                      <path d="M6 10 H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="btn-dl-content">
+                    <span class="btn-dl-title">
+                      {{ isEn ? '32-bit Build Available in Next Release' : '当前 1.4.10 暂未开放 32 位在线下载' }}
+                    </span>
+                    <span class="btn-dl-sub">
+                      {{ isEn ? 'Support will be officially integrated from next milestone release' : '底层构建与 CI 自动化已就绪，将于下个里程碑版本起正式随 Release 发布' }}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  class="btn-dl-copy"
+                  data-cursor="SWITCH"
+                  @click="selectedArchId = 'arm64-v8a'"
+                >
+                  <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                    <path d="M4 8 h8 M8 4 l4 4 -4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{ isEn ? 'Switch to 64-bit Build' : '切换至 64 位版本' }}</span>
+                </button>
+              </template>
             </div>
 
             <div class="url-preview">
@@ -666,6 +812,63 @@ onMounted(() => {
   color: var(--ink);
 }
 
+/* 架构切换器 */
+.arch-switch-box {
+  background: rgba(20, 22, 26, 0.02);
+  border: 1px solid var(--line);
+  padding: 18px 22px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.arch-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.arch-pill {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-mid);
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  touch-action: manipulation;
+}
+.arch-pill:hover {
+  border-color: var(--ink-soft);
+  color: var(--ink);
+}
+.arch-pill.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+  box-shadow: var(--shadow-s);
+}
+.a-badge {
+  font-size: 0.6875rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.06);
+}
+.arch-pill.active .a-badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--paper);
+}
+.arch-status-note {
+  color: var(--accent-deep);
+  font-weight: 500;
+}
+
 /* 节点切换 */
 .proxy-switch-box {
   background: rgba(20, 22, 26, 0.02);
@@ -800,6 +1003,30 @@ onMounted(() => {
 .btn-dl-sub {
   font-size: 0.75rem;
   opacity: 0.75;
+}
+
+.btn-dl-disabled {
+  flex: 1 1 280px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(20, 22, 26, 0.05);
+  border: 1px dashed var(--line-strong);
+  color: var(--ink-mid);
+  padding: 16px 24px;
+  border-radius: 14px;
+}
+.btn-dl-disabled .btn-dl-icon {
+  background: rgba(20, 22, 26, 0.08);
+  color: var(--ink-soft-2);
+}
+.btn-dl-disabled .btn-dl-title {
+  color: var(--ink);
+}
+.btn-dl-disabled .btn-dl-sub {
+  color: var(--accent-deep);
+  font-weight: 500;
+  opacity: 1;
 }
 
 .btn-dl-copy {
@@ -1025,7 +1252,8 @@ onMounted(() => {
   .btn-dl-main:active,
   .btn-dl-copy:active,
   .ch-btn:active,
-  .proxy-pill:active {
+  .proxy-pill:active,
+  .arch-pill:active {
     opacity: 0.82;
   }
 }

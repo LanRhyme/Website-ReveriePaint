@@ -1,13 +1,34 @@
 {
-  "version": "v1.4.1",
-  "name": "v1.4.1",
-  "apkName": "ReveriePaint-v1.4.1.apk",
-  "size": "80.2 MB",
-  "sizeBytes": 84130031,
-  "date": "2026-10-03",
-  "githubUrl": "https://github.com/LanRhyme/ReveriePaint/releases/download/v1.4.1/ReveriePaint-v1.4.1.apk",
-  "releasesPage": "https://github.com/LanRhyme/ReveriePaint/releases/tag/v1.4.1",
+  "version": "v1.4.10",
+  "name": "v1.4.10",
+  "apkName": "ReveriePaint-v1.4.10.apk",
+  "size": "90.0 MB",
+  "sizeBytes": 94380559,
+  "date": "2026-10-12",
+  "githubUrl": "https://github.com/LanRhyme/ReveriePaint/releases/download/v1.4.10/ReveriePaint-v1.4.10.apk",
+  "releasesPage": "https://github.com/LanRhyme/ReveriePaint/releases/tag/v1.4.10",
   "mirrorChyanUrl": "https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android",
   "qqGroup": "729283213",
-  "body": "### 新增特性 (Features)\n- **笔刷工作台全维度独立动态曲线与全量传感器矩阵**: 笔刷工作台全参数接入高阶贝塞尔动态响应曲线编辑器；对标 Krita 内核支持 13 种传感器选择（压力、速度、运笔角、俯仰倾角、方位倾角、倾角 X/Y、笔身旋转、切向压感、渐隐、距离、时间、随机噪点）；支持任意增删控制点、曲线预设、翻转与步进微调；试画板支持实时发光光点游标与输入/输出百分比追踪\n- **禁用画布触控快捷开关**: 快捷操作悬浮栏与快捷键系统新增「禁用画布触控」独立开关，开启后画布仅响应手写笔绘制，彻底杜绝手掌或手指在画布上的误触线条\n\n### 缺陷修复 (Bug Fixes)\n- **大笔刷调度与多核架构渲染优化**: 优化笔刷在鸿蒙系统（HarmonyOS）及搭配全大核/特定芯片架构（如小米 Pad 9 Pro 等）上的调度性能，消除大尺寸笔刷高速运笔时的卡顿与成段延迟\n- **透明画布液化残影与性能重构**: 修复透明背景画布执行液化操作时的性能衰减与像素残影，全面对齐推抹、重建、平滑、旋转、缩放等模式交互，支持 GPU 实时代理预览 (by @XuanTree in #45)\n- **参考窗口旋转吸色偏差修复**: 修复参考图旋转状态下吸色点几何坐标换算偏移的问题，并移除放大环内误导性的十字瞄准线\n- **主页搜索栏视觉与退出闪烁修复**: 重构主页项目搜索栏与筛选下拉菜单为 Morandi 风格，消除搜索退出时由历史列表瞬时反弹引起的页面闪烁 (Fixes #41)\n- **双指旋转实时吸附与平滑释放**: 双指旋转画布时实时对齐并吸附 0°、90°、180° 等标准角度，手势释放时平滑无缝过渡 (by @fisHarly0 in #43)\n- **快捷控制条贴边拖拽受限修复**: 修复竖屏状态下快捷操作条与快捷笔刷栏拖动至屏幕左上角后无法移出的问题，完善屏幕边缘防越界保护与多指手势协同冲突\n\n### 体验优化与工程调整\n- **工程复制后台异步化**: 将主页作品复制流程移至后台异步线程执行并显示平滑处理进度，避免大尺寸高图层工程复制时阻塞主界面 (by @fisHarly0 in #44)\n- **GitHub 社区模板与自动化体系升级**: 引入中英双语标准化 Issue 表单与 Pull Request 模板；部署原生标签流转机器人，自动量化 PR 变更规模 (`size/*`)、自动提取功能域与生命周期状态联动\n"
+  "body": "### 新增特性 (Features)\n- **绘画界面自由悬浮面板支持**: 顶栏、工具栏与滑块栏支持自由停靠排布（支持边缘方位与靠齐偏好设置）、拖拽配置与面板外壳透明度/边距自定义，提供画世界 Pro 风格的模块化自由排布体验\n- **悬浮面板智能同角避让与独立缩放**: 悬浮面板支持同角垂直交叉避让与独立尺寸比例调节，在平板大屏设备下默认开启并呈现无边框工作室质感；弹出面板与更多工具菜单就近跟随宿主胶囊\n- **悬浮面板布局调整对话框**: 升级为平板分栏微缩预览设计，支持可视化拖拽调整各面板停靠槽位与实时交互预览\n- **工具底部坞动态避让悬浮面板**: 液化、油漆桶、选区、渐变、变换、形状、文字排版、画面调整、Solo 模式与取色图层源面板自动检测屏幕底部悬浮停靠栏，动态抬高防重叠避让\n- **快捷图层窗口操作精简**: 合并顶部工具栏为单层紧凑结构并将辅助操作收纳至更多菜单，优化小窗显示利用率\n\n### 缺陷修复 (Bug Fixes)\n- **横竖屏旋转快捷小窗拖动卡死与重叠**: 修复屏幕旋转触发重组时快捷小窗手势闭包捕获旧屏幕尺寸导致卡在屏幕中央无法向下拖动的问题，使用配置感知动态换算边界并在 QuickBrushWindow 补齐独立拖拽手柄，加固全量快捷浮窗与参考图窗口\n- **画面调整尺寸输入框误删图层**: 修复画面调整中修改数字触发退格键被全局快捷键误判为删除图层，以及数字输入后无法删除的缺陷 (fixes #96)\n- **手写笔按键映射与长按误触发修复**: 准确对齐小米焦点/触控笔靠近笔尖书写键 (PageDown) 与截图键 (PageUp) 实体按键键码，增加长按阈值抑制与悬停退出冲销逻辑，避免按住侧键擦除抬笔或长按松开时误触发单击，未设双击动作时直接派发单击消除 320ms 判定等待延迟 (fixes #91)\n- **历史记录重做并发与缩放裁剪残留状态**: 修复画面缩放裁剪后残留重做历史导致重放旧坐标瓦片可能引发的段错误崩溃，增加并发排队操作限制防止密集点击时竞态\n- **作品回放长笔画 Redo 崩溃**: 修复作品回放重置画布时撤销步数限制淘汰底层 KisTransactionData 历史数据，导致长笔画回放执行 Redo 时触发 SIGABRT 的缺陷\n- **滑块轨道视觉抖动与毛玻璃嵌套消除**: 解除滑块面板多重 Haze 嵌套，消除拖动滑块时的背景抖动与透明度降低缺陷，滑块轨道按面板 0.6 倍透明度融合背景并采用暗度雕刻渐变与立体边框\n\n### 体验优化与工程调整\n- **32 位安装包构建分包与 16KB 页面对齐**: 支持 32 位与 64 位架构分包构建配置，全面适配 Android 16KB Page Size 内存对齐规范\n- **构建忽略配置补齐**: 将 aqtinstall.log 临时安装日志加入 .gitignore 避免污染版本库\n",
+  "architectures": {
+    "arm64-v8a": {
+      "name": "64 位 (ARM64-v8a)",
+      "badge": "主流推荐",
+      "apkName": "ReveriePaint-v1.4.10.apk",
+      "size": "90.0 MB",
+      "sizeBytes": 94380559,
+      "githubUrl": "https://github.com/LanRhyme/ReveriePaint/releases/download/v1.4.10/ReveriePaint-v1.4.10.apk",
+      "available": true
+    },
+    "armeabi-v7a": {
+      "name": "32 位 (ARMv7)",
+      "badge": "兼容旧机",
+      "apkName": "ReveriePaint-v1.4.10-armeabi-v7a.apk",
+      "size": "~92 MB",
+      "sizeBytes": 96468992,
+      "githubUrl": "https://github.com/LanRhyme/ReveriePaint/releases/download/v1.4.10/ReveriePaint-v1.4.10-armeabi-v7a.apk",
+      "available": false,
+      "note": "下个里程碑版本起正式自动随 Release 分发"
+    }
+  }
 }
