@@ -50,7 +50,7 @@ export const messages = {
       langTitle: '界面语言'
     },
     hero: {
-      eyebrow: 'Android 平板专业创作 · GPL-3.0 开源 · QQ群 729283213',
+      eyebrow: 'Android 平板专业创作 · GPL‑3.0 开源 · QQ群 729283213',
       titleLine1: '把桌面级图像内核，',
       titleLine2: '装进安卓平板',
       sub: '融合 Krita C++ 原生图像处理内核与现代化触控交互，具备 240+ 官方笔刷预设、动态稀疏瓦片图层、多协议压感手写笔专属调校与全流程事件流延时回放，让专业创作在移动端彻底摆脱妥协',
@@ -209,7 +209,7 @@ export const messages = {
         {
           num: '03',
           title: '纯粹开源基石',
-          desc: '基于 GPL-3.0 协议全量开源，自研 .revp 独立工程与笔迹事件流开放归档，代码属于全球创作者社区，永不设限、永不捆绑'
+          desc: '基于 GPL‑3.0 协议全量开源，自研 .revp 独立工程与笔迹事件流开放归档，代码属于全球创作者社区，永不设限、永不捆绑'
         }
       ],
       quote: '让复杂的技术在画布背后无声运转，把最纯粹的掌控感交还给创作者'
@@ -220,8 +220,8 @@ export const messages = {
       sub: '完全免费开源，不含任何商业广告与应用内购，随时随地开启专业创作',
       meta: [
         { k: '系统要求', v: 'Android 7.0+（API 24）' },
-        { k: '芯片架构', v: '64 位 (arm64-v8a) / 32 位 (armeabi-v7a)' },
-        { k: '开源协议', v: 'GPL-3.0 开放源码' },
+        { k: '芯片架构', v: '64 位 (arm64‑v8a) / 32 位 (armeabi‑v7a)' },
+        { k: '开源协议', v: 'GPL‑3.0 开放源码' },
         { k: '交流社群', v: 'QQ 群 729283213' }
       ],
       ways: [
@@ -252,7 +252,8 @@ export const messages = {
         }
       ],
       copyQQ: '复制群号: 729283213',
-      copiedQQ: '已复制群号 729283213'
+      copiedQQ: '已复制群号 729283213',
+      starNote: '如果 ReveriePaint 对你的创作有所帮助，欢迎在 GitHub 为项目点亮 Star'
     },
     footer: {
       tagline: 'Android 原生数字绘画',
@@ -264,9 +265,9 @@ export const messages = {
         { label: 'Mirror酱下载', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android' },
         { label: 'QQ群 729283213', href: 'https://qm.qq.com/q/729283213' },
         { label: 'Issues 反馈', href: 'https://github.com/LanRhyme/ReveriePaint/issues' },
-        { label: 'GPL-3.0 协议', href: 'https://www.gnu.org/licenses/gpl-3.0.html' }
+        { label: 'GPL‑3.0 协议', href: 'https://www.gnu.org/licenses/gpl-3.0.html' }
       ],
-      copyright: '© {year} LanRhyme · 基于 GPL-3.0 协议开源',
+      copyright: '© {year} LanRhyme · 基于 GPL‑3.0 协议开源',
       disclaimer: 'Krita 为其各自所有者的商标，本项目与 KDE 无隶属关系'
     },
     docsNav: {
@@ -300,7 +301,7 @@ export const messages = {
       langTitle: '介面語言'
     },
     hero: {
-      eyebrow: 'Android 平板專業創作 · GPL-3.0 開源 · QQ群 729283213',
+      eyebrow: 'Android 平板專業創作 · GPL‑3.0 開源 · QQ群 729283213',
       titleLine1: '把桌面級圖像核心，',
       titleLine2: '裝進安卓平板',
       sub: '融合 Krita C++ 原生圖像處理核心與現代化觸控互動，具備 240+ 官方筆刷預設、動態稀疏瓦片圖層、多協議壓感手寫筆專屬調校與全流程事件流延時回放，讓專業創作在行動端徹底擺脫妥協',
@@ -459,7 +460,7 @@ export const messages = {
         {
           num: '03',
           title: '純粹開源基石',
-          desc: '基於 GPL-3.0 協議全量開源，自研 .revp 獨立工程與筆跡事件流開放歸檔，程式碼屬於全球創作者社群，永不設限、永不捆綁'
+          desc: '基於 GPL‑3.0 協議全量開源，自研 .revp 獨立工程與筆跡事件流開放歸檔，程式碼屬於全球創作者社群，永不設限、永不捆綁'
         }
       ],
       quote: '讓複雜的技術在畫布背後無聲運轉，把最純粹的掌控感交還給創作者'
@@ -470,8 +471,8 @@ export const messages = {
       sub: '完全免費開源，不含任何商業廣告與應用內購，隨時隨地開啟專業創作',
       meta: [
         { k: '系統要求', v: 'Android 7.0+（API 24）' },
-        { k: '晶片架構', v: '64 位元 (arm64-v8a) / 32 位元 (armeabi-v7a)' },
-        { k: '開源協議', v: 'GPL-3.0 開放源碼' },
+        { k: '晶片架構', v: '64 位元 (arm64‑v8a) / 32 位元 (armeabi‑v7a)' },
+        { k: '開源協議', v: 'GPL‑3.0 開放源碼' },
         { k: '交流社群', v: 'QQ 群 729283213' }
       ],
       ways: [
@@ -502,7 +503,8 @@ export const messages = {
         }
       ],
       copyQQ: '複製群號: 729283213',
-      copiedQQ: '已複製群號 729283213'
+      copiedQQ: '已複製群號 729283213',
+      starNote: '如果 ReveriePaint 對你的創作有所幫助，歡迎在 GitHub 為專案點亮 Star'
     },
     footer: {
       tagline: 'Android 原生數位繪畫',
@@ -514,9 +516,9 @@ export const messages = {
         { label: 'Mirror醬下載', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android' },
         { label: 'QQ群 729283213', href: 'https://qm.qq.com/q/729283213' },
         { label: 'Issues 回饋', href: 'https://github.com/LanRhyme/ReveriePaint/issues' },
-        { label: 'GPL-3.0 協議', href: 'https://www.gnu.org/licenses/gpl-3.0.html' }
+        { label: 'GPL‑3.0 協議', href: 'https://www.gnu.org/licenses/gpl-3.0.html' }
       ],
-      copyright: '© {year} LanRhyme · 基於 GPL-3.0 協議開源',
+      copyright: '© {year} LanRhyme · 基於 GPL‑3.0 協議開源',
       disclaimer: 'Krita 為其各自所有者的商標，本專案與 KDE 無隸屬關係'
     },
     docsNav: {
@@ -550,7 +552,7 @@ export const messages = {
       langTitle: 'Language'
     },
     hero: {
-      eyebrow: 'Android Tablet Painting · GPL-3.0 Open Source · QQ Group 729283213',
+      eyebrow: 'Android Tablet Painting · GPL‑3.0 Open Source · QQ Group 729283213',
       titleLine1: 'Desktop-class raster engine,',
       titleLine2: 'built for Android tablets',
       sub: 'Powered by the Krita C++ native raster engine with modern touch interactions, featuring 240+ official brush presets, dynamic sparse-tile layers, multi-protocol stylus tuning, and event-stream time-lapse replay, bringing uncompromised professional creation to mobile devices',
@@ -709,7 +711,7 @@ export const messages = {
         {
           num: '03',
           title: 'Pure Open-Source Foundation',
-          desc: 'Fully open source under GPL-3.0 with open .revp project files and event streams. Belonging to the global creative community, never locked in'
+          desc: 'Fully open source under GPL‑3.0 with open .revp project files and event streams. Belonging to the global creative community, never locked in'
         }
       ],
       quote: 'Letting complex technology run silently behind the canvas, handing pure creative control back to the artist'
@@ -720,8 +722,8 @@ export const messages = {
       sub: 'Completely free and open-source, without ads or in-app purchases. Professional digital painting anywhere, anytime',
       meta: [
         { k: 'OS Requirement', v: 'Android 7.0+ (API 24)' },
-        { k: 'Architecture', v: '64-bit (arm64-v8a) & 32-bit (armeabi-v7a)' },
-        { k: 'License', v: 'GPL-3.0 Open Source' },
+        { k: 'Architecture', v: '64-bit (arm64‑v8a) & 32-bit (armeabi‑v7a)' },
+        { k: 'License', v: 'GPL‑3.0 Open Source' },
         { k: 'Community', v: 'QQ Group 729283213' }
       ],
       ways: [
@@ -752,7 +754,8 @@ export const messages = {
         }
       ],
       copyQQ: 'Copy Group ID: 729283213',
-      copiedQQ: 'Copied Group ID 729283213'
+      copiedQQ: 'Copied Group ID 729283213',
+      starNote: 'If ReveriePaint has been useful to your work, a Star on GitHub is appreciated'
     },
     footer: {
       tagline: 'Native Android Digital Painting',
@@ -764,9 +767,9 @@ export const messages = {
         { label: 'MirrorChyan Download', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android' },
         { label: 'QQ Group 729283213', href: 'https://qm.qq.com/q/729283213' },
         { label: 'Issues & Feedback', href: 'https://github.com/LanRhyme/ReveriePaint/issues' },
-        { label: 'GPL-3.0 License', href: 'https://www.gnu.org/licenses/gpl-3.0.html' }
+        { label: 'GPL‑3.0 License', href: 'https://www.gnu.org/licenses/gpl-3.0.html' }
       ],
-      copyright: '© {year} LanRhyme · Open sourced under GPL-3.0',
+      copyright: '© {year} LanRhyme · Open sourced under GPL‑3.0',
       disclaimer: 'Krita is a trademark of its respective owners; this project is not affiliated with KDE'
     },
     docsNav: {
@@ -800,7 +803,7 @@ export const messages = {
       langTitle: '表示言語'
     },
     hero: {
-      eyebrow: 'Android タブレット プロ制作 · GPL-3.0 オープンソース · QQグループ 729283213',
+      eyebrow: 'Android タブレット プロ制作 · GPL‑3.0 オープンソース · QQグループ 729283213',
       titleLine1: 'デスクトップ級の画像処理エンジンを、',
       titleLine2: 'Android タブレットへ',
       sub: 'Krita C++ ネイティブ画像処理エンジンと最新のタッチ操作を融合。240以上の公式ブラシプリセット、動的スパースタイルレイヤー、各社スタイラスペン対応の筆圧調整、イベント記録によるタイムラプス再生を備え、妥協のないプロの制作環境を実現します',
@@ -959,7 +962,7 @@ export const messages = {
         {
           num: '03',
           title: '揺るぎないオープンソース基盤',
-          desc: 'GPL-3.0 ライセンスに基づく完全オープンソース。独自形式 .revp とストロークイベントを公開し、特定の囲い込みを行わない自由な創作を支えます'
+          desc: 'GPL‑3.0 ライセンスに基づく完全オープンソース。独自形式 .revp とストロークイベントを公開し、特定の囲い込みを行わない自由な創作を支えます'
         }
       ],
       quote: '複雑な技術はキャンバスの裏側に隠し、描く歓びと確かな手応えを創作者へ'
@@ -970,8 +973,8 @@ export const messages = {
       sub: '完全無料かつオープンソース。広告や課金は一切なし、いつでもプロレベルの創作を',
       meta: [
         { k: 'システム要件', v: 'Android 7.0+（API 24）' },
-        { k: 'アーキテクチャ', v: '64-bit (arm64-v8a) / 32-bit (armeabi-v7a)' },
-        { k: 'ライセンス', v: 'GPL-3.0 オープンソース' },
+        { k: 'アーキテクチャ', v: '64-bit (arm64‑v8a) / 32-bit (armeabi‑v7a)' },
+        { k: 'ライセンス', v: 'GPL‑3.0 オープンソース' },
         { k: 'コミュニティ', v: 'QQ グループ 729283213' }
       ],
       ways: [
@@ -1002,7 +1005,8 @@ export const messages = {
         }
       ],
       copyQQ: 'グループ番号をコピー: 729283213',
-      copiedQQ: 'コピーしました: 729283213'
+      copiedQQ: 'コピーしました: 729283213',
+      starNote: 'ReveriePaint が制作の役に立ったら、GitHub での Star を歓迎します'
     },
     footer: {
       tagline: 'Android ネイティブ デジタルペイント',
@@ -1014,9 +1018,9 @@ export const messages = {
         { label: 'MirrorChyan ダウンロード', href: 'https://mirrorchyan.com/zh/projects?rid=ReveriePaint&os=android' },
         { label: 'QQグループ 729283213', href: 'https://qm.qq.com/q/729283213' },
         { label: 'フィードバック', href: 'https://github.com/LanRhyme/ReveriePaint/issues' },
-        { label: 'GPL-3.0 ライセンス', href: 'https://www.gnu.org/licenses/gpl-3.0.html' }
+        { label: 'GPL‑3.0 ライセンス', href: 'https://www.gnu.org/licenses/gpl-3.0.html' }
       ],
-      copyright: '© {year} LanRhyme · GPL-3.0 ライセンスに基づき公開',
+      copyright: '© {year} LanRhyme · GPL‑3.0 ライセンスに基づき公開',
       disclaimer: 'Krita は各権利者の商標であり、本プロジェクトは KDE と提携関係にあるものではありません'
     },
     docsNav: {

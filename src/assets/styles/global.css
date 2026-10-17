@@ -28,13 +28,17 @@ body {
 
 main {
   position: relative;
-  z-index: 5; /* 确保所有文本、按钮与主内容位于背景 3D/2D 画布的前景 */
+  z-index: 5;
 }
 
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
   font-weight: 500;
   letter-spacing: -0.015em;
+  /* 中文默认可以在任意字间断行，标题里容易把词切开（"不 / 妥协"）。
+     keep-all 让断行优先落在标点处，实在放不下再按字断。 */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 p {
@@ -115,10 +119,9 @@ button:focus-visible {
 }
 
 /* ════════════════════════════════════════════════
-   共用工具类
+   版心与栅格
+   画册感的来源：一切对齐到同一套栏线，图版可以出血到屏幕边缘
    ════════════════════════════════════════════════ */
-
-/* 版心容器 */
 .shell {
   width: 100%;
   max-width: var(--shell);
@@ -126,119 +129,286 @@ button:focus-visible {
   padding-inline: var(--gutter);
 }
 
-/* 章节大标题 */
+/* 12 栏栅格：所有分栏都挂在这套栏线上 */
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+}
+
+/* 版心内的一切元素都落在这条边线之内，不做出血 */
+
+/* ════════════════════════════════════════════════
+   文字层级
+   ════════════════════════════════════════════════ */
 .h-display {
-  font-size: clamp(2rem, 5.4vw, 3.75rem);
-  line-height: 1.14;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.25rem, 5vw, 4.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
   font-weight: 500;
 }
 
 .h-section {
-  font-size: clamp(1.5rem, 3.2vw, 2.25rem);
-  line-height: 1.25;
-  letter-spacing: -0.022em;
+  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
   font-weight: 500;
 }
 
-/* 等宽小标签 */
+.h-block {
+  font-size: clamp(1.375rem, 2.1vw, 1.875rem);
+  line-height: 1.32;
+  letter-spacing: -0.024em;
+  font-weight: 500;
+}
+
+/* 等宽小标签：所有页边注、图版号、规格都用它 */
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ink-soft-2);
+  line-height: 1.5;
 }
 
-/* 正文段落 */
 .lede {
-  font-size: clamp(1rem, 1.5vw, 1.1875rem);
-  line-height: 1.85;
+  font-size: clamp(0.9375rem, 1.15vw, 1.0625rem);
+  line-height: 1.9;
   color: var(--ink-mid);
 }
 
-/* 衬线引文（用于叙事段落，呼应手绘草稿的气质） */
+.body-text {
+  font-size: 0.90625rem;
+  line-height: 1.9;
+  color: var(--ink-mid);
+}
+
 .quote-serif {
   font-family: var(--font-serif);
   font-weight: 400;
-  line-height: 1.6;
-  letter-spacing: 0.005em;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
 }
 
-/* 细分隔线 */
 .rule {
   height: 1px;
-  background: var(--line-faint);
+  background: var(--line);
   border: 0;
 }
 
-/* 铅笔排线纹理（手绘感底纹） */
-.sketch-tex {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.045;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-  mix-blend-mode: multiply;
+/* ════════════════════════════════════════════════
+   章节头：编号在左，标题在左栏，导语落在右栏并底对齐
+   ─────────────────────────────────────────────── */
+.sec-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  align-items: end;
+  border-top: 1px solid var(--ink);
+  padding-top: 18px;
+  margin-bottom: clamp(40px, 5.5vh, 72px);
 }
 
-/* 入场动画基类：由 IntersectionObserver 添加 .is-in */
+/* 页眉线：编号 + 栏目名，右端接一条发丝线 */
+.sec-rail {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: clamp(20px, 3vh, 34px);
+}
+.sec-num {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  color: var(--ochre);
+}
+.sec-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft-2);
+}
+.sec-rail::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.sec-head .h-section {
+  grid-column: 1 / 8;
+  max-width: 16em;
+}
+
+.sec-sub {
+  grid-column: 8 / -1;
+  max-width: 30em;
+  margin-bottom: 0.4em;
+  /* 导语通常只有两行，均分比"末行两个字"好看 */
+  text-wrap: balance;
+}
+
+/* ════════════════════════════════════════════════
+   图版：图片 + 角标 + 编号说明
+   ════════════════════════════════════════════════ */
+.plate {
+  position: relative;
+}
+/* 四角裁切标记，印刷打样里的那一刻手感 */
+.plate::before {
+  content: '';
+  position: absolute;
+  inset: -9px;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--ink-ghost), var(--ink-ghost)),
+    linear-gradient(var(--ink-ghost), var(--ink-ghost)),
+    linear-gradient(var(--ink-ghost), var(--ink-ghost)),
+    linear-gradient(var(--ink-ghost), var(--ink-ghost)),
+    linear-gradient(var(--ink-ghost), var(--ink-ghost)),
+    linear-gradient(var(--ink-ghost), var(--ink-ghost)),
+    linear-gradient(var(--ink-ghost), var(--ink-ghost)),
+    linear-gradient(var(--ink-ghost), var(--ink-ghost));
+  background-repeat: no-repeat;
+  background-size:
+    11px 1px, 1px 11px,
+    11px 1px, 1px 11px,
+    11px 1px, 1px 11px,
+    11px 1px, 1px 11px;
+  background-position:
+    left top, left top,
+    right top, right top,
+    left bottom, left bottom,
+    right bottom, right bottom;
+  opacity: 0.85;
+}
+
+.plate-img {
+  position: relative;
+  overflow: hidden;
+  background: var(--ui-900);
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(20, 22, 26, 0.07);
+}
+.plate-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.plate-cap {
+  margin-top: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft-2);
+  text-transform: uppercase;
+}
+.plate-cap b {
+  font-weight: 400;
+  color: var(--ochre);
+}
+
+/* ════════════════════════════════════════════════
+   深色带
+   ════════════════════════════════════════════════ */
+.band-dark {
+  position: relative;
+  background: var(--ui-900);
+  color: var(--ui-text);
+}
+.band-dark .h-section,
+.band-dark h3 {
+  color: #f4f3f0;
+}
+.band-dark .eyebrow,
+.band-dark .sec-label,
+.band-dark .sec-num {
+  color: var(--ui-text-dim);
+}
+.band-dark .sec-num {
+  color: #c08a6f;
+}
+.band-dark .plate-cap b {
+  color: #c08a6f;
+}
+.band-dark .sec-rail::after {
+  background: rgba(255, 255, 255, 0.16);
+}
+.band-dark .sec-head {
+  border-top-color: rgba(255, 255, 255, 0.9);
+}
+.band-dark .lede,
+.band-dark .sec-sub,
+.band-dark .body-text {
+  color: var(--ui-text-dim);
+}
+
+/* ════════════════════════════════════════════════
+   入场动画：全站唯一的一套 reveal
+   ════════════════════════════════════════════════ */
 .reveal {
   opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 0.72s var(--ease-out-expo), transform 0.72s var(--ease-out-expo);
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity var(--dur-slow) var(--ease-out-expo) var(--d, 0ms),
+    transform var(--dur-slow) var(--ease-out-expo) var(--d, 0ms);
   will-change: opacity, transform;
 }
 .reveal.is-in {
   opacity: 1;
   transform: none;
+  will-change: auto;
 }
 
-/* ── Lusion 级动效系统：剧场级切分文本与视差 ──────── */
+.reveal-fade {
+  opacity: 0;
+  transition: opacity var(--dur-slow) ease var(--d, 0ms);
+}
+.reveal-fade.is-in {
+  opacity: 1;
+}
+
+/* 图版入场：轻微收拢，像把一张图放到台面上 */
+.plate-settle {
+  opacity: 0;
+  transform: scale(1.015);
+  transition:
+    opacity 1s var(--ease-out-expo) var(--d, 0ms),
+    transform 1.2s var(--ease-out-expo) var(--d, 0ms);
+}
+.plate-settle.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* 标题按行遮罩上移 */
 .line-mask {
   display: block;
   overflow: hidden;
   vertical-align: top;
-}
-.line-mask-inline {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
 }
 .line-inner {
   display: block;
-  transform: translateY(115%);
-  filter: blur(8px);
-  opacity: 0;
-  transition: transform 0.9s var(--ease-out-expo),
-              filter 0.9s ease,
-              opacity 0.7s ease;
-  will-change: transform, filter, opacity;
-}
-.line-mask-inline .line-inner {
-  display: inline-block;
+  transform: translate3d(0, 110%, 0);
+  transition: transform 0.95s var(--ease-out-expo) var(--d, 0ms);
+  will-change: transform;
 }
 .is-in .line-inner,
 .ready .line-inner,
 .is-in.line-inner {
-  transform: translateY(0);
-  filter: blur(0px);
-  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
-.line-delay-1 { transition-delay: 0.08s !important; }
-.line-delay-2 { transition-delay: 0.16s !important; }
-.line-delay-3 { transition-delay: 0.24s !important; }
-.line-delay-4 { transition-delay: 0.32s !important; }
-
-/* 深度视差容器基类 */
-.parallax-wrap {
-  perspective: 1200px;
-  transform-style: preserve-3d;
-}
-
-/* 屏幕阅读器可见 */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -251,32 +421,46 @@ button:focus-visible {
   border: 0;
 }
 
-/* ── 触控设备专属微交互（手机与平板） ─────────────── */
+/* ── 触控设备：按压反馈 ─────────────────────────── */
 @media (hover: none) and (pointer: coarse) {
   button,
   .btn,
-  .way-cta,
+  .way-link,
   .nav-link,
   .pill,
-  .pillar-card,
-  .rest-item {
+  .pillar,
+  .rest-item,
+  .c-item,
+  .way {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
 
   button:active,
   .btn:active,
-  .way-cta:active {
-    opacity: 0.82;
-    transition: opacity 0.1s ease;
-  }
-
   .nav-link:active,
-  .pillar-card:active,
+  .pillar:active,
   .rest-item:active,
   .pill:active {
-    opacity: 0.85;
+    opacity: 0.82;
     transition: opacity 0.1s ease;
   }
 }
 
+/* ── 窄屏：章节头改为单列 ───────────────────────── */
+@media (max-width: 860px) {
+  .sec-head {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 18px;
+  }
+  .sec-head .h-section,
+  .sec-sub {
+    grid-column: 1;
+  }
+  .sec-head .h-section {
+    max-width: 100%;
+  }
+  .sec-sub {
+    margin-bottom: 0;
+  }
+}

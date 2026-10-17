@@ -12,8 +12,18 @@ import { initReveal } from './composables/useReveal.js'
 import { initGsapScroll } from './composables/useGsap.js'
 
 onMounted(() => {
-  initReveal()
-  initGsapScroll()
+  // 两个初始化互不牵连：任一挂掉都不该让整页内容停在不可见状态
+  try {
+    initReveal()
+  } catch (err) {
+    console.error('[reveal] init failed', err)
+    document.querySelectorAll('.reveal, .reveal-fade').forEach((el) => el.classList.add('is-in'))
+  }
+  try {
+    initGsapScroll()
+  } catch (err) {
+    console.error('[gsap] init failed', err)
+  }
 })
 </script>
 

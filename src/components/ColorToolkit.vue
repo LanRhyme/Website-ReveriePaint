@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed } from 'vue'
 import { gsap, isFineHoverPointer } from '../composables/useGsap.js'
 import { useI18n } from '../composables/useI18n.js'
 import wheel from '../assets/shots/ui-wheel.webp'
@@ -14,7 +14,8 @@ const colors = computed(() => {
   const list = t('toolkit.colors') || []
   return list.map((item, idx) => ({
     ...item,
-    shot: colorShots[idx]
+    shot: colorShots[idx],
+    num: String(idx + 9).padStart(2, '0')
   }))
 })
 
@@ -22,154 +23,112 @@ const specs = computed(() => t('toolkit.specs') || [])
 
 const activeColorIndex = ref(0)
 const colorRowRef = ref(null)
-const toolkitRef = ref(null)
-let ctx = null
 
 function onColorScroll() {
   if (!colorRowRef.value) return
   const el = colorRowRef.value
-  const itemWidth = el.scrollWidth / colors.length
+  const itemWidth = el.scrollWidth / colors.value.length
   activeColorIndex.value = Math.min(
-    colors.length - 1,
+    colors.value.length - 1,
     Math.max(0, Math.round(el.scrollLeft / itemWidth))
   )
 }
 
 function scrollToColor(index) {
-  if (!colorRowRef.value) return
   const el = colorRowRef.value
-  const items = el.querySelectorAll('.c-item')
-  if (items[index]) {
-    items[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
-  }
+  if (!el) return
+  el.querySelectorAll('.c-item')[index]?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest',
+    inline: 'center'
+  })
 }
 
-function onCardMouseMove(e) {
+function onPlateMouseMove(e) {
   if (!isFineHoverPointer(e)) return
-  const card = e.currentTarget
-  const rect = card.getBoundingClientRect()
+  const el = e.currentTarget
+  const rect = el.getBoundingClientRect()
   const x = (e.clientX - rect.left) / rect.width - 0.5
   const y = (e.clientY - rect.top) / rect.height - 0.5
-  gsap.to(card, {
-    rotationY: x * 7,
-    rotationX: -y * 7,
-    duration: 0.4,
+  gsap.to(el, {
+    rotationY: x * 4,
+    rotationX: -y * 4,
+    duration: 0.55,
     ease: 'power2.out',
-    transformPerspective: 900
+    transformPerspective: 1200
   })
 }
 
-function onCardMouseLeave(e) {
+function onPlateMouseLeave(e) {
+  if (!e?.currentTarget) return
   if (!isFineHoverPointer(e)) {
-    if (e?.currentTarget) gsap.set(e.currentTarget, { rotationY: 0, rotationX: 0 })
+    gsap.set(e.currentTarget, { rotationY: 0, rotationX: 0 })
     return
   }
-  gsap.to(e.currentTarget, {
-    rotationY: 0,
-    rotationX: 0,
-    duration: 0.55,
-    ease: 'power2.out'
-  })
+  gsap.to(e.currentTarget, { rotationY: 0, rotationX: 0, duration: 0.8, ease: 'power3.out' })
 }
-
-onMounted(() => {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (reduce || !toolkitRef.value) return
-
-  ctx = gsap.context(() => {
-    // 桌面端四张调色盘卡片：GSAP 阶梯飞入与滚动视差
-    const cards = toolkitRef.value.querySelectorAll('.c-item')
-    if (cards.length) {
-      gsap.from(cards, {
-        opacity: 0,
-        y: 45,
-        rotationZ: (i) => (i % 2 === 0 ? -1.5 : 1.5),
-        duration: 0.9,
-        stagger: 0.12,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: colorRowRef.value,
-          start: 'top 85%',
-          toggleActions: 'play none none none'
-        }
-      })
-    }
-
-    const items = toolkitRef.value.querySelectorAll('.rest-item')
-    if (items.length) {
-      gsap.from(items, {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
-        stagger: 0.08,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: toolkitRef.value.querySelector('.rest-list'),
-          start: 'top 86%',
-          toggleActions: 'play none none none'
-        }
-      })
-    }
-  }, toolkitRef.value)
-})
-
-onUnmounted(() => {
-  ctx?.revert()
-})
 </script>
 
 <template>
-  <section id="toolkit" ref="toolkitRef" class="toolkit">
-    <div class="shell">
-      <header class="sec-head reveal">
-        <p class="eyebrow">{{ t('toolkit.eyebrow') }}</p>
-        <h2 class="h-section">
-          <span class="line-mask"><span class="line-inner">{{ t('toolkit.title') }}</span></span>
-        </h2>
-        <p class="sec-sub lede">{{ t('toolkit.sub') }}</p>
-      </header>
-
-      <!-- ── 色彩四图 ───────────────────────── -->
-      <div ref="colorRowRef" class="color-row" @scroll.passive="onColorScroll">
-        <figure
-          v-for="(c, i) in colors"
-          :key="c.title"
-          class="c-item reveal"
-          data-cursor="COLOR"
-          :style="{ transitionDelay: `${i * 70}ms` }"
-        >
-          <div
-            class="c-shot"
-            @mousemove="onCardMouseMove"
-            @mouseleave="onCardMouseLeave"
-          >
-            <img :src="c.shot" :alt="c.alt" loading="lazy" decoding="async" />
+  <section id="toolkit" class="toolkit">
+    <!-- 深色带：整页最暗的一段，取色器图版直接放进去 -->
+    <div class="band-dark">
+      <div class="shell band-inner">
+        <header class="sec-head reveal">
+          <div class="sec-rail">
+            <span class="sec-num">02</span>
+            <span class="sec-label">{{ t('toolkit.eyebrow') }}</span>
           </div>
-          <figcaption>
-            <h3>{{ c.title }}</h3>
-            <p>{{ c.desc }}</p>
-          </figcaption>
-        </figure>
-      </div>
+          <h2 class="h-section">
+            <span class="line-mask"><span class="line-inner" style="--d: 70ms">{{ t('toolkit.title') }}</span></span>
+          </h2>
+          <p class="sec-sub lede">{{ t('toolkit.sub') }}</p>
+        </header>
 
-      <!-- 手机端轮播指示点 -->
-      <div class="mobile-dots" aria-hidden="true">
-        <button
-          v-for="(_, i) in colors"
-          :key="i"
-          type="button"
-          class="dot"
-          :class="{ active: activeColorIndex === i }"
-          :aria-label="`切换到第 ${i + 1} 项色彩功能`"
-          @click="scrollToColor(i)"
-        ></button>
-      </div>
+        <div ref="colorRowRef" class="color-row" @scroll.passive="onColorScroll">
+          <figure
+            v-for="(c, i) in colors"
+            :key="c.title"
+            class="c-item reveal"
+            :style="{ '--d': `${i * 90}ms` }"
+          >
+            <div class="plate" @mousemove="onPlateMouseMove" @mouseleave="onPlateMouseLeave">
+              <div class="plate-img c-shot">
+                <img :src="c.shot" :alt="c.alt" loading="lazy" decoding="async" />
+              </div>
+            </div>
+            <figcaption>
+              <p class="plate-cap"><b>PL. {{ c.num }}</b></p>
+              <h3>{{ c.title }}</h3>
+              <p class="c-desc">{{ c.desc }}</p>
+            </figcaption>
+          </figure>
+        </div>
 
-      <!-- ── 全架构特性矩阵 ──────────────────── -->
+        <div class="mobile-dots" aria-hidden="true">
+          <button
+            v-for="(_, i) in colors"
+            :key="i"
+            type="button"
+            class="dot"
+            :class="{ active: activeColorIndex === i }"
+            :aria-label="`切换到第 ${i + 1} 项色彩功能`"
+            @click="scrollToColor(i)"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 回到浅色：架构矩阵 -->
+    <div class="shell">
       <div class="rest reveal">
-        <p class="eyebrow">{{ t('toolkit.specsEyebrow') }}</p>
+        <div class="rest-head">
+          <span class="sec-num">02 / B</span>
+          <span class="sec-label">{{ t('toolkit.specsEyebrow') }}</span>
+          <span class="rest-line" aria-hidden="true"></span>
+        </div>
         <div class="rest-list">
-          <div v-for="s in specs" :key="s.title" class="rest-item" data-cursor="SPEC">
+          <div v-for="s in specs" :key="s.title" class="rest-item">
             <h4>{{ s.title }}</h4>
             <p>{{ s.desc }}</p>
           </div>
@@ -181,108 +140,135 @@ onUnmounted(() => {
 
 <style scoped>
 .toolkit {
-  padding: clamp(68px, 10vh, 116px) 0;
+  position: relative;
 }
 
-.sec-head {
-  max-width: 44ch;
-  margin-bottom: clamp(40px, 6vh, 58px);
+.band-dark {
+  padding-block: var(--sec-air);
+  background:
+    radial-gradient(120% 90% at 50% -10%, #22262c 0%, #17191c 58%, #141619 100%);
 }
-.sec-head .h-section {
-  margin-top: 14px;
+.band-inner {
+  position: relative;
 }
 
-/* ── 色彩四图 ─────────────────────────────── */
+/* 深色带里的角标改成半透明白 */
+.c-item .plate::before {
+  filter: invert(1);
+  opacity: 0.22;
+}
+
+/* ── 四张色彩图版 ─────────────────────────── */
 .color-row {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(16px, 2.2vw, 26px);
+  column-gap: var(--col-gap);
+}
+
+.c-item {
+  display: flex;
+  flex-direction: column;
 }
 
 .c-shot {
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--ui-900);
-  border: 1px solid rgba(20, 22, 26, 0.14);
-  box-shadow: var(--shadow-m);
-  aspect-ratio: 3 / 4.2;
-  border-radius: 18px;
-  overflow: hidden;
-  background: var(--ui-900);
-  border: 1px solid rgba(20, 22, 26, 0.08);
-  box-shadow: 0 16px 40px rgba(20, 22, 26, 0.1);
-  transform-style: preserve-3d;
-  will-change: transform;
-  transition: box-shadow 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
+  aspect-ratio: 3 / 4.6;
+  background: #101215;
 }
 .c-shot img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top center;
-  transition: transform 0.8s var(--ease-out-expo);
+  transition: transform var(--dur-slow) var(--ease-out-expo);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .c-item:hover .c-shot {
-    box-shadow: 0 24px 60px rgba(20, 22, 26, 0.16);
-  }
   .c-item:hover .c-shot img {
-    transform: scale(1.035);
+    transform: scale(1.025);
+  }
+  .c-item:hover h3 {
+    color: #fff;
   }
 }
 
 .c-item figcaption {
   margin-top: 16px;
 }
+.c-item .plate-cap {
+  color: var(--ui-text-dim);
+  margin-bottom: 8px;
+}
 .c-item h3 {
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   letter-spacing: -0.012em;
+  color: #edecea;
+  transition: color var(--dur-fast);
 }
-.c-item figcaption p {
+.c-desc {
   margin-top: 8px;
-  font-size: 0.84375rem;
-  line-height: 1.78;
-  color: var(--ink-mid);
-}
-.c-item abbr {
-  text-decoration: none;
-  border-bottom: 1px dotted var(--ink-ghost);
-  cursor: help;
+  font-size: 0.8125rem;
+  line-height: 1.8;
+  color: var(--ui-text-dim);
 }
 
-/* ── 清单 ─────────────────────────────────── */
+/* ── 手机端指示点 ─────────────────────────── */
+.mobile-dots {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  margin-top: 28px;
+}
+.mobile-dots .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: width 0.35s var(--ease-out-expo), background 0.3s;
+}
+.mobile-dots .dot.active {
+  width: 22px;
+  background: #fff;
+}
+
+/* ── 架构矩阵（浅色） ─────────────────────── */
 .rest {
-  margin-top: clamp(56px, 8.6vh, 92px);
-  padding-top: clamp(38px, 5.6vh, 54px);
-  border-top: 1px solid var(--line-faint);
+  padding-top: var(--sec-air);
+  padding-bottom: var(--sec-air);
+}
+
+.rest-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+.rest-line {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
 }
 
 .rest-list {
-  margin-top: 24px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--line-faint);
-  border: 1px solid var(--line-faint);
-  border-radius: 12px;
-  overflow: hidden;
+  column-gap: var(--col-gap);
+  row-gap: 0;
 }
 .rest-item {
-  background: var(--card);
-  padding: 24px 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: background 0.35s ease, transform 0.35s var(--ease-out-expo);
+  padding-block: 24px;
+  border-top: 1px solid var(--line);
 }
-
-@media (hover: hover) and (pointer: fine) {
-  .rest-item:hover {
-    background: rgba(255, 255, 255, 0.85);
-    transform: translateY(-2px);
-  }
+/* 三列时，每列第一项的线由父级提供，避免双线 */
+.rest-list .rest-item:nth-child(-n + 3) {
+  border-top: 1px solid var(--ink);
+}
+.rest-item + .rest-item {
+  border-left: 0;
 }
 .rest-item h4 {
   font-size: 0.9375rem;
@@ -291,62 +277,42 @@ onUnmounted(() => {
   letter-spacing: -0.01em;
 }
 .rest-item p {
-  font-size: 0.875rem;
-  line-height: 1.78;
+  margin-top: 10px;
+  font-size: 0.84375rem;
+  line-height: 1.85;
   color: var(--ink-mid);
 }
 
-.mobile-dots {
-  display: none;
-  justify-content: center;
-  align-items: center;
-  gap: 7px;
-  margin-top: 22px;
-}
-.mobile-dots .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--line-strong);
-  opacity: 0.35;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: width 0.35s var(--ease-out-expo), opacity 0.35s, background 0.35s;
-}
-.mobile-dots .dot.active {
-  width: 22px;
-  opacity: 1;
-  background: var(--ink);
+@media (max-width: 1024px) {
+  .rest-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .rest-list .rest-item:nth-child(-n + 3) {
+    border-top: 1px solid var(--line);
+  }
+  .rest-list .rest-item:nth-child(-n + 2) {
+    border-top: 1px solid var(--ink);
+  }
 }
 
 @media (max-width: 980px) {
-  .toolkit {
-    padding: clamp(52px, 8vh, 96px) 0;
-  }
   .color-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 26px 20px;
-  }
-  .rest-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 20px;
   }
 }
 
 @media (max-width: 680px) {
-  .toolkit {
-    padding: clamp(44px, 7vh, 72px) 0;
-  }
-  .sec-head {
-    margin-bottom: 28px;
+  .band-dark {
+    padding: 48px 0 52px;
   }
   .color-row {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    gap: 16px;
-    padding-block: 8px 14px;
+    gap: 14px;
+    padding-block: 4px 8px;
     margin-inline: calc(var(--gutter) * -1);
     padding-inline: var(--gutter);
     scrollbar-width: none;
@@ -355,25 +321,27 @@ onUnmounted(() => {
     display: none;
   }
   .c-item {
-    flex: 0 0 clamp(240px, 78vw, 300px);
+    flex: 0 0 clamp(232px, 76vw, 300px);
     scroll-snap-align: center;
   }
   .mobile-dots {
     display: flex;
   }
   .rest {
-    margin-top: clamp(40px, 6vh, 60px);
-    padding-top: clamp(28px, 4vh, 40px);
+    padding-top: 44px;
+    padding-bottom: 56px;
   }
-}
-
-@media (max-width: 640px) {
   .rest-list {
     grid-template-columns: minmax(0, 1fr);
   }
+  .rest-list .rest-item {
+    border-top: 1px solid var(--line);
+  }
+  .rest-list .rest-item:first-child {
+    border-top: 1px solid var(--ink);
+  }
   .rest-item {
-    padding: 18px 20px;
-    gap: 8px;
+    padding-block: 20px;
   }
 }
 </style>

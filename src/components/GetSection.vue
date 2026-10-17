@@ -1,101 +1,48 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed } from 'vue'
 import { gsap, isFineHoverPointer } from '../composables/useGsap.js'
 import { useI18n } from '../composables/useI18n.js'
 
 const { t } = useI18n()
 const copied = ref(false)
 const getRef = ref(null)
-let ctx = null
 
 function copyQQ(e) {
-  if (navigator?.clipboard?.writeText) {
-    navigator.clipboard.writeText('729283213')
-    copied.value = true
-    if (e?.currentTarget) {
-      gsap.fromTo(
-        e.currentTarget,
-        { scale: 0.92 },
-        { scale: 1, duration: 0.4, ease: 'back.out(2.5)' }
-      )
-    }
-    setTimeout(() => (copied.value = false), 2200)
+  if (!navigator?.clipboard?.writeText) return
+  navigator.clipboard.writeText('729283213')
+  copied.value = true
+  if (e?.currentTarget) {
+    gsap.fromTo(e.currentTarget, { scale: 0.98 }, { scale: 1, duration: 0.4, ease: 'back.out(2.5)' })
   }
+  setTimeout(() => (copied.value = false), 2200)
 }
 
-function onMagneticMouseMove(e) {
+function onLinkMouseMove(e) {
   if (!isFineHoverPointer(e)) return
-  const btn = e.currentTarget
-  const rect = btn.getBoundingClientRect()
+  const el = e.currentTarget
+  const rect = el.getBoundingClientRect()
   const dx = e.clientX - rect.left - rect.width / 2
-  const dy = e.clientY - rect.top - rect.height / 2
-  gsap.to(btn, { x: dx * 0.18, y: dy * 0.18, duration: 0.3, ease: 'power1.out' })
+  gsap.to(el, { x: dx * 0.04, duration: 0.3, ease: 'power2.out' })
 }
 
-function onMagneticMouseLeave(e) {
+function onLinkMouseLeave(e) {
+  if (!e?.currentTarget) return
   if (!isFineHoverPointer(e)) {
-    if (e?.currentTarget) gsap.set(e.currentTarget, { x: 0, y: 0 })
+    gsap.set(e.currentTarget, { x: 0 })
     return
   }
-  gsap.to(e.currentTarget, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' })
+  gsap.to(e.currentTarget, { x: 0, duration: 0.5, ease: 'elastic.out(1, 0.6)' })
 }
 
 const meta = computed(() => t('get.meta') || [])
-
 const ways = computed(() => {
   const list = t('get.ways') || []
   return list.map((w, idx) => ({
     ...w,
     primary: idx === 0,
     isQQ: idx === 1,
-    links: (w.links || []).map((l, lIdx) => ({
-      ...l,
-      primary: idx === 0 && lIdx === 0
-    }))
+    num: String(idx + 1).padStart(2, '0')
   }))
-})
-
-onMounted(() => {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (reduce || !getRef.value) return
-
-  ctx = gsap.context(() => {
-    const metaItems = getRef.value.querySelectorAll('.meta-item')
-    if (metaItems.length) {
-      gsap.from(metaItems, {
-        opacity: 0,
-        y: 16,
-        duration: 0.55,
-        stagger: 0.07,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: getRef.value.querySelector('.meta'),
-          start: 'top 88%',
-          toggleActions: 'play none none none'
-        }
-      })
-    }
-
-    const wayCards = getRef.value.querySelectorAll('.way')
-    if (wayCards.length) {
-      gsap.from(wayCards, {
-        opacity: 0,
-        y: 40,
-        duration: 0.8,
-        stagger: 0.12,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: getRef.value.querySelector('.ways'),
-          start: 'top 85%',
-          toggleActions: 'play none none none'
-        }
-      })
-    }
-  }, getRef.value)
-})
-
-onUnmounted(() => {
-  ctx?.revert()
 })
 </script>
 
@@ -103,10 +50,14 @@ onUnmounted(() => {
   <section id="get" ref="getRef" class="get">
     <div class="shell">
       <header class="sec-head reveal">
-        <p class="eyebrow">{{ t('get.eyebrow') }}</p>
+        <div class="sec-rail">
+          <span class="sec-num">04</span>
+          <span class="sec-label">{{ t('get.eyebrow') }}</span>
+        </div>
         <h2 class="h-section">
-          <span class="line-mask"><span class="line-inner">{{ t('get.title') }}</span></span>
+          <span class="line-mask"><span class="line-inner" style="--d: 70ms">{{ t('get.title') }}</span></span>
         </h2>
+        <p class="sec-sub lede">{{ t('get.sub') }}</p>
       </header>
 
       <dl class="meta reveal">
@@ -119,44 +70,38 @@ onUnmounted(() => {
       <div class="ways">
         <article
           v-for="(w, i) in ways"
-          :key="w.title"
+          :key="i"
           class="way reveal"
           :class="{ primary: w.primary }"
-          data-cursor="GET"
-          :style="{ transitionDelay: `${i * 70}ms` }"
+          :style="{ '--d': `${i * 80}ms` }"
         >
-          <h3>{{ w.title }}</h3>
-          <p>{{ w.body }}</p>
-          <div class="way-actions">
-            <button
-              v-if="w.isQQ"
-              type="button"
-              class="way-cta cta-copy"
-              data-cursor="COPY"
-              @click="copyQQ($event)"
-              @mousemove="onMagneticMouseMove"
-              @mouseleave="onMagneticMouseLeave"
-            >
-              {{ copied ? t('get.copiedQQ') : t('get.copyQQ') }}
-              <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+          <div class="way-head">
+            <span class="way-num">{{ w.num }}</span>
+            <h3>{{ w.title }}</h3>
+          </div>
+          <p class="way-body">{{ w.body }}</p>
+
+          <div class="way-links">
+            <button v-if="w.isQQ" type="button" class="way-link" @click="copyQQ($event)">
+              <span>{{ copied ? t('get.copiedQQ') : t('get.copyQQ') }}</span>
+              <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
                 <rect x="5" y="5" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3" />
                 <path d="M3 11 V3 h8" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
               </svg>
             </button>
+
             <a
               v-for="l in w.links"
               :key="l.text"
               :href="l.href"
-              class="way-cta"
-              :class="{ 'cta-solid': l.primary }"
+              class="way-link"
               :target="l.href.startsWith('http') ? '_blank' : undefined"
               :rel="l.href.startsWith('http') ? 'noopener' : undefined"
-              :data-cursor="l.primary ? 'DOWNLOAD' : 'LINK'"
-              @mousemove="onMagneticMouseMove"
-              @mouseleave="onMagneticMouseLeave"
+              @mousemove="onLinkMouseMove"
+              @mouseleave="onLinkMouseLeave"
             >
-              {{ l.text }}
-              <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+              <span>{{ l.text }}</span>
+              <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
                 <path d="M4 12 L12 4 M6 4 h6 v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </a>
@@ -164,8 +109,9 @@ onUnmounted(() => {
         </article>
       </div>
 
-      <p class="star-note reveal">
-        如果 ReveriePaint 对你的创作有所启发，欢迎在 GitHub 为项目点亮 Star
+      <p class="colophon reveal">
+        <span>{{ t('get.starNote') }}</span>
+        <a class="colophon-link" href="https://github.com/LanRhyme/ReveriePaint" target="_blank" rel="noopener">GitHub ↗</a>
       </p>
     </div>
   </section>
@@ -173,210 +119,236 @@ onUnmounted(() => {
 
 <style scoped>
 .get {
-  padding: clamp(72px, 11vh, 128px) 0 clamp(64px, 9vh, 104px);
+  padding-block: var(--sec-air);
 }
 
-.sec-head {
-  max-width: 60ch;
-  margin-bottom: clamp(34px, 5vh, 48px);
-}
-.sec-head .h-section {
-  margin-top: 14px;
-}
-
-/* ── 规格条 ─────────────────────────────────── */
+/* ── 规格表 ─────────────────────────────────── */
 .meta {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--line-faint);
-  border: 1px solid var(--line-faint);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: clamp(34px, 5vh, 48px);
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: clamp(40px, 6vh, 64px);
 }
 .meta-item {
-  background: var(--card);
-  padding: 18px 20px;
+  padding: 18px 24px 22px 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+}
+.meta-item + .meta-item {
+  padding-left: 24px;
+  border-left: 1px solid var(--line);
 }
 .meta-item dt {
-  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--ink-soft-2);
-  letter-spacing: 0.02em;
 }
 .meta-item dd {
   font-size: 0.9375rem;
   font-weight: 500;
   color: var(--ink);
+  line-height: 1.45;
 }
 
 /* ── 三个入口 ───────────────────────────────── */
 .ways {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(16px, 2.2vw, 22px);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
+  column-gap: var(--col-gap);
+}
+.way:nth-child(1) {
+  grid-column: 1 / 6;
+}
+.way:nth-child(2) {
+  grid-column: 6 / 9;
+}
+.way:nth-child(3) {
+  grid-column: 9 / -1;
 }
 .way {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: clamp(28px, 3.4vw, 40px);
-  border: 1px solid var(--line-faint);
-  border-radius: 20px;
-  background: rgba(253, 252, 250, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s, border-color 0.4s;
+  padding-top: 20px;
+  border-top: 1px solid var(--ink);
 }
-@media (hover: hover) and (pointer: fine) {
-  .way:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 45px rgba(20, 22, 26, 0.08);
-    border-color: var(--line-strong);
-  }
+.way-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.way-num {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  color: var(--ochre);
 }
 .way h3 {
   font-size: 1.0625rem;
   font-weight: 500;
+  letter-spacing: -0.012em;
 }
-.way p {
-  font-size: 0.90625rem;
-  line-height: 1.8;
+.way-body {
+  margin-top: 12px;
+  font-size: 0.875rem;
+  line-height: 1.85;
   color: var(--ink-mid);
   flex: 1;
 }
-.way-actions {
+
+.way-links {
+  margin-top: 22px;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin-top: 6px;
+  flex-direction: column;
 }
-.way-cta {
-  display: inline-flex;
+.way-link {
+  display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 0;
+  border: 0;
+  border-top: 1px solid var(--line-faint);
+  background: transparent;
+  font-family: inherit;
   font-size: 0.84375rem;
   font-weight: 500;
-  color: var(--ink);
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(20, 22, 26, 0.05);
-  border: 1px solid var(--line);
-  will-change: transform;
-  transition: background 0.25s, border-color 0.25s;
-}
-button.way-cta {
-  font-family: inherit;
+  color: var(--ink-soft);
+  text-align: left;
   cursor: pointer;
+  transition: color var(--dur-fast);
 }
-.way-cta svg {
-  transition: transform 0.3s var(--ease-out-expo);
+.way-link svg {
+  flex-shrink: 0;
+  color: var(--ink-ghost);
+  transition: transform var(--dur-fast) var(--ease-out-expo), color var(--dur-fast);
+}
+@media (hover: hover) and (pointer: fine) {
+  .way-link:hover {
+    color: var(--ink);
+  }
+  .way-link:hover svg {
+    transform: translate(2px, -2px);
+    color: var(--ink);
+  }
 }
 
-/* 首个入口用深色强调 */
+/* 首个入口：深色块，重心里排第一 */
 .way.primary {
+  padding: 26px 26px 22px;
+  border-top: 0;
   background: var(--ui-900);
-  border-color: var(--ui-600);
   color: var(--ui-text);
 }
 .way.primary h3 {
   color: #fff;
 }
-.way.primary p {
+.way.primary .way-num {
+  color: rgba(255, 255, 255, 0.4);
+}
+.way.primary .way-body {
   color: var(--ui-text-dim);
 }
-.way.primary .way-cta {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.16);
+.way.primary .way-link {
+  border-top-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.82);
 }
-.way.primary .way-cta.cta-solid {
-  background: #fff;
-  color: var(--ui-900);
-  border-color: #fff;
-  font-weight: 600;
+.way.primary .way-link svg {
+  color: rgba(255, 255, 255, 0.4);
 }
-
 @media (hover: hover) and (pointer: fine) {
-  .way:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-m);
-    border-color: var(--line);
+  .way.primary .way-link:hover {
+    color: #fff;
   }
-  .way-cta:hover {
-    background: rgba(20, 22, 26, 0.09);
-    border-color: var(--ink);
-  }
-  .way-cta:hover svg {
-    transform: translate(2px, -2px);
-  }
-  .way.primary .way-cta:hover {
-    background: rgba(255, 255, 255, 0.16);
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-  .way.primary .way-cta.cta-solid:hover {
-    background: #f0f1f2;
+  .way.primary .way-link:hover svg {
+    color: #fff;
   }
 }
 
-.star-note {
-  margin-top: clamp(30px, 4.4vh, 44px);
-  font-size: 0.90625rem;
+/* ── 版权说明 ─────────────────────────────── */
+.colophon {
+  margin-top: clamp(40px, 6vh, 64px);
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 0.8125rem;
   color: var(--ink-soft-2);
-  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+}
+.colophon-link {
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 1px;
+  transition: border-color var(--dur-fast);
+}
+.colophon-link:hover {
+  border-bottom-color: var(--ink);
 }
 
-@media (max-width: 960px) {
-  .get {
-    padding: clamp(52px, 8vh, 96px) 0;
-  }
+@media (max-width: 1024px) {
   .meta {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .meta-item:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .meta-item:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+  .meta-item:nth-child(even) {
+    padding-left: 24px;
+    border-left: 1px solid var(--line);
+  }
   .ways {
-    gap: 16px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    row-gap: 36px;
+  }
+  .way:nth-child(1) {
+    grid-column: 1 / -1;
+  }
+  .way:nth-child(2) {
+    grid-column: 1 / 2;
+  }
+  .way:nth-child(3) {
+    grid-column: 2 / 3;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 700px) {
+  .get {
+    padding: 48px 0 56px;
+  }
   .ways {
     grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
   }
-}
-
-@media (max-width: 560px) {
-  .get {
-    padding: clamp(44px, 6vh, 72px) 0;
+  .way,
+  .way:nth-child(1),
+  .way:nth-child(2),
+  .way:nth-child(3) {
+    grid-column: 1;
+    padding-block: 20px;
   }
-  .sec-head {
-    margin-bottom: 22px;
+  .way.primary {
+    padding: 22px 20px 18px;
+    margin-bottom: 4px;
   }
-  .meta {
-    margin-bottom: 26px;
+  .way-body {
+    margin-top: 10px;
   }
-  .meta-item {
-    padding: 14px 16px;
+  .way-links {
+    margin-top: 16px;
   }
-  .way {
-    padding: 20px 18px;
-  }
-  .way-actions {
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-    gap: 8px;
-    margin-top: 8px;
-  }
-  .way-cta {
-    width: 100%;
-    justify-content: center;
-    min-height: 44px;
-    font-size: 0.875rem;
-    padding: 10px 16px;
+  .way-link {
+    padding: 12px 0;
   }
 }
 </style>

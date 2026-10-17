@@ -14,10 +14,15 @@ const copyright = computed(() => {
 
 <template>
   <footer class="site-footer">
-    <div class="shell foot-inner">
+    <div class="shell">
+      <div class="foot-top">
+        <span class="eyebrow">ReveriePaint — Android</span>
+        <span class="eyebrow">GPL-3.0</span>
+      </div>
+
       <div class="foot-main">
         <div class="foot-brand">
-          <svg viewBox="44 49 300 300" width="24" height="24" aria-hidden="true">
+          <svg viewBox="44 49 300 300" width="26" height="26" aria-hidden="true">
             <g transform="translate(0,376) scale(0.1,-0.1)" fill="currentColor">
               <path d="M1920 3132 c0 -62 -67 -341 -160 -662 -36 -127 -56 -179 -71 -191 -12 -9 -67 -40 -123 -69 -108 -56 -145 -86 -178 -138 -11 -18 -41 -47 -66 -64 -40 -27 -56 -32 -106 -33 -54 0 -60 2 -87 34 -27 33 -29 34 -71 23 -24 -6 -67 -16 -95 -22 -29 -7 -53 -16 -53 -21 0 -5 5 -9 12 -9 12 0 326 -91 378 -110 14 -5 72 -23 130 -40 58 -17 139 -43 181 -56 86 -28 71 -7 136 -188 15 -44 33 -81 38 -82 6 -1 27 18 49 44 49 59 468 541 518 596 21 23 38 45 38 49 0 9 -58 35 -155 67 -38 13 -74 27 -78 31 -8 6 -83 310 -94 382 -7 44 -15 46 -34 10 -8 -15 -31 -56 -51 -90 -21 -35 -38 -67 -38 -73 0 -5 -4 -10 -10 -10 -13 0 -13 15 -1 38 6 9 17 44 25 77 8 33 24 95 36 138 l20 78 -35 144 c-19 79 -35 151 -35 159 0 9 -4 16 -10 16 -5 0 -10 -13 -10 -28z" />
               <path d="M2394 2107 c-27 -29 -83 -90 -124 -137 -41 -47 -77 -87 -80 -90 -3 -3 -39 -43 -80 -90 -41 -47 -77 -87 -80 -90 -3 -3 -54 -60 -113 -128 -83 -94 -106 -128 -103 -145 3 -12 10 -51 16 -87 6 -36 15 -83 20 -105 5 -22 14 -71 21 -110 6 -38 15 -83 20 -99 5 -16 9 -44 9 -62 0 -72 26 -43 49 56 25 108 73 308 81 340 5 19 23 94 40 165 37 157 51 207 62 221 4 6 27 17 50 24 24 8 48 16 53 20 6 4 30 13 55 20 25 7 50 16 55 20 6 4 30 13 55 20 25 7 50 16 55 20 6 3 28 12 50 19 22 7 49 16 60 21 11 4 47 18 80 30 33 12 69 26 80 30 11 4 57 23 103 40 45 18 82 35 82 39 0 4 -28 13 -62 20 -35 7 -79 17 -98 21 -48 12 -114 27 -180 41 -30 6 -68 15 -84 20 -41 13 -38 14 -92 -44z" />
@@ -25,7 +30,7 @@ const copyright = computed(() => {
               <path d="M1730 1068 c-14 -6 -45 -19 -69 -30 -120 -53 -607 -415 -755 -561 -64 -63 -68 -70 -52 -85 11 -11 33 -16 69 -16 56 1 102 21 157 71 62 55 111 77 173 76 56 -1 62 2 165 70 59 38 132 84 162 100 30 17 82 50 115 75 33 24 84 58 113 75 45 25 53 33 48 51 -4 12 -11 41 -16 66 -26 121 -24 115 -55 117 -17 1 -41 -3 -55 -9z" />
             </g>
           </svg>
-          <div>
+          <div class="brand-text">
             <b>ReveriePaint</b>
             <span>{{ t('footer.tagline') }}</span>
           </div>
@@ -52,59 +57,84 @@ const copyright = computed(() => {
 
 <style scoped>
 .site-footer {
-  border-top: 1px solid var(--line-faint);
+  border-top: 1px solid var(--ink);
   background: var(--paper-warm);
 }
 
-.foot-inner {
-  padding-top: clamp(40px, 6vh, 56px);
-  padding-bottom: clamp(28px, 4vh, 40px);
+.foot-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.625rem;
 }
 
 .foot-main {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 28px;
+  gap: 32px;
   flex-wrap: wrap;
-  padding-bottom: 30px;
+  padding: clamp(32px, 5vh, 52px) 0 clamp(26px, 4vh, 40px);
 }
 
 .foot-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   color: var(--ink);
 }
-.foot-brand b {
+.brand-text b {
   display: block;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
 }
-.foot-brand span {
-  font-size: 0.75rem;
+.brand-text span {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--ink-soft-2);
-  letter-spacing: 0.02em;
 }
 
 .foot-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 22px;
+  gap: 8px 24px;
+  padding-top: 4px;
 }
 .foot-links a {
-  font-size: 0.875rem;
+  position: relative;
+  font-size: 0.84375rem;
   color: var(--ink-mid);
-  transition: color 0.25s;
+  transition: color var(--dur-fast);
+}
+.foot-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease-out-expo);
 }
 .foot-links a:hover {
   color: var(--ink);
 }
+.foot-links a:hover::after {
+  transform: scaleX(1);
+}
 
 .foot-base {
-  border-top: 1px solid var(--line-faint);
-  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  padding: 18px 0 clamp(24px, 3vh, 32px);
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -122,16 +152,16 @@ const copyright = computed(() => {
 @media (max-width: 680px) {
   .foot-main {
     flex-direction: column;
-    gap: 22px;
+    gap: 26px;
+  }
+  .brand-text b {
+    font-size: 1.125rem;
   }
   .foot-links {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px 16px;
     width: 100%;
-  }
-  .foot-links a {
-    padding: 3px 0;
   }
   .foot-base {
     flex-direction: column;

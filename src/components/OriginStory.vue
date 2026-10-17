@@ -1,94 +1,44 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { gsap } from '../composables/useGsap.js'
+import { ref, computed } from 'vue'
 import { useI18n } from '../composables/useI18n.js'
 
 const { t } = useI18n()
-
 const pillars = computed(() => t('origin.pillars') || [])
-
 const originRef = ref(null)
-let ctx = null
-
-onMounted(() => {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (reduce || !originRef.value) return
-
-  ctx = gsap.context(() => {
-    const cards = originRef.value.querySelectorAll('.pillar-card')
-    if (cards.length) {
-      gsap.from(cards, {
-        opacity: 0,
-        y: 40,
-        duration: 0.85,
-        stagger: 0.14,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: originRef.value.querySelector('.pillars'),
-          start: 'top 85%',
-          toggleActions: 'play none none none'
-        }
-      })
-    }
-
-    const rule = originRef.value.querySelector('.note-rule')
-    if (rule) {
-      gsap.fromTo(
-        rule,
-        { scaleX: 0 },
-        {
-          scaleX: 1,
-          duration: 0.9,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: rule,
-            start: 'top 90%',
-            toggleActions: 'play none none none'
-          }
-        }
-      )
-    }
-  }, originRef.value)
-})
-
-onUnmounted(() => {
-  ctx?.revert()
-})
 </script>
 
 <template>
   <section id="origin" ref="originRef" class="origin">
     <div class="shell">
       <header class="sec-head reveal">
-        <p class="eyebrow">{{ t('origin.eyebrow') }}</p>
+        <div class="sec-rail">
+          <span class="sec-num">03</span>
+          <span class="sec-label">{{ t('origin.eyebrow') }}</span>
+        </div>
         <h2 class="h-section">
-          <span class="line-mask"><span class="line-inner">{{ t('origin.title') }}</span></span>
+          <span class="line-mask"><span class="line-inner" style="--d: 70ms">{{ t('origin.title') }}</span></span>
         </h2>
         <p class="sec-sub lede">{{ t('origin.sub') }}</p>
       </header>
 
-      <div class="pillars">
-        <article
-          v-for="(p, i) in pillars"
-          :key="p.num"
-          class="pillar-card reveal"
-          data-cursor="PHILOSOPHY"
-          :style="{ transitionDelay: `${i * 90}ms` }"
-        >
-          <div class="card-top">
-            <span class="pillar-num">{{ p.num }}</span>
-            <div class="card-bar" aria-hidden="true"></div>
-          </div>
-          <h3 class="pillar-title">{{ p.title }}</h3>
-          <p class="pillar-desc">{{ p.desc }}</p>
-        </article>
-      </div>
-
-      <div class="origin-note reveal">
-        <div class="note-rule" aria-hidden="true"></div>
+      <!-- 宣言：整页唯一的衬线大字，从第四栏起排 -->
+      <blockquote class="origin-quote reveal">
         <p class="quote-serif line-mask">
           <span class="line-inner">{{ t('origin.quote') }}</span>
         </p>
+      </blockquote>
+
+      <div class="pillars">
+        <article
+          v-for="(p, i) in pillars"
+          :key="i"
+          class="pillar reveal"
+          :style="{ '--d': `${i * 90}ms` }"
+        >
+          <div class="pillar-num">{{ p.num }}</div>
+          <h3 class="pillar-title">{{ p.title }}</h3>
+          <p class="pillar-desc">{{ p.desc }}</p>
+        </article>
       </div>
     </div>
   </section>
@@ -97,137 +47,104 @@ onUnmounted(() => {
 <style scoped>
 .origin {
   position: relative;
-  padding: clamp(72px, 11vh, 128px) 0 clamp(64px, 10vh, 112px);
+  padding-block: var(--sec-air);
 }
 
-.sec-head {
-  max-width: 52ch;
-  margin-bottom: clamp(44px, 7vh, 64px);
-}
-.sec-head .h-section {
-  margin-top: 14px;
-}
-.sec-sub {
-  margin-top: 16px;
+/* ── 宣言：从第四栏起排，左边留出书页的空白 ───────── */
+.origin-quote {
+  position: relative;
+  margin: 0 0 clamp(56px, 8vh, 96px);
+  padding: clamp(28px, 4vh, 44px) 0 clamp(28px, 4vh, 44px) clamp(28px, 4vw, 64px);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin-left: calc((100% / 12) * 3);
 }
 
-/* ── 三大支柱卡片 ───────────────────────────── */
+.origin-quote p {
+  max-width: 18em;
+  font-size: clamp(1.375rem, 2.5vw, 2.125rem);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+/* 起首的短竖线，标出这是一段引文 */
+.origin-quote::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: clamp(30px, 4.2vh, 48px);
+  width: 2px;
+  height: clamp(28px, 4vh, 44px);
+  background: var(--ink);
+}
+
+/* ── 三条支线 ─────────────────────────────── */
 .pillars {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(20px, 3vw, 32px);
+  column-gap: var(--col-gap);
 }
 
-.pillar-card {
-  background: rgba(253, 252, 250, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--line-faint);
-  border-radius: 20px;
-  padding: clamp(30px, 3.8vw, 44px);
+.pillar {
+  padding-top: 20px;
+  border-top: 1px solid var(--ink);
   display: flex;
   flex-direction: column;
-  transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s, border-color 0.4s;
-}
-@media (hover: hover) and (pointer: fine) {
-  .pillar-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 45px rgba(20, 22, 26, 0.08);
-    border-color: var(--line-strong);
-  }
-  .pillar-card:hover .card-bar {
-    width: 52px;
-    opacity: 0.9;
-    background: var(--ink);
-  }
 }
 
-.card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 22px;
-}
 .pillar-num {
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--ink-soft-2);
-}
-.card-bar {
-  width: 32px;
-  height: 2px;
-  background: var(--line-strong);
-  opacity: 0.4;
-  transition: width 0.35s var(--ease-out-expo), background 0.35s, opacity 0.35s;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  color: var(--ochre);
+  margin-bottom: 18px;
 }
 
 .pillar-title {
-  font-size: clamp(1.125rem, 1.8vw, 1.25rem);
+  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
   font-weight: 500;
   color: var(--ink);
-  letter-spacing: -0.015em;
-  margin-bottom: 14px;
+  letter-spacing: -0.016em;
+  line-height: 1.45;
 }
-
 .pillar-desc {
-  font-size: 0.875rem;
-  line-height: 1.82;
+  margin-top: 12px;
+  font-size: 0.84375rem;
+  line-height: 1.92;
   color: var(--ink-mid);
   flex: 1;
 }
 
-/* ── 结论注脚 ─────────────────────────────── */
-.origin-note {
-  margin-top: clamp(48px, 8vh, 72px);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 64ch;
-}
-.note-rule {
-  width: 48px;
-  height: 2px;
-  background: var(--ink);
-  transform-origin: left;
-  will-change: transform;
-}
-.origin-note p {
-  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
-  line-height: 1.8;
-  color: var(--ink);
-}
-
-@media (max-width: 960px) {
+@media (max-width: 860px) {
   .origin {
-    padding: clamp(52px, 8vh, 96px) 0;
+    padding: 48px 0 56px;
   }
-  .pillars {
-    gap: 16px;
+  .origin-quote {
+    margin-left: 0;
+    padding-left: 22px;
+    margin-bottom: 42px;
   }
-  .pillar-card {
-    padding: 22px 20px;
-  }
-}
-
-@media (max-width: 720px) {
-  .origin {
-    padding: clamp(44px, 7vh, 72px) 0;
-  }
-  .sec-head {
-    margin-bottom: 32px;
+  .origin-quote p {
+    max-width: 100%;
+    font-size: clamp(1.25rem, 5.4vw, 1.5rem);
+    line-height: 1.68;
   }
   .pillars {
     grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
+    column-gap: 0;
   }
-  .origin-note {
-    margin-top: 36px;
+  .pillar {
+    padding-block: 20px;
   }
-  .origin-note p {
-    font-size: 1.0625rem;
-    line-height: 1.7;
+  .pillar + .pillar {
+    border-top-color: var(--line);
+  }
+  .pillar-num {
+    margin-bottom: 10px;
+  }
+  .pillar-desc {
+    line-height: 1.82;
   }
 }
 </style>

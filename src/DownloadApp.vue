@@ -293,18 +293,19 @@ onMounted(() => {
       <div class="shell">
         <!-- 面包屑与顶部提示 -->
         <nav class="breadcrumb" aria-label="页面路径">
-          <a href="/">{{ isEn ? 'Home' : '官网首页' }}</a>
+          <a href="/">{{ isEn ? 'ReveriePaint' : 'ReveriePaint' }}</a>
           <span class="sep">/</span>
-          <span class="current">{{ isEn ? 'Download APK' : '下载最新版' }}</span>
+          <span class="current">{{ isEn ? 'Download' : '下载' }}</span>
         </nav>
 
         <!-- 页面标题区域 -->
-        <header class="download-header">
-          <div class="eyebrow reveal">{{ isEn ? 'OFFICIAL DISTRIBUTION · HIGH SPEED' : '官方发布 · 高速通道' }}</div>
-          <h1 class="h-display download-title line-mask">
-            <span class="line-inner">{{ isEn ? 'Download ReveriePaint' : '下载 ReveriePaint 最新版' }}</span>
-          </h1>
-          <p class="lede download-sub reveal">
+        <header class="download-header sec-head reveal">
+          <div class="sec-rail">
+            <span class="sec-num">01</span>
+            <span class="sec-label">{{ isEn ? 'Download' : '下载' }}</span>
+          </div>
+          <h1 class="h-display download-title"><span class="line-mask"><span class="line-inner">{{ isEn ? 'Download ReveriePaint' : '下载 ReveriePaint 最新版' }}</span></span></h1>
+          <p class="lede sec-sub download-sub">
             {{ isEn
               ? 'Professional open-source digital painting tool for Android tablets & phones. Direct fast download powered by gh-proxy acceleration mirrors.'
               : '专为 Android 平板与手机打造的原生专业数字绘画工具。搭载 Krita C++ 核心图像处理内核，提供官方原源与 gh-proxy 国内极速直链下载'
@@ -314,8 +315,6 @@ onMounted(() => {
 
         <!-- 核心下载卡片 -->
         <section id="download-action" class="hero-dl-card reveal">
-          <div class="card-glow" aria-hidden="true"></div>
-
           <div class="card-inner">
             <div class="app-summary">
               <div class="app-icon" data-cursor="APK">
@@ -507,103 +506,83 @@ onMounted(() => {
         </section>
 
         <!-- 备用分发渠道卡片 -->
-        <section class="channels-section reveal">
-          <div class="section-title-wrap">
-            <h2 class="h-section line-mask">
-              <span class="line-inner">{{ isEn ? 'Alternative Channels' : '备用与多元分流渠道' }}</span>
-            </h2>
-            <p class="lede">{{ isEn ? 'Choose the channel that best suits your network conditions.' : '若上述通道下载受限，可通过以下途径高速获取应用包与最新构建' }}</p>
-          </div>
+        <section class="channels-section">
+          <header class="sec-head reveal">
+            <div class="sec-rail">
+              <span class="sec-num">02</span>
+              <span class="sec-label">{{ isEn ? 'Channels' : '备用渠道' }}</span>
+            </div>
+            <h2 class="h-section"><span class="line-mask"><span class="line-inner">{{ isEn ? 'Alternative Channels' : '备用与多元分流渠道' }}</span></span></h2>
+            <p class="lede sec-sub">{{ isEn ? 'Choose the channel that best suits your network conditions.' : '若上述通道下载受限，可通过以下途径高速获取应用包与最新构建' }}</p>
+          </header>
 
           <div class="channels-grid">
             <!-- Mirror酱 -->
-            <div class="channel-card" data-cursor="MIRROR">
-              <div class="ch-icon mirror-icon">
-                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-                  <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
-                  <path d="M8 12 L11 15 L16 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+            <article class="channel">
+              <div class="ch-head">
+                <span class="ch-num">01</span>
+                <h3>Mirror酱 国内镜像</h3>
               </div>
-              <div class="ch-info">
-                <h3>Mirror酱 国内应用镜像</h3>
-                <p>专为大陆安卓用户打造的开源软件托管镜像，国内云服务器高速节点直连</p>
-              </div>
-              <a
-                class="ch-btn"
-                :href="release.mirrorChyanUrl"
-                target="_blank"
-                rel="noopener"
-                data-cursor="GO"
-              >
-                <span>前往 Mirror酱</span>
-                <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
-                  <path d="M4 12 L12 4 M6 4 h6 v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
-              </a>
-            </div>
-
-            <!-- QQ群分流 -->
-            <div class="channel-card" data-cursor="COMMUNITY">
-              <div class="ch-icon qq-icon">
-                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-                  <path d="M12 3 C7 3 4 7 4 12 C4 15 5.5 17.5 7 19 L6 22 L9.5 20.5 C10.3 20.8 11.1 21 12 21 C17 21 20 17 20 12 C20 7 17 3 12 3 Z" fill="none" stroke="currentColor" stroke-width="1.7"/>
-                </svg>
-              </div>
-              <div class="ch-info">
-                <h3>QQ 官方交流群文件</h3>
-                <p>群号: 729283213 · 群文件包含历史所有版本安装包、笔刷预设包与内测构建</p>
-              </div>
-              <div class="ch-btn-group">
-                <button
-                  type="button"
-                  class="ch-btn"
-                  data-cursor="COPY"
-                  @click="copyQQ"
-                >
-                  <span>{{ copiedQQ ? '已复制群号' : '复制群号 729283213' }}</span>
-                </button>
-                <a
-                  class="ch-btn ch-btn-ghost"
-                  href="https://qm.qq.com/q/729283213"
-                  target="_blank"
-                  rel="noopener"
-                  data-cursor="JOIN"
-                >
-                  <span>一键加群</span>
+              <p class="body-text">专为大陆安卓用户打造的开源软件托管镜像，国内云服务器高速节点直连。</p>
+              <div class="ch-links">
+                <a class="ch-link" :href="release.mirrorChyanUrl" target="_blank" rel="noopener">
+                  <span>前往 Mirror酱</span>
+                  <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                    <path d="M4 12 L12 4 M6 4 h6 v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
                 </a>
               </div>
-            </div>
+            </article>
+
+            <!-- QQ群分流 -->
+            <article class="channel">
+              <div class="ch-head">
+                <span class="ch-num">02</span>
+                <h3>QQ 群文件</h3>
+              </div>
+              <p class="body-text">群号 729283213，群文件保存历史版本安装包、笔刷预设包与内测构建。</p>
+              <div class="ch-links">
+                <button type="button" class="ch-link" @click="copyQQ">
+                  <span>{{ copiedQQ ? '已复制群号' : '复制群号 729283213' }}</span>
+                </button>
+                <a class="ch-link" href="https://qm.qq.com/q/729283213" target="_blank" rel="noopener">
+                  <span>一键加群</span>
+                  <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                    <path d="M4 12 L12 4 M6 4 h6 v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </a>
+              </div>
+            </article>
 
             <!-- GitHub Releases -->
-            <div class="channel-card" data-cursor="GITHUB">
-              <div class="ch-icon gh-icon">
-                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-                  <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z" fill="currentColor"/>
-                </svg>
+            <article class="channel">
+              <div class="ch-head">
+                <span class="ch-num">03</span>
+                <h3>GitHub Releases</h3>
               </div>
-              <div class="ch-info">
-                <h3>GitHub 全部 Releases 归档</h3>
-                <p>查看历史里程碑版本、源码压缩包（Source code）与完整提交记录</p>
+              <p class="body-text">历史里程碑版本、源码压缩包与完整提交记录都在这里。</p>
+              <div class="ch-links">
+                <a class="ch-link" :href="release.releasesPage" target="_blank" rel="noopener">
+                  <span>浏览 Releases</span>
+                  <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                    <path d="M4 12 L12 4 M6 4 h6 v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </a>
               </div>
-              <a
-                class="ch-btn"
-                :href="release.releasesPage"
-                target="_blank"
-                rel="noopener"
-                data-cursor="RELEASES"
-              >
-                <span>浏览 Releases ↗</span>
-              </a>
-            </div>
+            </article>
           </div>
         </section>
 
         <!-- 更新日志区域 -->
         <section class="changelog-section">
-          <div class="section-title-wrap">
-            <div class="eyebrow">{{ isEn ? 'RELEASE NOTES' : '更新日志' }}</div>
-            <h2 class="h-section">{{ release.version }} {{ isEn ? 'Changelog' : '版本特性详情' }}</h2>
-          </div>
+          <header class="sec-head reveal">
+            <div class="sec-rail">
+              <span class="sec-num">03</span>
+              <span class="sec-label">{{ isEn ? 'Release Notes' : '更新日志' }}</span>
+            </div>
+            <h2 class="h-section"><span class="line-mask"><span class="line-inner">{{ release.version }} {{ isEn ? 'Changelog' : '版本特性详情' }}</span></span></h2>
+            <p class="lede sec-sub">{{ isEn ? 'What changed in this build.' : '本次构建的改动明细' }}</p>
+          </header>
 
           <div class="changelog-card">
             <div
@@ -627,32 +606,33 @@ onMounted(() => {
 
         <!-- 安装引导与安全解答 -->
         <section class="faq-section">
-          <div class="section-title-wrap">
-            <div class="eyebrow">{{ isEn ? 'HELP & TIPS' : '安装说明' }}</div>
-            <h2 class="h-section">{{ isEn ? 'Installation FAQ' : '安装与使用常见问题' }}</h2>
-          </div>
+          <header class="sec-head reveal">
+            <div class="sec-rail">
+              <span class="sec-num">04</span>
+              <span class="sec-label">{{ isEn ? 'Install' : '安装说明' }}</span>
+            </div>
+            <h2 class="h-section"><span class="line-mask"><span class="line-inner">{{ isEn ? 'Installation FAQ' : '安装与使用常见问题' }}</span></span></h2>
+            <p class="lede sec-sub">{{ isEn ? 'Common questions before first launch.' : '首次安装与启动前后常被问到的问题' }}</p>
+          </header>
 
           <div class="faq-grid">
-            <div class="faq-card">
+            <article class="faq-card">
+              <span class="ch-num">01</span>
               <h4>系统提示「未在应用商店收录」或安全警告？</h4>
-              <p>
-                ReveriePaint 是一项由社区推动的纯开源非营利项目，未向华为、小米、OPPO、vivo 等手机厂商支付高额应用市场年费与上架认证费。在系统拦截页面点击「继续安装」或在设置中退出「纯净模式」即可。代码全量开源于 GitHub，完全无广告、无内购、零后台追踪。
-              </p>
-            </div>
+              <p>ReveriePaint 是由社区推动的纯开源非营利项目，未向各家应用市场支付上架年费与认证费。在系统拦截页面点击「继续安装」，或在设置中退出「纯净模式」即可。代码全量开源于 GitHub，无广告、无内购、无后台追踪。</p>
+            </article>
 
-            <div class="faq-card">
-              <h4>手写笔压感与防误触如何正确设置？</h4>
-              <p>
-                安装后首次启动，建议进入应用内「设置 - 手写笔与压感」校准设备的压感过渡曲线。在作画界面，建议点击快捷工具栏的「禁用画布触控」开关，开启后主画布仅响应手写笔笔尖绘制，手指可专注于双指缩放与画布旋转，实现完美的防误触体验。
-              </p>
-            </div>
+            <article class="faq-card">
+              <span class="ch-num">02</span>
+              <h4>手写笔压感与防误触如何设置？</h4>
+              <p>首次启动后进入「设置 - 手写笔与压感」校准压感过渡曲线。作画时打开快捷工具栏的「禁用画布触控」，主画布只响应笔尖，手指留给双指缩放与画布旋转。</p>
+            </article>
 
-            <div class="faq-card">
+            <article class="faq-card">
+              <span class="ch-num">03</span>
               <h4>如何更新到后续新版本？</h4>
-              <p>
-                后续版本直接下载新版 APK 覆盖安装即可，您的所有画作、图层、笔刷收藏与工程文件都会完整保留。您也可以在应用内「关于」中检查最新版本发布动态。
-              </p>
-            </div>
+              <p>直接下载新版 APK 覆盖安装即可，画作、图层、笔刷收藏与工程文件都会保留。也可以在应用内「关于」里检查最新发布。</p>
+            </article>
           </div>
         </section>
       </div>
@@ -663,613 +643,663 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.download-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--paper);
-  color: var(--ink);
-}
-
+/* ════════════════════════════════════════════════
+   下载页：沿用首页的画册版式（章首线 / 编号 / 图版语言）
+   ════════════════════════════════════════════════ */
 .download-main {
-  flex: 1;
-  padding-top: clamp(84px, 12vh, 120px);
-  padding-bottom: clamp(60px, 9vh, 96px);
+  position: relative;
+  z-index: 5;
+  padding-top: calc(var(--nav-h) + clamp(18px, 3vh, 30px));
 }
 
+/* ── 面包屑：页边注 ───────────────────────────── */
 .breadcrumb {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.8125rem;
-  color: var(--ink-soft-2);
-  margin-bottom: 24px;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  margin-bottom: clamp(20px, 3vh, 32px);
 }
 .breadcrumb a {
-  color: var(--ink-mid);
-  transition: color 0.2s;
+  color: var(--ink-soft-2);
+  transition: color var(--dur-fast);
 }
 .breadcrumb a:hover {
   color: var(--ink);
 }
 .breadcrumb .sep {
-  opacity: 0.5;
+  color: var(--ink-ghost);
 }
 .breadcrumb .current {
   color: var(--ink);
-  font-weight: 500;
 }
 
+/* ── 页头 ─────────────────────────────────────── */
 .download-header {
-  margin-bottom: clamp(28px, 4.4vh, 44px);
+  margin-bottom: clamp(32px, 4.5vh, 52px);
 }
-.download-title {
-  margin-top: 8px;
+.download-header .h-display {
+  font-size: clamp(1.9rem, 4.2vw, 3.4rem);
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+  grid-column: 1 / 8;
+  max-width: 15em;
 }
-.download-sub {
-  margin-top: 14px;
-  max-width: 68ch;
+.download-header .sec-sub {
+  align-self: end;
+  margin-bottom: 0.5em;
 }
 
-/* ── 核心下载卡片 ──────────────────────────────── */
+/* ── 下载面板 ─────────────────────────────────── */
 .hero-dl-card {
-  position: relative;
-  background: var(--card);
-  border: 1px solid var(--line-strong);
-  border-radius: 20px;
-  box-shadow: var(--shadow-l);
-  overflow: hidden;
-  margin-bottom: clamp(48px, 7.5vh, 76px);
-}
-
-.card-inner {
-  padding: clamp(26px, 3.6vw, 44px);
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--line);
 }
 
 .app-summary {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 16px;
+  padding-block: 22px;
+  border-bottom: 1px solid var(--line);
 }
 .app-icon {
+  width: 46px;
+  height: 46px;
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  overflow: hidden;
 }
 .app-icon-img {
-  width: 48px;
-  height: 48px;
-  display: block;
-  object-fit: contain;
-  border-radius: 11px;
-  box-shadow: var(--shadow-s);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .app-meta-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  min-width: 0;
+  flex: 1;
 }
 .title-row {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 .app-name {
-  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
 }
 .version-tag {
   font-family: var(--font-mono);
-  font-size: 0.875rem;
-  font-weight: 600;
-  padding: 3px 10px;
-  background: rgba(20, 22, 26, 0.07);
-  border-radius: 6px;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
   color: var(--ink);
 }
 .latest-pill {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 3px 9px;
-  background: rgba(91, 127, 199, 0.12);
-  color: var(--accent-deep);
-  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ochre);
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  padding: 2px 6px;
+}
+.file-name-row {
+  margin-top: 6px;
 }
 .file-name-row code {
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
   color: var(--ink-soft-2);
+  word-break: break-all;
 }
 
-/* 参数条 */
+/* 规格表：五格，竖线分隔 */
 .specs-bar {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 12px;
-  background: rgba(20, 22, 26, 0.03);
-  padding: 16px 20px;
-  border-radius: 12px;
-  border: 1px solid var(--line-faint);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-bottom: 1px solid var(--line);
 }
 .spec-cell {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 8px;
+  padding: 18px 20px 20px 0;
+}
+.spec-cell + .spec-cell {
+  padding-left: 20px;
+  border-left: 1px solid var(--line-faint);
 }
 .spec-label {
-  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--ink-soft-2);
 }
 .spec-val {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--ink);
+  line-height: 1.4;
 }
 
-/* 架构切换器 */
-.arch-switch-box {
-  background: rgba(20, 22, 26, 0.02);
-  border: 1px solid var(--line);
-  padding: 18px 22px;
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.arch-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.arch-pill {
-  appearance: none;
-  border: 1px solid var(--line);
-  background: var(--paper);
-  color: var(--ink-mid);
-  padding: 8px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: inherit;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  transition: all 0.2s;
-  touch-action: manipulation;
-}
-.arch-pill:hover {
-  border-color: var(--ink-soft);
-  color: var(--ink);
-}
-.arch-pill.active {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
-  box-shadow: var(--shadow-s);
-}
-.a-badge {
-  font-size: 0.6875rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.06);
-}
-.arch-pill.active .a-badge {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--paper);
-}
-.arch-status-note {
-  color: var(--accent-deep);
-  font-weight: 500;
-}
-
-/* 节点切换 */
+/* 选择器 */
+.arch-switch-box,
 .proxy-switch-box {
-  background: rgba(20, 22, 26, 0.02);
-  border: 1px solid var(--line);
-  padding: 18px 22px;
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  padding-block: 22px;
+  border-bottom: 1px solid var(--line);
 }
 .switch-header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
+  gap: 16px;
   flex-wrap: wrap;
-  gap: 8px;
+  margin-bottom: 16px;
 }
 .switch-title {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink);
 }
+.switch-title svg {
+  color: var(--ink-ghost);
+}
 .switch-hint {
-  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
   color: var(--ink-soft-2);
 }
+
+.arch-pills,
 .proxy-pills {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
+
+.arch-pill,
 .proxy-pill {
-  appearance: none;
-  border: 1px solid var(--line);
-  background: var(--paper);
-  color: var(--ink-mid);
-  padding: 8px 14px;
-  border-radius: 10px;
-  cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: transparent;
   font-family: inherit;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  transition: all 0.2s;
-  touch-action: manipulation;
+  font-size: 0.84375rem;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
 }
-.proxy-pill:hover {
-  border-color: var(--ink-soft);
-  color: var(--ink);
+.a-badge,
+.p-badge {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  opacity: 0.6;
 }
+.arch-pill.active,
 .proxy-pill.active {
   background: var(--ink);
-  color: var(--paper);
   border-color: var(--ink);
-  box-shadow: var(--shadow-s);
-}
-.p-badge {
-  font-size: 0.6875rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.06);
-}
-.proxy-pill.active .p-badge {
-  background: rgba(255, 255, 255, 0.2);
   color: var(--paper);
 }
-.node-tip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.75rem;
-  color: var(--ink-soft-2);
+.arch-pill.active .a-badge,
+.proxy-pill.active .p-badge {
+  opacity: 0.85;
 }
-.node-tip-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
+@media (hover: hover) and (pointer: fine) {
+  .arch-pill:hover:not(.active),
+  .proxy-pill:hover:not(.active) {
+    border-color: var(--ink-ghost);
+    color: var(--ink);
+  }
 }
 
-/* 下载行动区 */
+.node-tip {
+  margin-top: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--ink-mid);
+}
+.node-tip-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ochre);
+  flex-shrink: 0;
+  transform: translateY(-2px);
+}
+.arch-status-note {
+  color: var(--ink-soft-2);
+  font-size: 0.75rem;
+}
+
+/* 行动区 */
 .actions-area {
   display: flex;
-  flex-wrap: wrap;
   align-items: stretch;
-  gap: 14px;
+  gap: 10px;
+  padding-block: 24px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
 }
 .btn-dl-main {
-  flex: 1 1 280px;
-  display: inline-flex;
+  flex: 1 1 340px;
+  display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   background: var(--ink);
   color: var(--paper);
-  padding: 16px 24px;
-  border-radius: 14px;
-  box-shadow: var(--shadow-m);
-  transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
-  touch-action: manipulation;
+  border-radius: 3px;
+  padding: 16px 22px;
+  transition: background var(--dur-fast);
 }
 @media (hover: hover) and (pointer: fine) {
   .btn-dl-main:hover {
     background: var(--ink-soft);
-    box-shadow: var(--shadow-l);
-    transform: translateY(-1px);
   }
 }
 .btn-dl-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 2px;
   flex-shrink: 0;
 }
 .btn-dl-content {
   display: flex;
   flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 .btn-dl-title {
-  font-size: 1.0625rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 0.9375rem;
+  font-weight: 500;
 }
 .btn-dl-sub {
-  font-size: 0.75rem;
-  opacity: 0.75;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+  opacity: 0.62;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .btn-dl-disabled {
-  flex: 1 1 280px;
-  display: inline-flex;
+  flex: 1 1 340px;
+  display: flex;
   align-items: center;
-  gap: 14px;
-  background: rgba(20, 22, 26, 0.05);
+  gap: 16px;
   border: 1px dashed var(--line-strong);
-  color: var(--ink-mid);
-  padding: 16px 24px;
-  border-radius: 14px;
-}
-.btn-dl-disabled .btn-dl-icon {
-  background: rgba(20, 22, 26, 0.08);
+  border-radius: 3px;
+  padding: 16px 22px;
   color: var(--ink-soft-2);
 }
+.btn-dl-disabled .btn-dl-icon {
+  border-color: var(--line-strong);
+}
 .btn-dl-disabled .btn-dl-title {
-  color: var(--ink);
+  color: var(--ink-soft);
 }
 .btn-dl-disabled .btn-dl-sub {
-  color: var(--accent-deep);
-  font-weight: 500;
   opacity: 1;
+  color: var(--ink-soft-2);
+  white-space: normal;
 }
 
 .btn-dl-copy {
-  appearance: none;
-  border: 1px solid var(--line-strong);
-  background: rgba(20, 22, 26, 0.04);
-  color: var(--ink);
-  padding: 14px 20px;
-  border-radius: 14px;
-  font-family: inherit;
-  font-size: 0.875rem;
-  font-weight: 500;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
+  padding: 0 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
   cursor: pointer;
-  transition: all 0.2s;
-  touch-action: manipulation;
+  transition: border-color var(--dur-fast), color var(--dur-fast);
+}
+.btn-dl-copy svg {
+  color: var(--ink-ghost);
 }
 @media (hover: hover) and (pointer: fine) {
   .btn-dl-copy:hover {
-    background: rgba(20, 22, 26, 0.08);
-    border-color: var(--ink);
+    border-color: var(--ink-ghost);
+    color: var(--ink);
   }
 }
 
+/* 直链预览 */
 .url-preview {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.75rem;
-  color: var(--ink-soft-2);
-  background: rgba(20, 22, 26, 0.03);
-  padding: 8px 14px;
-  border-radius: 8px;
+  align-items: baseline;
+  gap: 10px;
+  padding-block: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-ghost);
   overflow: hidden;
+}
+.url-label {
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
 }
 .url-text {
-  font-family: var(--font-mono);
+  color: var(--ink-soft-2);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--ink-mid);
 }
 
-/* ── 备用渠道区域 ──────────────────────────────── */
-.channels-section {
-  margin-bottom: clamp(48px, 7.5vh, 76px);
+/* ════════════════════════════════════════════════
+   章节
+   ════════════════════════════════════════════════ */
+.channels-section,
+.changelog-section,
+.faq-section {
+  padding-block: var(--sec-air);
 }
-.section-title-wrap {
-  margin-bottom: 24px;
-}
-.section-title-wrap .lede {
-  margin-top: 6px;
+.faq-section {
+  padding-bottom: clamp(96px, 12vh, 140px);
 }
 
+/* ── 备用渠道 ─────────────────────────────────── */
 .channels-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--col-gap);
 }
-.channel-card {
-  background: var(--card);
-  border: 1px solid var(--line-faint);
-  border-radius: 16px;
-  padding: 24px;
+.channel {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
 }
-@media (hover: hover) and (pointer: fine) {
-  .channel-card:hover {
-    border-color: var(--line);
-    box-shadow: var(--shadow-m);
-  }
-}
-.ch-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
+.ch-head {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ink);
-  background: rgba(20, 22, 26, 0.05);
-}
-.ch-info h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-.ch-info p {
-  font-size: 0.84375rem;
-  color: var(--ink-mid);
-  line-height: 1.6;
-}
-.ch-btn {
-  margin-top: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--ink);
-  padding: 9px 16px;
-  border-radius: 999px;
-  background: rgba(20, 22, 26, 0.05);
-  border: 1px solid var(--line);
-  cursor: pointer;
-  transition: all 0.2s;
-  touch-action: manipulation;
-}
-@media (hover: hover) and (pointer: fine) {
-  .ch-btn:hover {
-    background: rgba(20, 22, 26, 0.09);
-    border-color: var(--ink);
-  }
-}
-.ch-btn-group {
-  margin-top: auto;
-  display: flex;
-  gap: 8px;
-}
-.ch-btn-group .ch-btn {
-  flex: 1;
-}
-
-/* ── 更新日志 ──────────────────────────────────── */
-.changelog-section {
-  margin-bottom: clamp(48px, 7.5vh, 76px);
-}
-.changelog-card {
-  background: var(--card);
-  border: 1px solid var(--line-faint);
-  border-radius: 16px;
-  padding: clamp(24px, 3.2vw, 36px);
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-.change-group {
-  display: flex;
-  flex-direction: column;
+  align-items: baseline;
   gap: 12px;
 }
-.group-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+.ch-num {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  color: var(--ochre);
+  flex-shrink: 0;
+}
+.channel h3 {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+}
+.channel .body-text {
+  margin-top: 10px;
+  font-size: 0.84375rem;
+  line-height: 1.85;
+  color: var(--ink-mid);
+  flex: 1;
+}
+.ch-links {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+}
+.ch-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 0;
+  border: 0;
+  border-top: 1px solid var(--line-faint);
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--dur-fast);
+}
+.ch-link svg {
+  color: var(--ink-ghost);
+  transition: transform var(--dur-fast) var(--ease-out-expo), color var(--dur-fast);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ch-link:hover {
+    color: var(--ink);
+  }
+  .ch-link:hover svg {
+    transform: translate(2px, -2px);
+    color: var(--ink);
+  }
+}
+
+/* ── 更新日志 ─────────────────────────────────── */
+.changelog-card {
+  border-top: 1px solid var(--ink);
+}
+.change-group {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  padding-block: 22px;
+  border-bottom: 1px solid var(--line-faint);
+}
+.group-title {
+  grid-column: 1 / 5;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.6;
 }
 .group-badge {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 4px;
+  font-size: 0.5625rem;
+  letter-spacing: 0.12em;
+  padding: 2px 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  color: var(--ink-soft-2);
+  flex-shrink: 0;
 }
 .feat-badge {
-  background: rgba(91, 127, 199, 0.15);
-  color: var(--accent-deep);
-}
-.fix-badge {
-  background: rgba(157, 169, 142, 0.2);
-  color: #556b46;
-}
-.opt-badge {
-  background: rgba(200, 180, 141, 0.25);
-  color: #7d6332;
-}
-.note-badge {
-  background: rgba(141, 148, 158, 0.2);
-  color: var(--ink-mid);
+  color: var(--ochre);
+  border-color: currentColor;
 }
 .change-list {
-  padding-left: 20px;
+  grid-column: 5 / -1;
+  list-style: none;
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+.change-list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 0.84375rem;
+  line-height: 1.8;
   color: var(--ink-mid);
-  font-size: 0.875rem;
-  line-height: 1.75;
+}
+.change-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.78em;
+  width: 6px;
+  height: 1px;
+  background: var(--ink-ghost);
 }
 .change-list b {
+  font-weight: 500;
   color: var(--ink);
 }
 
-/* ── FAQ ───────────────────────────────────────── */
-.faq-section {
-  margin-bottom: 24px;
-}
+/* ── 安装说明 ─────────────────────────────────── */
 .faq-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--col-gap);
 }
 .faq-card {
-  background: var(--card);
-  border: 1px solid var(--line-faint);
-  border-radius: 14px;
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
 }
 .faq-card h4 {
+  margin-top: 12px;
   font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--ink);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
 }
 .faq-card p {
+  margin-top: 10px;
   font-size: 0.84375rem;
+  line-height: 1.9;
   color: var(--ink-mid);
-  line-height: 1.7;
 }
 
-/* ── 触控交互适配 ──────────────────────────────── */
-@media (hover: none) and (pointer: coarse) {
-  .btn-dl-main:active,
-  .btn-dl-copy:active,
-  .ch-btn:active,
-  .proxy-pill:active,
-  .arch-pill:active {
-    opacity: 0.82;
+/* ════════════════════════════════════════════════
+   响应式
+   ════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .specs-bar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .spec-cell:nth-child(4) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .spec-cell:nth-child(n + 4) {
+    border-top: 1px solid var(--line-faint);
+  }
+  .channels-grid,
+  .faq-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 32px;
+  }
+  .change-group {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 12px;
+  }
+  .group-title,
+  .change-list {
+    grid-column: 1;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
+  .download-main {
+    padding-top: calc(var(--nav-h) + 20px);
+  }
+  .download-header .h-display {
+    font-size: clamp(1.75rem, 8vw, 2.25rem);
+  }
+  .app-summary {
+    gap: 12px;
+    padding-block: 18px;
+  }
+  .app-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .app-name {
+    font-size: 1.1875rem;
+  }
   .specs-bar {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .spec-cell {
+    padding: 14px 14px 16px 0;
+  }
+  .spec-cell + .spec-cell {
+    padding-left: 14px;
+  }
+  .spec-cell:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .spec-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--line-faint);
+  }
+  .arch-switch-box,
+  .proxy-switch-box {
+    padding-block: 18px;
+  }
+  .switch-header {
+    margin-bottom: 12px;
+  }
+  .switch-hint {
+    display: none;
+  }
+  .arch-pill,
+  .proxy-pill {
+    padding: 9px 12px;
+    font-size: 0.8125rem;
   }
   .actions-area {
-    flex-direction: column;
+    padding-block: 18px;
+    gap: 8px;
+  }
+  .btn-dl-main,
+  .btn-dl-disabled {
+    flex: 1 1 100%;
+    padding: 14px 16px;
   }
   .btn-dl-copy {
+    justify-content: center;
     width: 100%;
+    padding: 13px 16px;
   }
-  .ch-btn-group {
+  .btn-dl-sub {
+    white-space: normal;
+  }
+  .url-preview {
     flex-direction: column;
+    gap: 4px;
+  }
+  .channels-grid,
+  .faq-grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 28px;
+  }
+  .channels-section,
+  .changelog-section,
+  .faq-section {
+    padding-block: 48px;
   }
 }
 </style>

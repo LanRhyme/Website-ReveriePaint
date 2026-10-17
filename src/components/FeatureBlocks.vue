@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { gsap, ScrollTrigger, isFineHoverPointer } from '../composables/useGsap.js'
+import { gsap, isFineHoverPointer, prefersReducedMotion } from '../composables/useGsap.js'
 import { useI18n } from '../composables/useI18n.js'
 import brushBench from '../assets/shots/ui-brush-bench.webp'
 import penSettings from '../assets/shots/ui-pen-settings.webp'
@@ -13,152 +13,92 @@ import reference from '../assets/shots/work-reference.webp'
 const { t } = useI18n()
 
 const blockMeta = [
-  { id: 'bench', img: brushBench, flip: false },
-  { id: 'pen', img: penSettings, flip: true },
-  { id: 'lasso', img: lasso, flip: false },
-  { id: 'reference', img: reference, flip: true }
+  { id: 'bench', img: brushBench, flip: false, ratio: '1700 / 968' },
+  { id: 'pen', img: penSettings, flip: true, ratio: '1700 / 968' },
+  { id: 'lasso', img: lasso, flip: false, ratio: '1800 / 1125' },
+  { id: 'reference', img: reference, flip: true, ratio: '1800 / 1125' }
 ]
 
 const blocks = computed(() => {
   const list = t('features.blocks') || []
-  return blockMeta.map((meta, idx) => ({
-    ...meta,
-    ...(list[idx] || {})
-  }))
+  return blockMeta.map((meta, idx) => {
+    const item = list[idx] || {}
+    return {
+      ...meta,
+      ...item,
+      num: String(idx + 2).padStart(2, '0'),
+      titleLines: splitTitle(item.title)
+    }
+  })
 })
+
+/** 中文标题按逗号断行，比让浏览器随机断在词中间好看 */
+function splitTitle(title = '') {
+  const i = title.indexOf('，')
+  if (i < 0 || i === title.length - 1) return [title]
+  return [title.slice(0, i + 1), title.slice(i + 1)]
+}
 
 const pillImgs = [filters, blend, toolbar]
 const pills = computed(() => {
   const list = t('features.pills') || []
   return list.map((item, idx) => ({
     ...item,
-    img: pillImgs[idx]
+    img: pillImgs[idx],
+    num: String(idx + 6).padStart(2, '0')
   }))
 })
 
 const sectionRef = ref(null)
 let ctx = null
 
-function onMediaMouseMove(e) {
+function onPlateMouseMove(e) {
   if (!isFineHoverPointer(e)) return
-  const card = e.currentTarget
-  const rect = card.getBoundingClientRect()
+  const el = e.currentTarget
+  const rect = el.getBoundingClientRect()
   const x = (e.clientX - rect.left) / rect.width - 0.5
   const y = (e.clientY - rect.top) / rect.height - 0.5
-  gsap.to(card, {
-    rotationY: x * 6,
-    rotationX: -y * 6,
-    duration: 0.45,
+  gsap.to(el, {
+    rotationY: x * 3.5,
+    rotationX: -y * 3.5,
+    duration: 0.55,
     ease: 'power2.out',
-    transformPerspective: 1000
+    transformPerspective: 1600
   })
 }
 
-function onMediaMouseLeave(e) {
+function onPlateMouseLeave(e) {
+  if (!e?.currentTarget) return
   if (!isFineHoverPointer(e)) {
-    if (e?.currentTarget) gsap.set(e.currentTarget, { rotationY: 0, rotationX: 0 })
+    gsap.set(e.currentTarget, { rotationY: 0, rotationX: 0 })
     return
   }
-  gsap.to(e.currentTarget, {
-    rotationY: 0,
-    rotationX: 0,
-    duration: 0.6,
-    ease: 'power2.out'
-  })
+  gsap.to(e.currentTarget, { rotationY: 0, rotationX: 0, duration: 0.8, ease: 'power3.out' })
 }
 
 onMounted(() => {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (reduce || !sectionRef.value) return
+  if (prefersReducedMotion() || !sectionRef.value) return
 
+  // 图版在框内做极小幅度的反向位移，滚动时有纸张错位的感觉
   ctx = gsap.matchMedia(sectionRef.value)
-
-  // 桌面与平板端：视差滑动
-  ctx.add('(min-width: 769px)', () => {
-    const blockEls = sectionRef.value.querySelectorAll('.block')
-    blockEls.forEach((block) => {
-      const img = block.querySelector('.block-media img')
-      if (img) {
-        gsap.fromTo(
-          img,
-          { yPercent: -5, scale: 1.04 },
-          {
-            yPercent: 5,
-            scale: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: block,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 1.2
-            }
+  ctx.add('(min-width: 861px)', () => {
+    sectionRef.value.querySelectorAll('.block-plate .plate-img img').forEach((img) => {
+      gsap.fromTo(
+        img,
+        { yPercent: -2.6 },
+        {
+          yPercent: 2.6,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: img.closest('.block'),
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1.2
           }
-        )
-      }
-    })
-  })
-
-  // 手机端：滚动到视口中央平滑放大聚焦
-  ctx.add('(max-width: 768px)', () => {
-    const blockEls = sectionRef.value.querySelectorAll('.block')
-    blockEls.forEach((block) => {
-      const media = block.querySelector('.block-media')
-      if (media) {
-        gsap.fromTo(
-          media,
-          { scale: 0.94, opacity: 0.78 },
-          {
-            scale: 1,
-            opacity: 1,
-            ease: 'power1.out',
-            scrollTrigger: {
-              trigger: block,
-              start: 'top 88%',
-              end: 'top 42%',
-              scrub: 0.6
-            }
-          }
-        )
-      }
-    })
-  })
-
-  // 核心卖点逐条阶梯出现
-  const blockEls = sectionRef.value.querySelectorAll('.block')
-  blockEls.forEach((block) => {
-    const points = block.querySelectorAll('.block-points li')
-    if (points.length) {
-      gsap.from(points, {
-        opacity: 0,
-        x: -12,
-        duration: 0.6,
-        stagger: 0.08,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: block,
-          start: 'top 78%',
-          toggleActions: 'play none none none'
         }
-      })
-    }
-  })
-
-  // 三张并列卡片阶梯出场
-  const pillEls = sectionRef.value.querySelectorAll('.pill')
-  if (pillEls.length) {
-    gsap.from(pillEls, {
-      opacity: 0,
-      y: 26,
-      duration: 0.75,
-      stagger: 0.12,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: sectionRef.value.querySelector('.pills'),
-        start: 'top 84%',
-        toggleActions: 'play none none none'
-      }
+      )
     })
-  }
+  })
 })
 
 onUnmounted(() => {
@@ -170,53 +110,65 @@ onUnmounted(() => {
   <section id="features" ref="sectionRef" class="features">
     <div class="shell">
       <header class="sec-head reveal">
-        <p class="eyebrow">{{ t('features.eyebrow') }}</p>
+        <div class="sec-rail">
+          <span class="sec-num">01</span>
+          <span class="sec-label">{{ t('features.eyebrow') }}</span>
+        </div>
         <h2 class="h-section">
-          <span class="line-mask"><span class="line-inner">{{ t('features.title') }}</span></span>
+          <span class="line-mask"><span class="line-inner" style="--d: 70ms">{{ t('features.title') }}</span></span>
         </h2>
         <p class="lede sec-sub">{{ t('features.sub') }}</p>
       </header>
+    </div>
 
-      <!-- ── 交错图文 ───────────────────────── -->
-      <div class="blocks">
-        <article
-          v-for="b in blocks"
-          :key="b.id"
-          class="block reveal"
-          :class="{ 'is-flip': b.flip }"
-        >
-          <div
-            class="block-media"
-            data-cursor="STUDIO"
-            @mousemove="onMediaMouseMove"
-            @mouseleave="onMediaMouseLeave"
-          >
-            <img :src="b.img" :alt="b.alt" loading="lazy" decoding="async" />
+    <div class="shell blocks">
+      <article
+        v-for="b in blocks"
+        :key="b.id"
+        class="block reveal"
+        :class="{ 'is-flip': b.flip }"
+      >
+        <div class="block-plate">
+          <div class="plate" @mousemove="onPlateMouseMove" @mouseleave="onPlateMouseLeave">
+            <div class="plate-img" :style="{ aspectRatio: b.ratio }">
+              <img :src="b.img" :alt="b.alt" loading="lazy" decoding="async" />
+            </div>
           </div>
+          <p class="plate-cap"><b>{{ b.num }}</b><span>{{ b.kicker }}</span></p>
+        </div>
 
-          <div class="block-copy">
-            <p class="eyebrow">{{ b.kicker }}</p>
-            <h3 class="block-title">
-              <span class="line-mask"><span class="line-inner">{{ b.title }}</span></span>
-            </h3>
-            <p class="block-body">{{ b.body }}</p>
-            <ul class="block-points">
-              <li v-for="p in b.points" :key="p">{{ p }}</li>
-            </ul>
-          </div>
-        </article>
-      </div>
+        <div class="block-copy">
+          <h3 class="h-block block-title">
+            <span
+              v-for="(line, i) in b.titleLines"
+              :key="i"
+              class="line-mask"
+            ><span class="line-inner" :style="{ '--d': `${i * 80}ms` }">{{ line }}</span></span>
+          </h3>
+          <p class="body-text">{{ b.body }}</p>
+          <ul class="block-points">
+            <li v-for="p in b.points" :key="p">{{ p }}</li>
+          </ul>
+        </div>
+      </article>
+    </div>
 
-      <!-- ── 三张并列 ───────────────────────── -->
+    <div class="shell">
       <div class="pills">
-        <article v-for="p in pills" :key="p.title" class="pill" data-cursor="EXPLORE">
-          <div class="pill-shot">
-            <img :src="p.img" :alt="`${p.title} 界面`" loading="lazy" decoding="async" />
+        <article
+          v-for="(p, i) in pills"
+          :key="p.title"
+          class="pill reveal"
+          :style="{ '--d': `${i * 80}ms` }"
+        >
+          <div class="plate">
+            <div class="plate-img pill-img">
+              <img :src="p.img" :alt="`${p.title} 界面`" loading="lazy" decoding="async" />
+            </div>
           </div>
-          <div class="pill-copy">
-            <h3>{{ p.title }}</h3>
-            <p>{{ p.desc }}</p>
-          </div>
+          <p class="plate-cap"><b>{{ p.num }}</b></p>
+          <h3>{{ p.title }}</h3>
+          <p class="pill-desc">{{ p.desc }}</p>
         </article>
       </div>
     </div>
@@ -226,85 +178,69 @@ onUnmounted(() => {
 <style scoped>
 .features {
   position: relative;
-  padding: clamp(68px, 10vh, 116px) 0;
-}
-
-.sec-head {
-  max-width: 44ch;
-  margin-bottom: clamp(52px, 8vh, 84px);
-}
-.sec-head .h-section {
-  margin-top: 14px;
-  line-height: 1.3;
-}
-.sec-sub {
-  margin-top: 18px;
+  padding-block: var(--sec-air);
 }
 
 /* ══ 交错图文 ═══════════════════════════════ */
 .blocks {
   display: flex;
   flex-direction: column;
-  gap: clamp(96px, 14vh, 160px);
+  gap: clamp(64px, 9vh, 120px);
 }
 
 .block {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
   align-items: center;
-  gap: clamp(48px, 6vw, 96px);
 }
 
-/* 巨幕级展示一侧 */
-.block-media {
-  position: relative;
-  border-radius: 20px;
+/* 图版固定占 6 栏，另一侧文案占 5 栏，中间空一整栏 */
+.block-plate {
+  grid-column: 1 / 7;
+  /* 图版贴边时，四角裁切标记会多出 9px，这里裁掉，避免横向溢出 */
   overflow: hidden;
-  background: var(--ui-900);
-  border: 1px solid rgba(20, 22, 26, 0.08);
-  box-shadow: 0 20px 50px rgba(20, 22, 26, 0.12), 0 1px 3px rgba(20, 22, 26, 0.06);
-  transform-style: preserve-3d;
-  will-change: transform;
-  transition: box-shadow 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
 }
-@media (hover: hover) and (pointer: fine) {
-  .block-media:hover {
-    box-shadow: 0 32px 72px rgba(20, 22, 26, 0.18), 0 2px 6px rgba(20, 22, 26, 0.08);
-  }
+.block-copy {
+  grid-column: 8 / -1;
 }
-.block-media img {
-  width: 100%;
-  height: auto;
-  display: block;
-  will-change: transform;
-  transition: transform 0.8s var(--ease-out-expo);
-}
-@media (hover: hover) and (pointer: fine) {
-  .block-media:hover img {
-    transform: scale(1.025);
-  }
+.block-copy p.body-text {
+  margin-top: 18px;
+  max-width: 30em;
 }
 
-/* 文案一侧 */
-.block-copy {
-  max-width: 44ch;
+/* 图版左右交替：一边永远贴到屏幕边 */
+.block.is-flip .block-plate {
+  grid-column: 7 / -1;
 }
+.block.is-flip .block-copy {
+  grid-column: 1 / 6;
+}
+
+.block-plate .plate-img {
+  /* 不指定比例：内联 style 用图片自身的比例，cover 等于原样铺满，
+     不会横向裁掉截图里的左侧工具栏 */
+  background: var(--ui-900);
+  will-change: transform;
+}
+.block-plate .plate-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 图版说明：编号跟着图版外侧对齐 */
+.block-plate .plate-cap {
+  padding-right: 2px;
+}
+
 .block-title {
-  margin-top: 14px;
-  font-size: clamp(1.5rem, 2.5vw, 2.1rem);
-  font-weight: 500;
-  line-height: 1.28;
-  letter-spacing: -0.026em;
   color: var(--ink);
 }
-.block-body {
-  margin-top: 18px;
-  font-size: clamp(0.9375rem, 1.1vw, 1.05rem);
-  line-height: 1.92;
-  color: var(--ink-mid);
-}
 .block-points {
-  margin-top: 20px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -312,125 +248,110 @@ onUnmounted(() => {
 }
 .block-points li {
   position: relative;
-  padding-left: 18px;
-  font-size: 0.875rem;
-  line-height: 1.6;
+  padding-left: 16px;
+  font-size: 0.84375rem;
+  line-height: 1.7;
   color: var(--ink-soft);
 }
 .block-points li::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 0.58em;
+  top: 0.66em;
   width: 6px;
   height: 1px;
   background: var(--ink-ghost);
 }
 
-/* 交替方向：图移到右列 */
-.block.is-flip .block-media {
-  order: 2;
-}
-.block.is-flip .block-copy {
-  order: 1;
-}
-
 /* ══ 三张并列 ═══════════════════════════════ */
 .pills {
-  margin-top: clamp(64px, 10vh, 116px);
-  padding-top: clamp(44px, 7vh, 68px);
-  border-top: 1px solid var(--line-faint);
+  margin-top: clamp(64px, 9vh, 120px);
+  padding-top: clamp(28px, 4vh, 40px);
+  border-top: 1px solid var(--ink);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(20px, 3vw, 34px);
+  column-gap: var(--col-gap);
 }
 
-.pill-shot {
-  border-radius: 10px;
-  overflow: hidden;
+.pill-img {
+  aspect-ratio: 1 / 1;
   background: var(--ui-800);
-  border: 1px solid rgba(20, 22, 26, 0.12);
-  margin-bottom: 18px;
-  box-shadow: var(--shadow-s);
-  aspect-ratio: 16 / 10.2;
 }
-.pill-shot img {
+.pill-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top center;
-  transition: transform 0.7s var(--ease-out-expo);
+  transition: transform var(--dur-slow) var(--ease-out-expo);
 }
 @media (hover: hover) and (pointer: fine) {
-  .pill:hover .pill-shot img {
-    transform: scale(1.03);
+  .pill:hover .pill-img img {
+    transform: scale(1.025);
   }
 }
 
-.pill-copy h3 {
+.pill .plate-cap {
+  margin-top: 12px;
+}
+.pill h3 {
+  margin-top: 10px;
   font-size: 1.0625rem;
   font-weight: 500;
-  letter-spacing: -0.012em;
+  letter-spacing: -0.014em;
 }
-.pill-copy p {
+.pill-desc {
   margin-top: 8px;
-  font-size: 0.875rem;
-  line-height: 1.78;
+  font-size: 0.84375rem;
+  line-height: 1.8;
   color: var(--ink-mid);
 }
 
 /* ══ 响应式 ═════════════════════════════════ */
-@media (max-width: 960px) {
-  .block {
-    gap: 28px;
+@media (max-width: 1024px) {
+  .block-plate {
+    grid-column: 1 / 7;
   }
-  .pills {
-    gap: 20px;
+  .block-copy {
+    grid-column: 7 / -1;
+  }
+  .block.is-flip .block-plate {
+    grid-column: 7 / -1;
+  }
+  .block.is-flip .block-copy {
+    grid-column: 1 / 7;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .features {
-    padding: clamp(48px, 8vh, 84px) 0;
-  }
-  .sec-head {
-    margin-bottom: 38px;
+    padding: 44px 0 64px;
   }
   .blocks {
-    gap: clamp(40px, 7vh, 60px);
+    gap: clamp(48px, 8vh, 72px);
   }
   .block,
   .block.is-flip {
     grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
+    row-gap: 20px;
   }
-  /* 移动端统一图在上、文在下 */
-  .block.is-flip .block-media {
-    order: 0;
+  /* 手机上统一图在上、文在下，图版左右都出血 */
+  .block.is-flip .block-plate,
+  .block-plate {
+    grid-column: 1;
   }
-  .block.is-flip .block-copy {
-    order: 0;
-  }
+  .block.is-flip .block-copy,
   .block-copy {
+    grid-column: 1;
     max-width: 100%;
   }
   .block-title {
-    font-size: clamp(1.1875rem, 4.6vw, 1.45rem);
-    line-height: 1.35;
-  }
-  .block-body {
-    margin-top: 12px;
-    line-height: 1.76;
-  }
-  .block-points {
-    margin-top: 14px;
-    gap: 7px;
+    font-size: clamp(1.25rem, 5vw, 1.5rem);
   }
   .pills {
-    margin-top: clamp(44px, 7vh, 64px);
-    padding-top: clamp(32px, 5vh, 48px);
+    margin-top: 56px;
+    padding-top: 28px;
     grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
+    gap: 32px;
   }
 }
 </style>

@@ -1,256 +1,239 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 
-const canvasRef = ref(null)
-let ctx = null
-let animId = null
+/**
+ * 背景纸感晕染。
+ *
+ * 性能约定：底色晕染只在挂载 / 尺寸变化时绘制一次（本来就是几乎静止的），
+ * 不再常驻 rAF。只有鼠标划过时才启动逐帧循环画墨点，墨点散完即停。
+ * 触屏设备不注册指针监听、不跑循环，只画一张静态底。
+ */
+
+const baseRef = ref(null)   // 静态晕染
+const inkRef = ref(null)    // 交互墨点（叠在上层）
+
+const PALETTE = [
+  [91, 127, 199],   // 莫兰迪蓝
+  [143, 163, 180],  // 灰雾青
+  [195, 163, 158],  // 赭红豆沙
+  [157, 169, 142],  // 灰苔绿
+  [176, 138, 117],  // 暖陶褐
+  [167, 155, 182]   // 灰紫
+]
+
+// 固定构图的晕染块：位置、半径都按视口比例给，避免每次刷新随机成一团乱
+const BLOBS = [
+  { x: 0.08, y: 0.02, r: 0.62, ci: 0, a: 0.1 },
+  { x: 0.92, y: -0.06, r: 0.54, ci: 1, a: 0.09 },
+  { x: 0.24, y: 0.72, r: 0.58, ci: 3, a: 0.08 },
+  { x: 0.78, y: 0.58, r: 0.5, ci: 2, a: 0.07 },
+  { x: 0.52, y: 0.24, r: 0.46, ci: 5, a: 0.055 },
+  { x: 0.06, y: 0.44, r: 0.34, ci: 4, a: 0.05 }
+]
+
+let baseCtx = null
+let inkCtx = null
 let width = 0
 let height = 0
 let dpr = 1
-let isReducedMotion = false
-let isTouchDevice = false
+let rafId = 0
+let spriteCache = new Map()
+let ripples = []
+let lastX = 0
+let lastY = 0
+let hasLast = false
+let finePointer = false
 
-// 莫兰迪水墨色板（低饱和、温暖水彩与墨色）
-const INK_PALETTE = [
-  { r: 91, g: 127, b: 199, a: 0.18 },   // 莫兰迪蓝
-  { r: 143, g: 163, b: 180, a: 0.16 }, // 灰雾青
-  { r: 195, g: 163, b: 158, a: 0.15 }, // 赭红豆沙
-  { r: 157, g: 169, b: 142, a: 0.16 }, // 灰苔绿
-  { r: 176, g: 138, b: 117, a: 0.14 }, // 暖陶褐
-  { r: 20, g: 22, b: 26, a: 0.08 }     // 水墨极淡黑
-]
+const MAX_RIPPLES = 18
 
-// 水墨粒子与流体扩散环池
-const ripples = []
-const ambientNodes = []
-const MAX_RIPPLES = 48
-const MAX_AMBIENT = 16
-
-let lastPointerX = 0
-let lastPointerY = 0
-let pointerMoving = false
-let pointerMoveTimer = null
-
-class InkRipple {
-  constructor(x, y, vx, vy, color) {
-    this.x = x
-    this.y = y
-    this.vx = vx * 0.4 + (Math.random() - 0.5) * 1.5
-    this.vy = vy * 0.4 + (Math.random() - 0.5) * 1.5
-    this.color = color || INK_PALETTE[Math.floor(Math.random() * INK_PALETTE.length)]
-    this.radius = Math.random() * 12 + 10
-    this.maxRadius = this.radius + (Math.random() * 45 + 35)
-    this.life = 1
-    this.decay = Math.random() * 0.012 + 0.008
-    this.wobblePhase = Math.random() * Math.PI * 2
-    this.wobbleSpeed = (Math.random() - 0.5) * 0.04
-  }
-
-  update() {
-    this.x += this.vx
-    this.y += this.vy
-    this.vx *= 0.94
-    this.vy *= 0.94
-    this.radius += (this.maxRadius - this.radius) * 0.04
-    this.wobblePhase += this.wobbleSpeed
-    this.life -= this.decay
-    return this.life > 0.01
-  }
-
-  draw(c) {
-    const alpha = this.life * this.color.a
-    if (alpha <= 0.005) return
-
-    c.save()
-    c.translate(this.x, this.y)
-    
-    // 微小有机墨晕形变
-    const scaleX = 1 + Math.sin(this.wobblePhase) * 0.12
-    const scaleY = 1 + Math.cos(this.wobblePhase) * 0.12
-    c.scale(scaleX, scaleY)
-
-    const grad = c.createRadialGradient(0, 0, this.radius * 0.1, 0, 0, this.radius)
-    grad.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${alpha * 1.3})`)
-    grad.addColorStop(0.5, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${alpha * 0.6})`)
-    grad.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`)
-
-    c.fillStyle = grad
-    c.beginPath()
-    c.arc(0, 0, this.radius, 0, Math.PI * 2)
-    c.fill()
-    c.restore()
-  }
+/** 把一个颜色预渲染成 160px 的径向渐变贴图，之后只做 drawImage */
+function getSprite(ci) {
+  if (spriteCache.has(ci)) return spriteCache.get(ci)
+  const size = 160
+  const c = document.createElement('canvas')
+  c.width = c.height = size
+  const g = c.getContext('2d')
+  const [r, gg, b] = PALETTE[ci]
+  const grad = g.createRadialGradient(size / 2, size / 2, 1, size / 2, size / 2, size / 2)
+  grad.addColorStop(0, `rgba(${r},${gg},${b},1)`)
+  grad.addColorStop(0.45, `rgba(${r},${gg},${b},0.45)`)
+  grad.addColorStop(1, `rgba(${r},${gg},${b},0)`)
+  g.fillStyle = grad
+  g.fillRect(0, 0, size, size)
+  spriteCache.set(ci, c)
+  return c
 }
 
-class AmbientBlob {
-  constructor(w, h, idx) {
-    this.reset(w, h, idx)
-    this.t = Math.random() * 100
-  }
+function sizeCanvas(canvas) {
+  if (!canvas) return
+  canvas.width = Math.round(width * dpr)
+  canvas.height = Math.round(height * dpr)
+  canvas.style.width = `${width}px`
+  canvas.style.height = `${height}px`
+}
 
-  reset(w, h, idx) {
-    this.x = (idx / MAX_AMBIENT) * w + (Math.random() - 0.5) * 160
-    this.y = (Math.random() * 0.9 + 0.05) * h
-    this.baseRadius = Math.min(w, h) * (Math.random() * 0.18 + 0.14)
-    this.color = INK_PALETTE[idx % INK_PALETTE.length]
-    this.speed = Math.random() * 0.0015 + 0.0008
-  }
+function paintBase() {
+  if (!baseCtx) return
+  baseCtx.setTransform(dpr, 0, 0, dpr, 0, 0)
+  baseCtx.clearRect(0, 0, width, height)
 
-  update(time) {
-    this.t += this.speed
-    this.currX = this.x + Math.sin(this.t) * 45
-    this.currY = this.y + Math.cos(this.t * 0.8) * 35
-    this.currRadius = this.baseRadius + Math.sin(this.t * 1.4) * 20
-  }
-
-  draw(c) {
-    c.save()
-    const grad = c.createRadialGradient(
-      this.currX, this.currY, this.currRadius * 0.08,
-      this.currX, this.currY, this.currRadius
+  const min = Math.min(width, height)
+  BLOBS.forEach((b) => {
+    const r = b.r * min
+    baseCtx.globalAlpha = b.a
+    baseCtx.drawImage(
+      getSprite(b.ci),
+      b.x * width - r,
+      b.y * height - r,
+      r * 2,
+      r * 2
     )
-    const baseAlpha = this.color.a * 0.5
-    grad.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${baseAlpha})`)
-    grad.addColorStop(0.65, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${baseAlpha * 0.3})`)
-    grad.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`)
-
-    c.fillStyle = grad
-    c.beginPath()
-    c.arc(this.currX, this.currY, this.currRadius, 0, Math.PI * 2)
-    c.fill()
-    c.restore()
-  }
+  })
+  baseCtx.globalAlpha = 1
 }
 
 function resize() {
-  if (!canvasRef.value) return
-  dpr = Math.min(window.devicePixelRatio || 1, 2)
+  dpr = Math.min(window.devicePixelRatio || 1, 1.5)
   width = window.innerWidth
   height = window.innerHeight
-
-  canvasRef.value.width = width * dpr
-  canvasRef.value.height = height * dpr
-  canvasRef.value.style.width = `${width}px`
-  canvasRef.value.style.height = `${height}px`
-
-  if (ctx) {
-    ctx.scale(dpr, dpr)
-  }
-
-  // 初始化环境呼吸晕染斑
-  if (ambientNodes.length === 0) {
-    const count = isTouchDevice ? 8 : MAX_AMBIENT
-    for (let i = 0; i < count; i++) {
-      ambientNodes.push(new AmbientBlob(width, height, i))
-    }
-  }
+  sizeCanvas(baseRef.value)
+  sizeCanvas(inkRef.value)
+  if (inkCtx) inkCtx.setTransform(dpr, 0, 0, dpr, 0, 0)
+  paintBase()
 }
 
-function spawnRipple(x, y, vx, vy) {
-  if (isReducedMotion) return
-  if (ripples.length >= (isTouchDevice ? 24 : MAX_RIPPLES)) {
-    ripples.shift()
-  }
-  ripples.push(new InkRipple(x, y, vx, vy))
+function spawn(x, y, dx, dy) {
+  if (ripples.length >= MAX_RIPPLES) return
+  const ci = Math.floor(Math.random() * PALETTE.length)
+  ripples.push({
+    x,
+    y,
+    vx: dx * 0.28 + (Math.random() - 0.5) * 1.2,
+    vy: dy * 0.28 + (Math.random() - 0.5) * 1.2,
+    r: 14 + Math.random() * 18,
+    grow: 0.9 + Math.random() * 1.6,
+    max: 70 + Math.random() * 80,
+    life: 1,
+    decay: 0.014 + Math.random() * 0.012,
+    ci
+  })
+  startLoop()
 }
 
 function onPointerMove(e) {
   const x = e.clientX
   const y = e.clientY
-  const vx = x - lastPointerX
-  const vy = y - lastPointerY
-  const dist = Math.hypot(vx, vy)
-
-  // 移动距离足够时喷射墨晕
-  if (dist > 12) {
-    spawnRipple(x, y, vx, vy)
-    lastPointerX = x
-    lastPointerY = y
-  }
-
-  pointerMoving = true
-  clearTimeout(pointerMoveTimer)
-  pointerMoveTimer = setTimeout(() => {
-    pointerMoving = false
-  }, 120)
-}
-
-function onPointerDown(e) {
-  // 点击/触摸时激起较浓扩散墨花
-  for (let i = 0; i < (isTouchDevice ? 2 : 3); i++) {
-    spawnRipple(e.clientX, e.clientY, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 4)
-  }
-}
-
-function loop(time) {
-  if (!ctx || !width || !height) {
-    animId = requestAnimationFrame(loop)
+  if (!hasLast) {
+    lastX = x
+    lastY = y
+    hasLast = true
     return
   }
+  const dx = x - lastX
+  const dy = y - lastY
+  if (Math.hypot(dx, dy) < 22) return
+  spawn(x, y, dx, dy)
+  lastX = x
+  lastY = y
+}
 
-  ctx.clearRect(0, 0, width, height)
+function tick() {
+  if (!inkCtx) return
+  inkCtx.clearRect(0, 0, width, height)
 
-  // 1. 绘制底层莫兰迪温和水彩呼吸光晕
-  for (let i = 0; i < ambientNodes.length; i++) {
-    ambientNodes[i].update(time)
-    ambientNodes[i].draw(ctx)
-  }
-
-  // 2. 绘制用户交互激发的物理水墨粒子与墨花
   for (let i = ripples.length - 1; i >= 0; i--) {
-    const r = ripples[i]
-    if (r.update()) {
-      r.draw(ctx)
-    } else {
-      ripples.splice(i, 1)
-    }
-  }
+    const p = ripples[i]
+    p.x += p.vx
+    p.y += p.vy
+    p.vx *= 0.93
+    p.vy *= 0.93
+    p.r += p.grow
+    p.life -= p.decay
 
-  animId = requestAnimationFrame(loop)
+    if (p.life <= 0.01 || p.r >= p.max) {
+      ripples.splice(i, 1)
+      continue
+    }
+
+    inkCtx.globalAlpha = p.life * 0.13
+    inkCtx.drawImage(getSprite(p.ci), p.x - p.r, p.y - p.r, p.r * 2, p.r * 2)
+  }
+  inkCtx.globalAlpha = 1
+
+  if (ripples.length) {
+    rafId = requestAnimationFrame(tick)
+  } else {
+    rafId = 0
+    inkCtx.clearRect(0, 0, width, height)
+  }
+}
+
+function startLoop() {
+  if (!rafId) rafId = requestAnimationFrame(tick)
+}
+
+function onResize() {
+  ripples = []
+  resize()
 }
 
 onMounted(() => {
-  if (!canvasRef.value) return
-  ctx = canvasRef.value.getContext('2d', { alpha: true })
+  if (!baseRef.value || !inkRef.value) return
 
-  isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  baseCtx = baseRef.value.getContext('2d', { alpha: true })
+  inkCtx = inkRef.value.getContext('2d', { alpha: true })
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
 
   resize()
-  window.addEventListener('resize', resize, { passive: true })
-  window.addEventListener('pointermove', onPointerMove, { passive: true })
-  window.addEventListener('pointerdown', onPointerDown, { passive: true })
+  window.addEventListener('resize', onResize, { passive: true })
 
-  animId = requestAnimationFrame(loop)
+  if (finePointer && !reduced) {
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
+  }
 })
 
 onUnmounted(() => {
-  if (animId) cancelAnimationFrame(animId)
-  window.removeEventListener('resize', resize)
+  if (rafId) cancelAnimationFrame(rafId)
+  window.removeEventListener('resize', onResize)
   window.removeEventListener('pointermove', onPointerMove)
-  window.removeEventListener('pointerdown', onPointerDown)
-  clearTimeout(pointerMoveTimer)
+  spriteCache.clear()
 })
 </script>
 
 <template>
-  <canvas
-    ref={canvasRef}
-    class="fluid-canvas"
-    aria-hidden="true"
-  ></canvas>
+  <div class="paper-wash" aria-hidden="true">
+    <canvas ref="baseRef" class="layer base"></canvas>
+    <canvas ref="inkRef" class="layer ink"></canvas>
+  </div>
 </template>
 
 <style scoped>
-.fluid-canvas {
+.paper-wash {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
   z-index: 0;
-  mix-blend-mode: multiply;
-  opacity: 0.9;
+  pointer-events: none;
   contain: strict;
+  mix-blend-mode: multiply;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+/* 触屏设备：不做 multiply 混合，避免滚动时整屏逐帧重混合 */
+@media (hover: none) and (pointer: coarse) {
+  .paper-wash {
+    mix-blend-mode: normal;
+    opacity: 0.92;
+  }
+  .ink {
+    display: none;
+  }
 }
 </style>
