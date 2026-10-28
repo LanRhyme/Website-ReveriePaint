@@ -31,56 +31,61 @@ export default defineConfig({
     sidebar: {
       '/': [
         {
-          text: '概览与速查',
+          text: '开始',
           collapsed: false,
           items: [
-            { text: '手册导言与架构概览', link: '/' }
+            { text: '概览与文档地图', link: '/' },
+            { text: '安装与第一次作画', link: '/guide/install' },
+            { text: '界面导览', link: '/guide/interface' },
+            { text: '手势与快捷键', link: '/guide/gestures' }
           ]
         },
         {
-          text: '01 入门与手势',
+          text: '绘画',
           collapsed: false,
           items: [
-            { text: '软件架构与安装授权', link: '/guide/intro' },
-            { text: '主界面与工具栏定制', link: '/guide/interface' },
-            { text: '触控手势与快捷操作', link: '/guide/gestures' }
+            { text: '画笔与压感', link: '/guide/brush' },
+            { text: '手写笔与压感声学', link: '/guide/stylus' },
+            { text: '笔刷工坊与导入', link: '/guide/brush-studio' },
+            { text: '色彩与取色', link: '/guide/color' },
+            { text: '形状、透视与对称', link: '/guide/shapes-guides' },
+            { text: '选区、变换与液化', link: '/guide/selection-transform' },
+            { text: '滤镜与线稿提取', link: '/guide/filters' }
           ]
         },
         {
-          text: '02 图层与核心机制',
+          text: '图层',
           collapsed: false,
           items: [
             { text: '图层体系与混合模式', link: '/guide/layers' },
-            { text: '单图层孤立与 Alpha 锁定', link: '/guide/isolate-alpha' },
-            { text: '继承不透明度实战', link: '/guide/inherit-alpha' }
+            { text: '剪贴蒙版与继承透明度', link: '/guide/clipping' },
+            { text: 'Alpha 锁定与图层孤立', link: '/guide/alpha-lock' },
+            { text: '3D 参考图层', link: '/guide/layer-3d' }
           ]
         },
         {
-          text: '03 手写笔与工坊',
+          text: '动画',
           collapsed: false,
           items: [
-            { text: '多品牌手写笔与压感声学', link: '/guide/stylus' },
-            { text: '笔刷工坊与 ABR 导入', link: '/guide/brush-studio' }
+            { text: '逐帧动画与洋葱皮', link: '/guide/animation' },
+            { text: '导出与回放', link: '/guide/export' }
           ]
         },
         {
-          text: '04 创作与进阶工具',
+          text: '工程',
           collapsed: false,
           items: [
-            { text: '色彩面板与 3D 光影球', link: '/guide/color-tools' },
-            { text: '几何形状、透视与对称系统', link: '/guide/shapes-guides' },
-            { text: '流动蚂蚁线选区与液化形变', link: '/guide/selection-transform' },
-            { text: '35 种滤镜与线稿提取', link: '/guide/filters' },
-            { text: '逐帧动画与洋葱皮', link: '/guide/animation' }
+            { text: '工程、备份与 WebDAV', link: '/guide/project' },
+            { text: '设置与性能', link: '/guide/settings' }
           ]
         },
         {
-          text: '05 工程与社群',
+          text: '参考',
           collapsed: false,
           items: [
-            { text: '工程安全、WebDAV 与延时摄影', link: '/guide/project' },
+            { text: '常见问题', link: '/guide/faq' },
             { text: '问题反馈与创作者群', link: '/guide/community' },
-            { text: '参与文档贡献指南', link: '/guide/contributing' }
+            { text: '参与文档贡献', link: '/guide/contributing' }
           ]
         }
       ]
